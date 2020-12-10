@@ -34,6 +34,7 @@ const server = app.listen(process.env.PORT, () => {
 });
 
 const io = socketIo(server, {path: "/ws/chat"});
+// TODO redis adapter 적용시 socket.emit에서 발생하는 에러 해결
 // io.adapter(redis({ host: REDIS_MASTER_HOST, port: Number(REDIS_MASTER_PORT) }));
 io.use(socketIoCookieParser());
 io.use((socket, next)=>{
