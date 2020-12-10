@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: greenmarket-product-app
+    namespace: production
+spec:
+    replicas: 4
+    selector:
+        matchLabels:
+            app: greenmarket-product-app
+    template:
+        metadata:
+            labels:
+                app: greenmarket-product-app
+        spec:
+            containers:
+            - name: greenmarket-product-app
+              image: sinwoo1225/greenmarket-product-app:0.0.1
+              ports:
+              - containerPort: 8080
+              imagePullPolicy: Always
+              volumeMounts:
+              - name: product-persistent-storage
+                mountPath: /resources/images
+            volumes:
+            - name: product-persistent-storage
+              persistentVolumeClaim:
+                claimName: product-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: greenmarket-product-app
+    namespace: production
+spec:
+    ports:
+    - name: "app-port"
+      port: 8080
+      targetPort: 8080
+    selector:
+        app: greenmarket-product-app

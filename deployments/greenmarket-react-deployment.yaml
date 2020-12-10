@@ -1,0 +1,37 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: greenmarket-react-app
+  namespace: production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: greenmarket-react-app
+  template:
+    metadata:
+      labels:
+        app: greenmarket-react-app
+    spec:
+      containers:
+        - name: greenmarket-react-app
+          image: sinwoo1225/greenmarket-react-app:0.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: greenmarket-react-app
+  namespace: production
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: greenmarket-react-app
+

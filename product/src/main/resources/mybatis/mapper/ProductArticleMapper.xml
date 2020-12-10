@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanium.product.dao.IProductArticleDao">
+	<resultMap id="detailProductArticleResultMap"
+		type="com.hanium.product.dto.ProductArticleDto">
+		<id property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="writeDate" column="write_date"/>
+		<result property="updateDate" column="update_date"/>
+		<result property="price" column="price"/>
+		<result property="status" column="status"/>
+		<result property="interestCount" column="interest_count"/>
+		<result property="mainImageUrl" column="main_image_url"/>
+		<association property="category" javaType="com.hanium.product.dto.CategoryDto">
+			<id property="id" column="category_id"/>
+			<result property="name" column="name"/>
+		</association >
+		<association property="user" javaType="com.hanium.product.dto.UserDto">
+			<id property="id" column="user_id"/>
+			<result property="address1" column="address1"/>
+			<result property="address2" column="address2"/>
+			<result property="nickname" column="nickname"/>
+			<result property="profileImageUrl" column="profile_image_url"/>
+		</association>
+	</resultMap>
+	
+	<select id="findList"
+		resultMap="detailProductArticleResultMap">
+		SELECT
+			pa.id,
+			pa.title,
+			pa.content,
+			pa.write_date,
+			pa.update_date,
+			pa.price,
+			pa.user_id,
+			pa.status,
+			c.id AS category_id,
+			c.name,
+			(
+				SELECT count(*)
+				FROM product_interest
+			 	WHERE article_id = pa.id and status = 0
+		    ) AS interest_count,
+		    u.address1,
+            u.address2,
+            u.nickname,
+            u.profile_image_url,
+			pi.file_url AS main_image_url
+		FROM product_article pa
+		INNER JOIN category c ON pa.category_id = c.id
+		INNER JOIN user u ON pa.user_id = u.id
+		INNER JOIN product_image pi ON pi.article_id = pa.id and pi.list_num = 1 
+		<where>
+			<if test="keyword != null">
+				(title like '%${keyword}%' || content like '%${keyword}%')
+			</if>
+			<if test="address1 != null">
+				AND address1 = #{address1}
+			</if>
+			<if test="address2 != null">
+				AND address2 = #{address2}
+			</if>
+			<if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+			<if test="articleIds != null and articleIds.size() > 0">
+				AND pa.id IN (
+				<foreach item="item" separator="," collection="articleIds">
+					#{item}
+				</foreach>
+				)
+			</if>
+		</where>
+		ORDER BY 
+			<if test="interestCount != null">
+				interest_count DESC,
+			</if>
+			<if test="userId != null or articleIds != null">
+				pa.id,
+			</if>
+			write_date DESC,
+			pa.id DESC
+		<if test="userId == null">
+			LIMIT #{offset}, #{limit}	
+		</if>
+	</select>
+
+	<select id="findBy"
+		resultMap="detailProductArticleResultMap">
+		SELECT
+			pa.id,
+			pa.title,
+			pa.content,
+			pa.write_date,
+			pa.update_date,
+			pa.price,
+			pa.user_id,
+			pa.status,
+			c.id AS category_id,
+			c.name,
+			(
+				SELECT count(*)
+				FROM product_interest
+			 	WHERE article_id = pa.id and status = 0
+		    ) AS interest_count,
+		    u.address1,
+            u.address2,
+           	u.nickname,
+            u.profile_image_url
+		FROM product_article pa
+		INNER JOIN category c ON pa.category_id = c.id AND pa.id = #{id}
+		INNER JOIN user u ON pa.user_id = u.id
+	</select>
+	
+	<insert id="create" useGeneratedKeys="true" keyProperty="id" parameterType="com.hanium.product.dto.ProductArticleDto">
+		insert 
+		into product_article(title, content, write_date, price, user_id, category_id) 
+	    values(#{productArticle.title},
+	    	#{productArticle.content}, 
+	    	now(), 
+	    	#{productArticle.price}, 
+	    	#{productArticle.user.id}, 
+	    	#{productArticle.category.id})
+	</insert>
+</mapper>

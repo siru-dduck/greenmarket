@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: greenmarket-user-app
+    namespace: production
+spec:
+    replicas: 4
+    selector:
+        matchLabels:
+            app: greenmarket-user-app
+    template:
+        metadata:
+            labels:
+                app: greenmarket-user-app
+        spec:
+            containers:
+            - name: greenmarket-user-app
+              image: sinwoo1225/greenmarket-user-app:0.0.1
+              ports:
+              - containerPort: 5000
+              imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: greenmarket-user-app
+    namespace: production
+spec:
+    ports:
+    - name: "app-port"
+      port: 5000
+      targetPort: 5000
+    selector:
+        app: greenmarket-user-app

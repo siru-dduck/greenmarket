@@ -1,0 +1,28 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: product-pv-volume
+  namespace: production
+  labels:
+    type: local
+spec:
+  storageClassName: production
+  capacity:
+    storage: 10Gi
+  accessModes:
+      - ReadWriteOnce
+  hostPath:
+      path: "/mnt/resources"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: product-pv-claim
+  namespace: production
+spec:
+  storageClassName: production
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
