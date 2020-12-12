@@ -8,7 +8,7 @@ import com.hanium.product.dto.ProductArticleDto;
 import com.hanium.product.dto.ProductImageDto;
 
 public interface ProductService {
-	public List<ProductArticleDto> getProductArticles(String keyword,
+	List<ProductArticleDto> getProductArticles(String keyword,
 			String address1, 
 			String address2,
 			Integer userId,
@@ -16,8 +16,8 @@ public interface ProductService {
 			Integer offset,
 			Integer limit,
 			List<Integer> articleIds);
-	public ProductArticleDto getProductArticle(Integer articleId);
-	public List<ProductImageDto> getProductImages(Integer articleId);
-	public Integer writeProductArticle(ProductArticleDto productArticle,
+	ProductArticleDto getProductArticle(Integer articleId);
+	List<ProductImageDto> getProductImages(Integer articleId);
+	Integer writeProductArticle(ProductArticleDto productArticle,
 			List<MultipartFile> multipartFiles) throws Exception; 
 }
