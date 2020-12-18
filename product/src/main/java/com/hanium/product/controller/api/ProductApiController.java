@@ -1,23 +1,21 @@
 package com.hanium.product.controller.api;
 
-import java.rmi.MarshalledObject;
-import java.util.*;
-
-import com.hanium.product.service.ProductInterestService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.hanium.product.dto.CategoryDto;
 import com.hanium.product.dto.ProductArticleDto;
 import com.hanium.product.dto.UserDto;
 import com.hanium.product.service.ChatService;
 import com.hanium.product.service.JwtService;
+import com.hanium.product.service.ProductInterestService;
 import com.hanium.product.service.ProductService;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/products")
@@ -65,9 +63,12 @@ public class ProductApiController {
         Jws<Claims> claim = jwtService.decodeToken(token);
         if (claim == null) {
             result.put("chatRoomId", null);
+        } else {
+            Integer userId = (Integer) claim.getBody().get("id");
+            result.put("chatRoomId", chatService.getChatRoomId(id, userId));
+            result.put("isCheckedInterest", productInterestService.checkInterest(id, userId) == 1);
         }
 
-        result.put("chatRoomId", chatService.getChatRoomId(id, (Integer) claim.getBody().get("id")));
         return result;
     }
 
@@ -108,13 +109,6 @@ public class ProductApiController {
             result.put("isSuccess", false);
         }
         return ResponseEntity.ok().body(result);
-    }
-
-    @GetMapping(path = "/{id}/interest")
-    public Map<String, Object> getProductInterestCount(@PathVariable Integer id) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("interestCount", productInterestService.getInterestCountBy(id));
-        return result;
     }
 
     @PostMapping(path = "/{id}/interest")

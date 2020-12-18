@@ -43,7 +43,7 @@
 			(
 				SELECT count(*)
 				FROM product_interest
-			 	WHERE article_id = pa.id and status = 0
+			 	WHERE article_id = pa.id
 		    ) AS interest_count,
 		    u.address1,
             u.address2,
@@ -105,7 +105,7 @@
 			(
 				SELECT count(*)
 				FROM product_interest
-			 	WHERE article_id = pa.id and status = 0
+			 	WHERE article_id = pa.id
 		    ) AS interest_count,
 		    u.address1,
             u.address2,

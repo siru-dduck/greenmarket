@@ -8,6 +8,11 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface IProductInterestDao {
     @Select("SELECT count(*)\n" +
+            "FROM product_interest\n"+
+            "WHERE article_id = #{articleId} and user_id = #{userId}")
+    int check(Integer articleId, Integer userId);
+
+    @Select("SELECT count(*)\n" +
             "FROM product_interest\n" +
             "WHERE article_id = #{articleId}")
     int count(Integer articleId);

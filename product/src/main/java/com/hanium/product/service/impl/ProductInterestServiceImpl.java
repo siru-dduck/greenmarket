@@ -14,17 +14,30 @@ public class ProductInterestServiceImpl implements ProductInterestService {
     }
 
     @Override
+    public int checkInterest(Integer articleId, Integer userId) {
+        return productInterestDao.check(articleId, userId);
+    }
+
+    @Override
     public int getInterestCountBy(Integer articleId) {
         return productInterestDao.count(articleId);
     }
 
     @Override
     public int addInterest(Integer articleId, Integer userId) {
-        return productInterestDao.create(articleId, userId);
+        try{
+            return productInterestDao.create(articleId, userId);
+        } catch(Exception e) {
+            return 0;
+        }
     }
 
     @Override
     public int subtractInterest(Integer articleId, Integer userId) {
-        return productInterestDao.delete(articleId, userId);
+        try{
+            return productInterestDao.delete(articleId, userId);
+        } catch(Exception e) {
+            return 0;
+        }
     }
 }
