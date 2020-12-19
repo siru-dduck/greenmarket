@@ -1,15 +1,22 @@
 package com.hanium.product.service.impl;
 
+import com.hanium.product.dao.IProductArticleDao;
 import com.hanium.product.dao.IProductInterestDao;
 import com.hanium.product.service.ProductInterestService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @Service
 public class ProductInterestServiceImpl implements ProductInterestService {
 
+    private final IProductArticleDao productArticleDao;
     private final IProductInterestDao productInterestDao;
 
-    public ProductInterestServiceImpl(IProductInterestDao productInterestDao) {
+    public ProductInterestServiceImpl(IProductArticleDao productArticleDao, IProductInterestDao productInterestDao) {
+        this.productArticleDao = productArticleDao;
         this.productInterestDao = productInterestDao;
     }
 
@@ -24,20 +31,18 @@ public class ProductInterestServiceImpl implements ProductInterestService {
     }
 
     @Override
-    public int addInterest(Integer articleId, Integer userId) {
-        try{
-            return productInterestDao.create(articleId, userId);
-        } catch(Exception e) {
-            return 0;
-        }
+    @Transactional
+    public int addInterestCount(Integer articleId, Integer userId) {
+        productInterestDao.create(articleId, userId);
+        return productArticleDao.addInterestCount(articleId);
     }
 
     @Override
-    public int subtractInterest(Integer articleId, Integer userId) {
-        try{
-            return productInterestDao.delete(articleId, userId);
-        } catch(Exception e) {
-            return 0;
+    @Transactional
+    public int subtractInterestCount(Integer articleId, Integer userId) {
+        if(productInterestDao.delete(articleId, userId) == 0) {
+            throw new RuntimeException("Not Exist Interest For Delete");
         }
+        return productArticleDao.subtractInterestCount(articleId);
     }
 }

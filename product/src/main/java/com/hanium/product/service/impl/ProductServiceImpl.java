@@ -33,8 +33,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductArticleDto> getProductArticles(String keyword, String address1, String address2,
-                                                      Integer userId, String interestCount, Integer offset, Integer limit, List<Integer> articleIds) {
-        return productArticleDao.findList(keyword, address1, address2, userId, interestCount, offset,
+                                                      Integer userId, String order, Integer offset, Integer limit, List<Integer> articleIds) {
+        return productArticleDao.findList(keyword, address1, address2, userId, order, offset,
                 offset + limit, articleIds);
     }
 

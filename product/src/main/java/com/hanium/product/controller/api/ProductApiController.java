@@ -122,7 +122,12 @@ public class ProductApiController {
             result.put("message", "Not Authenticated");
             return ResponseEntity.status(401).body(result);
         }
-        result.put("isSuccess", productInterestService.addInterest(id, (Integer) claim.getBody().get("id")) == 1);
+        try{
+            result.put("isSuccess", productInterestService.addInterestCount(id, (Integer) claim.getBody().get("id")) == 1);
+        } catch(Exception e){
+            e.printStackTrace();
+            result.put("isSuccess", false);
+        }
         return ResponseEntity.ok().body(result);
     }
 
@@ -137,7 +142,12 @@ public class ProductApiController {
             result.put("message", "Not Authenticated");
             return ResponseEntity.status(401).body(result);
         }
-        result.put("isSuccess", productInterestService.subtractInterest(id, (Integer) claim.getBody().get("id")) == 1);
+        try{
+           result.put("isSuccess", productInterestService.subtractInterestCount(id, (Integer) claim.getBody().get("id")) == 1);
+        } catch(Exception e){
+            e.printStackTrace();
+            result.put("isSuccess", false);
+        }
         return ResponseEntity.ok().body(result);
     }
 

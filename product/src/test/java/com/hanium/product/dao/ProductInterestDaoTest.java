@@ -36,7 +36,6 @@ public class ProductInterestDaoTest {
         deletedCount += dao.delete(11,2);
         deletedCount += dao.delete(11,3);
         deletedCount += dao.delete(11,4);
-
-        Assertions.assertThat(deletedCount).isEqualTo(3);
+        Assertions.assertThat(deletedCount).isEqualTo(0);
     }
 }
