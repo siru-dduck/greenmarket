@@ -12,7 +12,7 @@ public interface ProductService {
 			String address1, 
 			String address2,
 			Integer userId,
-			String interestCount,
+			String order,
 			Integer offset,
 			Integer limit,
 			List<Integer> articleIds);

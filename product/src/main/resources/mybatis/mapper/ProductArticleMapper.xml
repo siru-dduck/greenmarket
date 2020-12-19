@@ -38,13 +38,9 @@
 			pa.price,
 			pa.user_id,
 			pa.status,
+			pa.interest_count,
 			c.id AS category_id,
 			c.name,
-			(
-				SELECT count(*)
-				FROM product_interest
-			 	WHERE article_id = pa.id
-		    ) AS interest_count,
 		    u.address1,
             u.address2,
             u.nickname,
@@ -76,7 +72,7 @@
 			</if>
 		</where>
 		ORDER BY 
-			<if test="interestCount != null">
+			<if test='order != null and order.equals("-interest_count")'>
 				interest_count DESC,
 			</if>
 			<if test="userId != null or articleIds != null">
@@ -99,14 +95,10 @@
 			pa.update_date,
 			pa.price,
 			pa.user_id,
+			pa.interest_count,
 			pa.status,
 			c.id AS category_id,
 			c.name,
-			(
-				SELECT count(*)
-				FROM product_interest
-			 	WHERE article_id = pa.id
-		    ) AS interest_count,
 		    u.address1,
             u.address2,
            	u.nickname,
