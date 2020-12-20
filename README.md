@@ -16,11 +16,15 @@
 * 상품조회 파라미터 order에 따른 동작개선
 * 관심기능 프론트엔드 UI 구현 및 API 연동
 * README 추가
+
+### 2020년 12월20일
+* user auth api에서 쿠키에 jwt토큰을 보내지 않을때 400(Bad Request)응답에서 200번 응답으로 변경후 메세지에 { ...isAuth: false }를 추가
+* chatservice에 redis adapter 적용시 socket.emit애서 발생하는 에러해결 => socket.io-redis의 버전을 6.0.1.에서 5.2.0으로 다운그래이드함으써 해결
 ---
 
 # ✅ TODO
 
-* [ ] chatservice에 redis adapter 적용시 socket.emit애서 발생하는 에러해결
+* [x] chatservice에 redis adapter 적용시 socket.emit애서 발생하는 에러해결
 * [ ] user profile 기능 (회원정보수정, 구매내역 조회, 상품등록내역 조회)
 * [ ] product service Request Param Dto 생성 및 Validation 적용
 * [ ] product service Spring Sequrity 적용
