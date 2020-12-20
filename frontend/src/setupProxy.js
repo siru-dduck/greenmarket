@@ -16,6 +16,14 @@ module.exports = function (app) {
 		})
 	);
 	app.use(
+		"/ws/chat",
+		createProxyMiddleware({
+			target: "ws://localhost:4000",
+			changeOrigin: true,
+			ws: true,
+		})
+	);
+	app.use(
 		"/api/chat",
 		createProxyMiddleware({
 			target: "http://localhost:4000",
