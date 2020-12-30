@@ -18,6 +18,7 @@ public interface ProductService {
 			List<Integer> articleIds);
 	ProductArticleDto getProductArticle(Integer articleId);
 	List<ProductImageDto> getProductImages(Integer articleId);
-	Integer writeProductArticle(ProductArticleDto productArticle,
-			List<MultipartFile> multipartFiles) throws Exception; 
+	Integer createProductArticle(ProductArticleDto productArticle,
+			List<MultipartFile> multipartFiles) throws Exception;
+	Integer deleteProductArticle(Integer id);
 }

@@ -2,6 +2,7 @@ package com.hanium.product.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,8 +22,10 @@ public interface IProductArticleDao {
             List<Integer> articleIds);
 
     ProductArticleDto findBy(Integer id);
-
     int create(@Param("productArticle") ProductArticleDto productArticle);
+
+    @Delete("DELETE FROM product_article WHERE id = #{id}")
+    int deleteBy(Integer id);
 
     @Update("UPDATE product_article SET interest_count = interest_count + 1  WHERE id = #{articleId}")
     int addInterestCount(Integer articleId);

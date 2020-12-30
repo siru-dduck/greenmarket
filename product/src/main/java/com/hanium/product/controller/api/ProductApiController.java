@@ -72,13 +72,34 @@ public class ProductApiController {
         return result;
     }
 
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable Integer id,
+                                                             @CookieValue(name = "x_auth", required = false) String token) {
+        Map<String, Object> result = new HashMap<>();
+        // TODO AOP 적용 또는 스프링 시큐리티 적용
+        // jwt 유효성 검사
+        Jws<Claims> claim = jwtService.decodeToken(token);
+        if (claim == null) {
+            result.put("isSuccess", false);
+            result.put("message", "Not Authenticated");
+            return ResponseEntity.status(401).body(result);
+        }
+
+        try {
+            result.put("isSuccess", productService.deleteProductArticle(id) == 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("isSuccess", false);
+        }
+        return ResponseEntity.ok().body(result);
+    }
+
     @PostMapping
     public ResponseEntity<Map<String, Object>> postProduct(
             @RequestParam(name = "file") List<MultipartFile> multipartFiles, @RequestParam String title,
             @RequestParam Integer price, @RequestParam String content, @RequestParam Integer category,
             @CookieValue(name = "x_auth", required = false) String token) {
         Map<String, Object> result = new HashMap<>();
-        System.out.println(title + " " + price + " " + content + " " + multipartFiles);
 
         // TODO validation 적용하기
         // validation
@@ -102,7 +123,7 @@ public class ProductApiController {
             ProductArticleDto article = ProductArticleDto.builder().title(title).content(content).price(price)
                     .user(UserDto.builder().id((Integer) claim.getBody().get("id")).build())
                     .category(CategoryDto.builder().id(category).build()).build();
-            result.put("articleId", productService.writeProductArticle(article, multipartFiles));
+            result.put("articleId", productService.createProductArticle(article, multipartFiles));
             result.put("isSuccess", true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,9 +143,9 @@ public class ProductApiController {
             result.put("message", "Not Authenticated");
             return ResponseEntity.status(401).body(result);
         }
-        try{
+        try {
             result.put("isSuccess", productInterestService.addInterestCount(id, (Integer) claim.getBody().get("id")) == 1);
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             result.put("isSuccess", false);
         }
@@ -142,9 +163,9 @@ public class ProductApiController {
             result.put("message", "Not Authenticated");
             return ResponseEntity.status(401).body(result);
         }
-        try{
-           result.put("isSuccess", productInterestService.subtractInterestCount(id, (Integer) claim.getBody().get("id")) == 1);
-        } catch(Exception e){
+        try {
+            result.put("isSuccess", productInterestService.subtractInterestCount(id, (Integer) claim.getBody().get("id")) == 1);
+        } catch (Exception e) {
             e.printStackTrace();
             result.put("isSuccess", false);
         }
