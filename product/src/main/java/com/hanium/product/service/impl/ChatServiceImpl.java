@@ -20,15 +20,18 @@ import com.hanium.product.service.ChatService;
 
 @Service
 public class ChatServiceImpl implements ChatService {
-	@Autowired
-	private MappingJackson2HttpMessageConverter converter;
-	@Autowired
-	private RestTemplate restTemplate;
+	private final MappingJackson2HttpMessageConverter converter;
+	private final RestTemplate restTemplate;
 	@Value("${service.chat.host}")
 	private String SERVICE_CHAT_HOST;
 	@Value("${service.chat.port}")
 	private String SERVICE_CHAT_PORT;
-	
+
+	public ChatServiceImpl(MappingJackson2HttpMessageConverter converter, RestTemplate restTemplate) {
+		this.converter = converter;
+		this.restTemplate = restTemplate;
+	}
+
 	@Override
 	public Integer getChatRoomId(Integer articleId, Integer buyerId) {
 		if (articleId == null || buyerId == null) {
@@ -50,8 +53,6 @@ public class ChatServiceImpl implements ChatService {
 			} else {
 				return null;
 			}
-		} catch (JsonMappingException e) {
-			return null;
 		} catch (JsonProcessingException e) {
 			return null;
 		}

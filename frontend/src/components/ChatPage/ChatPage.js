@@ -171,27 +171,29 @@ function ChatPage(props) {
 						</header>
 						<ul onClick={onClickChatRoomList}>
 							{room.isLoading
-								? room.chatRoom.map((e, index) => (
-										<li key={index} data-room-id={e.id}>
-											<div>
-												<FaUserCircle size="42" color="#bdc3c7" />
-											</div>
-											<div className="chat-user-inform">
-												<div className="chat-user-name">
-													{user && user.id === e.article.user.id
-														? e.user_buyer.nickname
-														: e.article.user.nickname}
+								? room.chatRoom.map((e, index) =>
+										e.article ? (
+											<li key={index} data-room-id={e.id}>
+												<div>
+													<FaUserCircle size="42" color="#bdc3c7" />
 												</div>
-												<div className="chat-product-message">
-													{e.chat_messages.length > 0 &&
-														e.chat_messages[0].message}
+												<div className="chat-user-inform">
+													<div className="chat-user-name">
+														{user && user.id === e.article.user.id
+															? e.user_buyer.nickname
+															: e.article.user.nickname}
+													</div>
+													<div className="chat-product-message">
+														{e.chat_messages.length > 0 &&
+															e.chat_messages[0].message}
+													</div>
 												</div>
-											</div>
-											<div className="chat-product-image-box">
-												<img src={e.article.mainImageUrl} alt="상품 이미지" />
-											</div>
-										</li>
-								  ))
+												<div className="chat-product-image-box">
+													<img src={e.article.mainImageUrl} alt="상품 이미지" />
+												</div>
+											</li>
+										) : null
+								  )
 								: null}
 						</ul>
 					</ChatAside>

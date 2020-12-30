@@ -42,11 +42,11 @@ export const getChatRoom = async (req, res) => {
 	}
 
 	try {
-		const soldProductResponse = await axios.get(
+		const sellingProductResponse = await axios.get(
 			`http://${SERVICE_PRODUCT_HOST}:${SERVICE_PRODUCT_PORT}/api/products?user_id=${user_id}`
 		);
 		const articles = {};
-		Array.from(soldProductResponse.data.productArticles).forEach((e) => {
+		Array.from(sellingProductResponse.data.productArticles).forEach((e) => {
 			articles[e.id] = e;
 		});
 		const whereCondition = {

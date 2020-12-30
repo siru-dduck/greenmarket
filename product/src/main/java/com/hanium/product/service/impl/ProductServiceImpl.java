@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public Integer writeProductArticle(ProductArticleDto productArticle, List<MultipartFile> multipartFiles)
+    public Integer createProductArticle(ProductArticleDto productArticle, List<MultipartFile> multipartFiles)
             throws Exception {
         try {
             productArticleDao.create(productArticle);
@@ -77,4 +77,10 @@ public class ProductServiceImpl implements ProductService {
 
         return productArticle.getId();
     }
+
+    @Override
+    public Integer deleteProductArticle(Integer id) {
+        return productArticleDao.deleteBy(id);
+    }
+
 }
