@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.hanium.product.dto.ProductArticleRequestDto;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,19 +49,19 @@ public class ProductServiceImpl implements ProductService {
         return productImageDao.findList(articleId);
     }
 
-    @Transactional(rollbackFor = {Exception.class})
+    @Transactional
     @Override
     public Integer createProductArticle(ProductArticleDto productArticle, List<MultipartFile> multipartFiles)
             throws Exception {
         try {
-            productArticleDao.create(productArticle);
+            productArticleDao.createBy(productArticle);
             List<ProductImageDto> productImages = multipartFiles.stream().map(f -> ProductImageDto.builder()
                     .articleId(productArticle.getId()).fileUrl("/resources/images/" + f.getOriginalFilename()).build())
                     .collect(Collectors.toList());
             productImageDao.createList(productImages);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new Exception(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
 
         for (MultipartFile multipartFile : multipartFiles) {
@@ -71,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
             } catch (IOException e) {
                 FileUtils.deleteQuietly(targetFile);
                 e.printStackTrace();
-                throw new Exception(e.getMessage());
+                throw new RuntimeException(e.getMessage());
             }
         }
 
@@ -79,8 +80,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Integer deleteProductArticle(Integer id) {
-        return productArticleDao.deleteBy(id);
+    public void updateProductArticle(ProductArticleRequestDto productArticleRequestDto, Integer id) {
+        productArticleDao.updateBy(productArticleRequestDto, id);
+        // TODO 파일처리를 위한 FileUtils 작성
+    }
+
+    @Override
+    public void deleteProductArticle(Integer id) {
+        productArticleDao.deleteBy(id);
     }
 
 }

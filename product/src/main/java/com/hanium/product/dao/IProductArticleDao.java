@@ -2,6 +2,7 @@ package com.hanium.product.dao;
 
 import java.util.List;
 
+import com.hanium.product.dto.ProductArticleRequestDto;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -22,7 +23,17 @@ public interface IProductArticleDao {
             List<Integer> articleIds);
 
     ProductArticleDto findBy(Integer id);
-    int create(@Param("productArticle") ProductArticleDto productArticle);
+    int createBy(@Param("productArticle") ProductArticleDto productArticle);
+
+    @Update("UPDATE product_article " +
+            "SET title = #{productArticle.title}," +
+            "content = #{productArticle.content}," +
+            "price = #{productArticle.price}," +
+            "status = #{productArticle.status}," +
+            "category_id = #{productArticle.categoryId}," +
+            "update_date = now()" +
+            "WHERE id = #{id} ")
+    int updateBy(ProductArticleRequestDto productArticle, Integer id);
 
     @Delete("DELETE FROM product_article WHERE id = #{id}")
     int deleteBy(Integer id);
