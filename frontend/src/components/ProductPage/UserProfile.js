@@ -69,6 +69,28 @@ function UserProfile(props) {
 				});
 		}
 	};
+	const onClickDeleteButton = () => {
+		if (!user) {
+			alert("로그인후 이용해주세요.");
+			props.history.push("/login");
+		} else {
+			const { id } = props.match.params;
+			axios
+				.delete(`/api/products/${id}`)
+				.then((response) => {
+					console.log(response);
+					if (response.data.isSuccess) {
+						props.history.push("/");
+					} else {
+						alert("게시글 삭제에 실패했습니다.");
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+					alert("게시글 삭제에 실패했습니다.");
+				});
+		}
+	};
 	return (
 		<Address>
 			<div className="user-profile-address__column">
@@ -96,7 +118,14 @@ function UserProfile(props) {
 				</Link>
 			</div>
 			<div className="user-profile-address__column">
-				{user && user.id === props.user.id ? null : (
+				{user && user.id === props.user.id ? (
+					<div className="btn-box">
+						<Button>수정하기</Button>
+						<Button onClick={onClickDeleteButton} backgroundColor="#e74c3c">
+							삭제하기
+						</Button>
+					</div>
+				) : (
 					<div className="btn-box">
 						<Button onClick={onClickInterestButton} backgroundColor="#ccc">
 							{interest.isChecked ? (

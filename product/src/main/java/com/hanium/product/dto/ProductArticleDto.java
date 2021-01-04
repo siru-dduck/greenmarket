@@ -14,15 +14,16 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ProductArticleDto {
-	private Integer id;
-	private String title;
-	private String content;
-	private LocalDateTime writeDate;
-	private LocalDateTime updateDate;
-	private Integer price;
-	private Integer interestCount; 
-	private Byte status;
-	private CategoryDto category;
-	private UserDto user;
-	private String mainImageUrl;
+    private Integer id;
+    private String title;
+    private String content;
+    private LocalDateTime writeDate;
+    private LocalDateTime updateDate;
+    private Integer price;
+    private Integer interestCount;
+    private Byte status;
+    private CategoryDto category;
+    private UserDto user;
+    private String mainImageUrl;
 }
+

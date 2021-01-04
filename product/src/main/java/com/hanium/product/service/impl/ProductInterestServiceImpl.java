@@ -32,17 +32,17 @@ public class ProductInterestServiceImpl implements ProductInterestService {
 
     @Override
     @Transactional
-    public int addInterestCount(Integer articleId, Integer userId) {
+    public void addInterestCount(Integer articleId, Integer userId) {
         productInterestDao.create(articleId, userId);
-        return productArticleDao.addInterestCount(articleId);
+        productArticleDao.addInterestCount(articleId);
     }
 
     @Override
     @Transactional
-    public int subtractInterestCount(Integer articleId, Integer userId) {
+    public void subtractInterestCount(Integer articleId, Integer userId) {
         if(productInterestDao.delete(articleId, userId) == 0) {
             throw new RuntimeException("Not Exist Interest For Delete");
         }
-        return productArticleDao.subtractInterestCount(articleId);
+        productArticleDao.subtractInterestCount(articleId);
     }
 }

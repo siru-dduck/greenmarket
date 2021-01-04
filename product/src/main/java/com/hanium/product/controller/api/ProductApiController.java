@@ -2,6 +2,7 @@ package com.hanium.product.controller.api;
 
 import com.hanium.product.dto.CategoryDto;
 import com.hanium.product.dto.ProductArticleDto;
+import com.hanium.product.dto.ProductArticleRequestDto;
 import com.hanium.product.dto.UserDto;
 import com.hanium.product.service.ChatService;
 import com.hanium.product.service.JwtService;
@@ -86,7 +87,32 @@ public class ProductApiController {
         }
 
         try {
-            result.put("isSuccess", productService.deleteProductArticle(id) == 1);
+            productService.deleteProductArticle(id);
+            result.put("isSuccess", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("isSuccess", false);
+        }
+        return ResponseEntity.ok().body(result);
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable Integer id,
+                                                             @CookieValue(name = "x_auth", required = false) String token,
+                                                             ProductArticleRequestDto productArticleRequestDto) {
+        Map<String, Object> result = new HashMap<>();
+        // TODO AOP 적용 또는 스프링 시큐리티 적용
+        // jwt 유효성 검사
+        Jws<Claims> claim = jwtService.decodeToken(token);
+        if (claim == null) {
+            result.put("isSuccess", false);
+            result.put("message", "Not Authenticated");
+            return ResponseEntity.status(401).body(result);
+        }
+
+        try {
+            productService.updateProductArticle(productArticleRequestDto, id);
+            result.put("isSuccess", true);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("isSuccess", false);
@@ -144,7 +170,8 @@ public class ProductApiController {
             return ResponseEntity.status(401).body(result);
         }
         try {
-            result.put("isSuccess", productInterestService.addInterestCount(id, (Integer) claim.getBody().get("id")) == 1);
+            productInterestService.addInterestCount(id, (Integer) claim.getBody().get("id"));
+            result.put("isSuccess", true);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("isSuccess", false);
@@ -164,7 +191,8 @@ public class ProductApiController {
             return ResponseEntity.status(401).body(result);
         }
         try {
-            result.put("isSuccess", productInterestService.subtractInterestCount(id, (Integer) claim.getBody().get("id")) == 1);
+            productInterestService.subtractInterestCount(id, (Integer) claim.getBody().get("id"));
+            result.put("isSuccess", true);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("isSuccess", false);
