@@ -123,7 +123,7 @@ public class ProductApiController {
     @PostMapping
     public ResponseEntity<Map<String, Object>> postProduct(
             @RequestParam(name = "file") List<MultipartFile> multipartFiles, @RequestParam String title,
-            @RequestParam Integer price, @RequestParam String content, @RequestParam Integer category,
+            @RequestParam Integer price, @RequestParam String content, @RequestParam Integer categoryId,
             @CookieValue(name = "x_auth", required = false) String token) {
         Map<String, Object> result = new HashMap<>();
 
@@ -148,7 +148,7 @@ public class ProductApiController {
         try {
             ProductArticleDto article = ProductArticleDto.builder().title(title).content(content).price(price)
                     .user(UserDto.builder().id((Integer) claim.getBody().get("id")).build())
-                    .category(CategoryDto.builder().id(category).build()).build();
+                    .category(CategoryDto.builder().id(categoryId).build()).build();
             result.put("articleId", productService.createProductArticle(article, multipartFiles));
             result.put("isSuccess", true);
         } catch (Exception e) {

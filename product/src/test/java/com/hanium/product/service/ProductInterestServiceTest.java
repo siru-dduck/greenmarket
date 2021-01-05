@@ -20,8 +20,8 @@ public class ProductInterestServiceTest {
     @Test
     void addInterestCountTest(){
         int beforeInterestCount = productArticleDao.findBy(11).getInterestCount();
-        System.out.println("✅ 업데이트여부 : " + (productInterestService.addInterestCount(11, 4) == 1));
-        System.out.println("✅ 업데이트여부 : " + (productInterestService.addInterestCount(11, 3) == 1));
+        productInterestService.addInterestCount(11, 4);
+        productInterestService.addInterestCount(11, 3);
         int afterInterestCount = productArticleDao.findBy(11).getInterestCount();
         Assertions.assertThat(afterInterestCount - beforeInterestCount).isEqualTo(2);
     }
