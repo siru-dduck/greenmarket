@@ -25,7 +25,7 @@ public interface ProductService {
     Integer createProductArticle(ProductArticleDto productArticle,
                                  List<MultipartFile> multipartFiles) throws Exception;
 
-    void updateProductArticle(ProductArticleRequestDto productArticleRequestDto, Integer id);
+    void updateProductArticle(ProductArticleRequestDto productArticleRequestDto, Integer id) throws Exception;
 
     void deleteProductArticle(Integer id);
 }

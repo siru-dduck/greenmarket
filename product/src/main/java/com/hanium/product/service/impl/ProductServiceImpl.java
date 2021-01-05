@@ -1,24 +1,18 @@
 package com.hanium.product.service.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.hanium.product.common.FileUtils;
+import com.hanium.product.dao.IProductArticleDao;
+import com.hanium.product.dao.IProductImageDao;
+import com.hanium.product.dto.ProductArticleDto;
 import com.hanium.product.dto.ProductArticleRequestDto;
-import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.hanium.product.dto.ProductImageDto;
+import com.hanium.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.hanium.product.dao.IProductArticleDao;
-import com.hanium.product.dao.IProductImageDao;
-import com.hanium.product.dto.ProductArticleDto;
-import com.hanium.product.dto.ProductImageDto;
-import com.hanium.product.service.ProductService;
+import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -26,10 +20,12 @@ public class ProductServiceImpl implements ProductService {
     private String RESOURCE_FILE_PATH;
     private final IProductArticleDao productArticleDao;
     private final IProductImageDao productImageDao;
+    private final FileUtils fileUtils;
 
-    public ProductServiceImpl(IProductArticleDao productArticleDao, IProductImageDao productImageDao) {
+    public ProductServiceImpl(IProductArticleDao productArticleDao, IProductImageDao productImageDao, FileUtils fileUtils) {
         this.productArticleDao = productArticleDao;
         this.productImageDao = productImageDao;
+        this.fileUtils = fileUtils;
     }
 
     @Override
@@ -51,38 +47,20 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public Integer createProductArticle(ProductArticleDto productArticle, List<MultipartFile> multipartFiles)
-            throws Exception {
-        try {
-            productArticleDao.createBy(productArticle);
-            List<ProductImageDto> productImages = multipartFiles.stream().map(f -> ProductImageDto.builder()
-                    .articleId(productArticle.getId()).fileUrl("/resources/images/" + f.getOriginalFilename()).build())
-                    .collect(Collectors.toList());
-            productImageDao.createList(productImages);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
-
-        for (MultipartFile multipartFile : multipartFiles) {
-            File targetFile = new File(RESOURCE_FILE_PATH + multipartFile.getOriginalFilename());
-            try {
-                InputStream fileStream = multipartFile.getInputStream();
-                FileUtils.copyInputStreamToFile(fileStream, targetFile);
-            } catch (IOException e) {
-                FileUtils.deleteQuietly(targetFile);
-                e.printStackTrace();
-                throw new RuntimeException(e.getMessage());
-            }
-        }
-
+    public Integer createProductArticle(ProductArticleDto productArticle, List<MultipartFile> multipartFiles) throws Exception {
+        productArticleDao.createBy(productArticle);
+        List<ProductImageDto> productImages = fileUtils.parseImageInfo(productArticle.getId(), multipartFiles);
+        productImageDao.createList(productImages);
         return productArticle.getId();
     }
 
+    @Transactional
     @Override
-    public void updateProductArticle(ProductArticleRequestDto productArticleRequestDto, Integer id) {
-        productArticleDao.updateBy(productArticleRequestDto, id);
-        // TODO 파일처리를 위한 FileUtils 작성
+    public void updateProductArticle(ProductArticleRequestDto productArticleRequestDto, Integer articleId) throws Exception {
+        productArticleDao.updateBy(productArticleRequestDto, articleId);
+        productImageDao.deleteBy(articleId);
+        List<ProductImageDto> productImages = fileUtils.parseImageInfo(articleId, productArticleRequestDto.getFiles());
+        productImageDao.createList(productImages);
     }
 
     @Override
