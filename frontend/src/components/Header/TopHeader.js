@@ -67,7 +67,7 @@ function TopHeader(props) {
 								<MenuLink to="/chat">채팅</MenuLink>
 							</li>
 							<li>
-								<MenuLink to="/form">상품등록</MenuLink>
+								<MenuLink to="/products/new">상품등록</MenuLink>
 							</li>
 							<li>
 								<MenuText onClick={onClickLogoutButton}>로그아웃</MenuText>

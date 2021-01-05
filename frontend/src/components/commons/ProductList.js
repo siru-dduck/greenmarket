@@ -11,7 +11,7 @@ function ProductList(props) {
 		<ProductContainer>
 			{props.productArticles.map((e, index) => (
 				<article key={index} className="product-item">
-					<Link to={`/product/${e.id}`} className="product-item_link">
+					<Link to={`/products/${e.id}`} className="product-item_link">
 						<div className="product-item__image-card">
 							<img
 								src={e.mainImageUrl}

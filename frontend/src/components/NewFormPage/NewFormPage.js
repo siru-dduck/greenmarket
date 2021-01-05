@@ -6,7 +6,7 @@ import { FaCamera } from "react-icons/fa";
 import axios from "axios";
 import UserContext from "../../util/User.context";
 
-function FormPage(props) {
+function NewFormPage(props) {
 	const {
 		state: { user },
 	} = useContext(UserContext);
@@ -273,4 +273,4 @@ const ProductForm = styled.form`
 	}
 `;
 
-export default FormPage;
+export default NewFormPage;
