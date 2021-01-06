@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import qs from "qs";
-import { MainLayout } from "../../util/LayoutStyle";
 import TopHeader from "../Header/TopHeader";
+import { MainLayout } from "../../util/style/LayoutStyle";
+import UserContext from "../../util/context/User.context";
 import { FaUserCircle } from "react-icons/fa";
-import UserContext from "../../util/User.context";
 import io from "socket.io-client";
-import { Link } from "react-router-dom";
 
 function ChatPage(props) {
 	const {

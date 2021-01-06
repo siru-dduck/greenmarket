@@ -1,15 +1,16 @@
-import React, { useContext, useState } from "react";
-import styled from "styled-components";
+import React, { useContext, useEffect, useState } from "react";
 import { MainLayout } from "../../util/style/LayoutStyle";
+import { FormLayout, ProductForm } from "../../util/style/FormStyle";
 import TopHeader from "../Header/TopHeader";
 import { FaCamera } from "react-icons/fa";
 import axios from "axios";
 import UserContext from "../../util/context/User.context";
 
-function NewFormPage(props) {
+function EditFormPage(props) {
 	const {
 		state: { user },
 	} = useContext(UserContext);
+
 	const [images, setImages] = useState([]);
 	const [imageFiles, setImageFiles] = useState([]);
 	const onSubmit = (e) => {
@@ -36,25 +37,26 @@ function NewFormPage(props) {
 			},
 		};
 		imageFiles.forEach((file) => {
-			formData.append("file", file);
+			formData.append("files", file);
 		});
 		formData.append("title", title.value);
 		formData.append("price", price.value);
 		formData.append("content", content.value);
+		formData.append("status", 0);
 		formData.append("categoryId", category.value);
 		axios
-			.post("/api/products", formData, config)
+			.put(`/api/products/${props.match.params.id}`, formData, config)
 			.then((response) => {
 				console.log(response);
 				if (response.data.isSuccess) {
-					props.history.push(`/product/${response.data.articleId}`);
+					props.history.push(`/products/${props.match.params.id}`);
 				} else {
-					alert("상품등록에 실패하였습니다.");
+					alert("상품수정에 실패하였습니다.");
 				}
 			})
 			.catch(() => {
 				// TODO jwt 유효기간 만료 및 쿠키 만료등으로 유저인증이 안될경우 현재 작성한 페이지를 저장하고 로그인페이지로 이동
-				alert("상품등록에 실패하였습니다.");
+				alert("상품수정에 실패하였습니다.");
 			});
 	};
 
@@ -65,7 +67,7 @@ function NewFormPage(props) {
 			return;
 		}
 		const input = document.createElement("input");
-		input.setAttribute("type", "files");
+		input.setAttribute("type", "file");
 		input.click();
 		input.onchange = (e) => {
 			const reader = new FileReader();
@@ -76,13 +78,51 @@ function NewFormPage(props) {
 			reader.readAsDataURL(e.target.files[0]);
 		};
 	};
+
+	useEffect(() => {
+		axios
+			.get(`/api/products/${props.match.params.id}`)
+			.then((response) => {
+				Promise.all(
+					response.data.productImages.map((e) => {
+						return new Promise((resolve, reject) => {
+							axios
+								.get(e.fileUrl, {
+									responseType: "blob",
+								})
+								.then((response) => {
+									resolve(
+										new File([response.data], "", { type: response.data.type })
+									);
+								});
+						});
+					})
+				)
+					.then((fileList) => {
+						const imageUrlList = fileList.map((e) => {
+							return URL.createObjectURL(e);
+						});
+						setImages(imageUrlList);
+						setImageFiles(fileList);
+					})
+					.catch(() => {
+						alert("상품정보를 불러오는데 실패했습니다.");
+						props.history.push("/");
+					});
+			})
+			.catch(() => {
+				alert("상품정보를 불러오는데 실패했습니다.");
+				props.history.push("/");
+			});
+	}, []);
+
 	return (
 		<>
 			<TopHeader {...props} />
 			<MainLayout>
 				<FormLayout>
 					<ProductForm onSubmit={onSubmit}>
-						<h2>상품등록</h2>
+						<h2>상품수정</h2>
 						<div className="image-upload">
 							<button onClick={onClickImageUplaodButton}>
 								<FaCamera size="24" color="#999" />
@@ -130,7 +170,7 @@ function NewFormPage(props) {
 							<div className="region_filed">{user.address1}</div>
 							<div className="region_filed">{user.address2}</div>
 						</div>
-						<button type="submit">상품등록</button>
+						<button type="submit">상품수정</button>
 					</ProductForm>
 				</FormLayout>
 			</MainLayout>
@@ -138,138 +178,4 @@ function NewFormPage(props) {
 	);
 }
 
-const FormLayout = styled.div`
-	width: 100%;
-	min-height: calc(100vh - 69px);
-	display: flex;
-	align-items: flex-start;
-	justify-content: center;
-`;
-
-const ProductForm = styled.form`
-	margin-top: 16px;
-	border: 1px solid #dbdbdb;
-	border-radius: 6px;
-	padding: 16px 24px;
-	display: flex;
-	align-items: flex-start;
-	flex-direction: column;
-
-	h2 {
-		font-size: 28px;
-		font-family: "yg-jalnan";
-		color: #333;
-		margin-bottom: 32px;
-		align-self: center;
-	}
-
-	.image-upload {
-		width: 520px;
-		margin-bottom: 20px;
-		button {
-			width: 80px;
-			height: 80px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			flex-direction: column;
-			border: 1px solid #666;
-			background-color: #fcfcfc;
-			border-radius: 6px;
-			outline: none;
-			font-family: inherit;
-			.btn-text {
-				&:first-of-type {
-					margin-top: 5px;
-				}
-				font-weight: 500;
-				color: #444;
-				font-size: 13px;
-			}
-		}
-
-		.image-container {
-			margin-top: 16px;
-			display: flex;
-			img {
-				max-width: 30%;
-				margin-right: 3%;
-				height: auto;
-			}
-		}
-	}
-
-	.form-paragraph {
-		display: flex;
-		align-items: center;
-		margin-bottom: 16px;
-		h3 {
-			margin-right: 16px;
-			width: 140px;
-		}
-		select {
-			position: relative;
-			appearance: none;
-			padding: 10px 13px;
-			font-size: 16px;
-			font-weight: 500;
-			font-family: inherit;
-			color: #333;
-			outline: none;
-			border-radius: 6px;
-			border: 1px solid #dbdb;
-			option {
-				color: #333;
-			}
-		}
-		input {
-			padding: 8px 13px;
-			font-size: 15px;
-			font-weight: 500;
-			font-family: inherit;
-			color: #333;
-			outline: none;
-			border-radius: 6px;
-			border: 1px solid #dbdb;
-		}
-		textarea {
-			padding: 8px 13px;
-			resize: none;
-			width: 300px;
-			height: 120px;
-			border-radius: 6px;
-			border: 1px solid #dbdbdb;
-			font-size: 14px;
-			font-weight: 500;
-			font-family: inherit;
-			color: #333;
-			outline: none;
-		}
-		.region_filed {
-			padding: 8px 13px;
-			font-size: 15px;
-			font-weight: 500;
-			font-family: inherit;
-			color: #333;
-			outline: none;
-			border-radius: 6px;
-			border: 1px solid #dbdb;
-			&:first-of-type {
-				color: #333;
-				margin-right: 12px;
-			}
-		}
-	}
-	button[type="submit"] {
-		outline: none;
-		padding: 10px 13px;
-		border-radius: 6px;
-		border: 1px solid #dbdbdb;
-		color: #fcfcfc;
-		font-weight: 500;
-		font-size: 16px;
-		background-color: #1dd1a1;
-	}
-`;
-
-export default NewFormPage;
+export default EditFormPage;

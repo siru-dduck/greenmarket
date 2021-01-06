@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { GlobalStyle } from "./util/GlobalStyle";
+import { GlobalStyle } from "./util/style/GlobalStyle";
 import Landing from "./components/LandingPage/LandingPage";
 import LoginPage from "./components/LoginPage/LoginPage";
 import ProductsPage from "./components/ProductPage/ProductsPage";
@@ -10,7 +10,8 @@ import NotFoundPage from "./components/commons/NotFoundPage";
 import SearchPage from "./components/SearchPage/SearchPage";
 import JoinPage from "./components/JoinPage/JoinPage";
 import Auth from "./hoc/auth";
-import { UserProvider } from "./util/User.context";
+import { UserProvider } from "./util/context/User.context";
+import EditFormPage from "./components/EditFormPage/EditFormPage";
 
 function App() {
 	return (
@@ -27,6 +28,11 @@ function App() {
 							path="/products/:id"
 							exact
 							component={Auth(ProductsPage, true)}
+						/>
+						<Route
+							path="/products/:id/edit"
+							exact
+							component={Auth(EditFormPage)}
 						/>
 						<Route path="/chat" exact component={Auth(ChatPage)} />
 						<Route path="/join" exact component={Auth(JoinPage, false)} />

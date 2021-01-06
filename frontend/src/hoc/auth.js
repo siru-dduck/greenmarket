@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import UserContext from "../util/User.context";
+import UserContext from "../util/context/User.context";
 
 export default function (SpecificComponent, option = null) {
 	function AuthenticationCheck(props) {

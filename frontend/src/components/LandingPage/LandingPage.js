@@ -2,22 +2,22 @@ import React from "react";
 import TopHeader from "../Header/TopHeader";
 import Banner from "./Banner";
 import ProductSection from "./ProductSection";
-import {MainLayout, SectionLayout } from "../../util/LayoutStyle";
+import { MainLayout, SectionLayout } from "../../util/style/LayoutStyle";
 
-function LandingPage(props){
-    return (        
-        <>
-            <TopHeader {...props} />
-            <MainLayout>
-            <SectionLayout background="#1dd1a1">
-                <Banner/>
-            </SectionLayout>
-            <SectionLayout>
-                <ProductSection/>
-            </SectionLayout>
-        </MainLayout>
-        </>
-    );
+function LandingPage(props) {
+	return (
+		<>
+			<TopHeader {...props} />
+			<MainLayout>
+				<SectionLayout background="#1dd1a1">
+					<Banner />
+				</SectionLayout>
+				<SectionLayout>
+					<ProductSection />
+				</SectionLayout>
+			</MainLayout>
+		</>
+	);
 }
 
 export default LandingPage;

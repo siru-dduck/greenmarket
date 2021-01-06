@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import ProductList from "../commons/ProductList";
 import styled from "styled-components";
 import axios from "axios";
-import UserContext from "../../util/User.context";
+import UserContext from "../../util/context/User.context";
 
 function ProductSection(props) {
 	const {

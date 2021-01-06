@@ -5,10 +5,12 @@ import Logo from "../commons/Logo";
 import KakaoIconSvg from "../../assets/images/kakao_icon.svg";
 import NaverIconSvg from "../../assets/images/naver_icon.svg";
 import axios from "axios";
-import UserContext from "../../util/User.context";
+import UserContext from "../../util/context/User.context";
 
 function LoginPage(props) {
-	const {actions:{setUser}} =useContext(UserContext);
+	const {
+		actions: { setUser },
+	} = useContext(UserContext);
 
 	const onSubmit = (e) => {
 		e.preventDefault();

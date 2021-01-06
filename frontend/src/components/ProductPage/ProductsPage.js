@@ -1,14 +1,14 @@
 import React from "react";
 import Product from "./Product";
 import TopHeader from "../Header/TopHeader";
-import { MainLayout } from "../../util/LayoutStyle";
+import { MainLayout } from "../../util/style/LayoutStyle";
 
 function ProductsPage(props) {
 	return (
 		<>
-			<TopHeader {...props}/>
+			<TopHeader {...props} />
 			<MainLayout>
-				<Product {...props}/>
+				<Product {...props} />
 			</MainLayout>
 		</>
 	);

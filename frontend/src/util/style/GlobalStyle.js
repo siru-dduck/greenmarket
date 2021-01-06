@@ -1,27 +1,26 @@
 import { createGlobalStyle } from "styled-components";
 
-import JalnanFontTtf from "../assets/fonts/jalnan.ttf";
+import JalnanFontTtf from "../../assets/fonts/jalnan.ttf";
 
-import NotoSansLightFontEot from "../assets/fonts/NotoSans-Light.eot";
-import NotoSansLightFontOtf from "../assets/fonts/NotoSans-Light.otf";
-import NotoSansLightFontWoff from "../assets/fonts/NotoSans-Light.woff";
-import NotoSansLightFontWoff2 from "../assets/fonts/NotoSans-Light.woff2";
+import NotoSansLightFontEot from "../../assets/fonts/NotoSans-Light.eot";
+import NotoSansLightFontOtf from "../../assets/fonts/NotoSans-Light.otf";
+import NotoSansLightFontWoff from "../../assets/fonts/NotoSans-Light.woff";
+import NotoSansLightFontWoff2 from "../../assets/fonts/NotoSans-Light.woff2";
 
+import NotoSansRegularFontEot from "../../assets/fonts/NotoSans-Regular.eot";
+import NotoSansRegularFontOtf from "../../assets/fonts/NotoSans-Regular.otf";
+import NotoSansRegularFontWoff from "../../assets/fonts/NotoSans-Regular.woff";
+import NotoSansRegularFontWoff2 from "../../assets/fonts/NotoSans-Regular.woff2";
 
-import NotoSansRegularFontEot from "../assets/fonts/NotoSans-Regular.eot";
-import NotoSansRegularFontOtf from "../assets/fonts/NotoSans-Regular.otf";
-import NotoSansRegularFontWoff from "../assets/fonts/NotoSans-Regular.woff";
-import NotoSansRegularFontWoff2 from "../assets/fonts/NotoSans-Regular.woff2";
+import NotoSansMediumFontEot from "../../assets/fonts/NotoSans-Medium.eot";
+import NotoSansMediumFontOtf from "../../assets/fonts/NotoSans-Medium.otf";
+import NotoSansMediumFontWoff from "../../assets/fonts/NotoSans-Medium.woff";
+import NotoSansMediumFontWoff2 from "../../assets/fonts/NotoSans-Medium.woff2";
 
-import NotoSansMediumFontEot from "../assets/fonts/NotoSans-Medium.eot";
-import NotoSansMediumFontOtf from "../assets/fonts/NotoSans-Medium.otf";
-import NotoSansMediumFontWoff from "../assets/fonts/NotoSans-Medium.woff";
-import NotoSansMediumFontWoff2 from "../assets/fonts/NotoSans-Medium.woff2";
-
-import NotoSansBlackFontEot from "../assets/fonts/NotoSans-Black.eot";
-import NotoSansBlackFontOtf from "../assets/fonts/NotoSans-Black.otf";
-import NotoSansBlackFontWoff from "../assets/fonts/NotoSans-Black.woff";
-import NotoSansBlackFontWoff2 from "../assets/fonts/NotoSans-Black.woff2";
+import NotoSansBlackFontEot from "../../assets/fonts/NotoSans-Black.eot";
+import NotoSansBlackFontOtf from "../../assets/fonts/NotoSans-Black.otf";
+import NotoSansBlackFontWoff from "../../assets/fonts/NotoSans-Black.woff";
+import NotoSansBlackFontWoff2 from "../../assets/fonts/NotoSans-Black.woff2";
 
 // reset css 설정
 export const GlobalStyle = createGlobalStyle`

@@ -14,7 +14,7 @@
 	<insert id="createList">
 		 insert into product_image(article_id, list_num, file_url) values
 		 <foreach collection="productImages" item="item" index="index" separator=",">
-    		(#{item.articleId}, ${index + 1}, #{item.fileUrl})
+    		(#{item.articleId}, #{index}, #{item.fileUrl})
 		 </foreach>
 	</insert>
 </mapper>

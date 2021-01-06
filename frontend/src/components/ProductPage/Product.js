@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ImageSlider from "./ImageSlider";
-import { SectionLayout } from "../../util/LayoutStyle";
+import { SectionLayout } from "../../util/style/LayoutStyle";
 import ProductDescription from "./ProductContent";
 import UserProfile from "./UserProfile";
 import axios from "axios";

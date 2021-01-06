@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import styled from "styled-components";
-import UserContext from "../../util/User.context";
+import UserContext from "../../util/context/User.context";
 import axios from "axios";
 
 function UserProfile(props) {
@@ -120,7 +120,9 @@ function UserProfile(props) {
 			<div className="user-profile-address__column">
 				{user && user.id === props.user.id ? (
 					<div className="btn-box">
-						<Button>수정하기</Button>
+						<Link to={`/products/${props.articleId}/edit`}>
+							<Button>수정하기</Button>
+						</Link>
 						<Button onClick={onClickDeleteButton} backgroundColor="#e74c3c">
 							삭제하기
 						</Button>

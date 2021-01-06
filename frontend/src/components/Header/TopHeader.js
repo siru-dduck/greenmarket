@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Logo from "../commons/Logo";
 import { BiSearchAlt2 } from "react-icons/bi";
 import { FaUserCircle } from "react-icons/fa";
-import UserContext from "../../util/User.context";
+import UserContext from "../../util/context/User.context";
 import axios from "axios";
 
 function TopHeader(props) {

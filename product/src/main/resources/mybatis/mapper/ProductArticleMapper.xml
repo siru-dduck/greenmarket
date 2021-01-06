@@ -49,7 +49,7 @@
 		FROM product_article pa
 		INNER JOIN category c ON pa.category_id = c.id
 		INNER JOIN user u ON pa.user_id = u.id
-		INNER JOIN product_image pi ON pi.article_id = pa.id and pi.list_num = 1 
+		INNER JOIN product_image pi ON pi.article_id = pa.id and pi.list_num = 0
 		<where>
 			<if test="keyword != null">
 				(title like '%${keyword}%' || content like '%${keyword}%')

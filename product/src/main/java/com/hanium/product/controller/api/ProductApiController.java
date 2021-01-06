@@ -109,7 +109,7 @@ public class ProductApiController {
             result.put("message", "Not Authenticated");
             return ResponseEntity.status(401).body(result);
         }
-
+        
         try {
             productService.updateProductArticle(productArticleRequestDto, id);
             result.put("isSuccess", true);
