@@ -89,11 +89,13 @@ function NewFormPage(props) {
 								<span className="btn-text">업로드</span>
 								<span className="btn-text">{images.length}/10</span>
 							</button>
-							<div className="image-container">
+							<ul className="image-list">
 								{images.map((v, i) => (
-									<img key={i} src={v} alt="업로드 이미지" />
+									<li key={i}>
+										<img src={v} alt="업로드 이미지" />
+									</li>
 								))}
-							</div>
+							</ul>
 						</div>
 						<div className="form-paragraph category">
 							<h3>카테고리</h3>

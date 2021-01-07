@@ -10,12 +10,12 @@ function EditFormPage(props) {
 	const {
 		state: { user },
 	} = useContext(UserContext);
-
+	const [productArticle, setProductArticle] = useState({ isLoading: false });
 	const [images, setImages] = useState([]);
 	const [imageFiles, setImageFiles] = useState([]);
 	const onSubmit = (e) => {
 		e.preventDefault();
-		const { title, content, price, category } = e.currentTarget;
+		const { title, content, price, category, status } = e.currentTarget;
 
 		if (
 			title.value.trim().length <= 0 ||
@@ -24,6 +24,7 @@ function EditFormPage(props) {
 			!Number(category.value) ||
 			Number(price.value) <= 0 ||
 			Number(price.value) >= 100000000 ||
+			(Number(status.value) !== 0 && Number(status.value) !== 1) ||
 			imageFiles.length <= 0
 		) {
 			alert("양식을 올바르게 입력해주세요.");
@@ -42,7 +43,7 @@ function EditFormPage(props) {
 		formData.append("title", title.value);
 		formData.append("price", price.value);
 		formData.append("content", content.value);
-		formData.append("status", 0);
+		formData.append("status", status.value);
 		formData.append("categoryId", category.value);
 		axios
 			.put(`/api/products/${props.match.params.id}`, formData, config)
@@ -83,6 +84,7 @@ function EditFormPage(props) {
 		axios
 			.get(`/api/products/${props.match.params.id}`)
 			.then((response) => {
+				setProductArticle({ ...response.data.productArticle, isLoading: true });
 				Promise.all(
 					response.data.productImages.map((e) => {
 						return new Promise((resolve, reject) => {
@@ -116,7 +118,7 @@ function EditFormPage(props) {
 			});
 	}, []);
 
-	return (
+	return !productArticle.isLoading ? null : (
 		<>
 			<TopHeader {...props} />
 			<MainLayout>
@@ -127,17 +129,29 @@ function EditFormPage(props) {
 							<button onClick={onClickImageUplaodButton}>
 								<FaCamera size="24" color="#999" />
 								<span className="btn-text">업로드</span>
-								<span className="btn-text">{images.length}/10</span>
+								<span className="btn-text">{images.length}/12</span>
 							</button>
-							<div className="image-container">
+							<ul className="image-list">
 								{images.map((v, i) => (
-									<img key={i} src={v} alt="업로드 이미지" />
+									<li key={i}>
+										<img src={v} alt="업로드 이미지" />
+									</li>
 								))}
-							</div>
+							</ul>
+						</div>
+						<div className="form-paragraph status">
+							<h3>거래상태</h3>
+							<select defaultValue={productArticle.status} name="status">
+								<option hidden value="-1">
+									거래상태
+								</option>
+								<option value="0">거래중</option>
+								<option value="1">거래완료</option>
+							</select>
 						</div>
 						<div className="form-paragraph category">
 							<h3>카테고리</h3>
-							<select name="category">
+							<select defaultValue={productArticle.category.id} name="category">
 								<option hidden>카테고리</option>
 								<option value="1">디지털/가전</option>
 								<option value="2">유아동/유아도서</option>
@@ -155,15 +169,28 @@ function EditFormPage(props) {
 						</div>
 						<div className="form-paragraph title">
 							<h3>글제목</h3>
-							<input type="text" name="title" placeholder="글제목" />
+							<input
+								type="text"
+								name="title"
+								defaultValue={productArticle.title}
+								placeholder="글제목"
+							/>
 						</div>
 						<div className="form-paragraph price">
 							<h3>가격</h3>
-							<input type="text" name="price" placeholder="가격(원)" />
+							<input
+								type="text"
+								name="price"
+								defaultValue={productArticle.price}
+								placeholder="가격(원)"
+							/>
 						</div>
 						<div className="form-paragraph content">
 							<h3>게시글 내용</h3>
-							<textarea name="content"></textarea>
+							<textarea
+								name="content"
+								defaultValue={productArticle.content}
+							></textarea>
 						</div>
 						<div className="form-paragraph region">
 							<h3>지역</h3>

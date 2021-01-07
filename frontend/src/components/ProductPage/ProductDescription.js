@@ -1,10 +1,16 @@
 import React from "react";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 import styled from "styled-components";
 
-function ProductContent({ article }) {
+function ProductDescription({ article }) {
 	return (
 		<ProductSection>
-			<h2 className="product-content__title">{article.title}</h2>
+			<h2 className="product-content__title">
+				{article.status === 1 ? (
+					<span className="product-content__sold-tag">거래완료</span>
+				) : null}
+				{article.title}
+			</h2>
 			<div className="product-content__categories">{article.category.name}</div>
 			<div className="product-content__price">{article.price}원</div>
 			<p className="product-content__description">{article.content}</p>
@@ -23,6 +29,13 @@ const ProductSection = styled.section`
 		font-size: 22px;
 		font-weight: 500;
 		margin-bottom: 4px;
+		.product-content__sold-tag {
+			color: #fff;
+			background-color: #1dd1a1;
+			border-radius: 8px;
+			padding: 2px 8px;
+			margin-right: 12px;
+		}
 	}
 
 	.product-content__categories {
@@ -46,4 +59,4 @@ const ProductSection = styled.section`
 		color: #868e96;
 	}
 `;
-export default ProductContent;
+export default ProductDescription;

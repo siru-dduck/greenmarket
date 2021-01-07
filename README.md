@@ -58,5 +58,5 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC를 도�
 * [ ] product service Request Param DTO 생성 및 Validation 적용
 * [ ] product service Spring Sequrity 적용
 * [x] product service 상품등록시에 트랜잭션 롤백상황시 모든 파일이 일괄삭제되지않는 버그 수정 => 파일은 Spring Batch로 처리할 예정 
-* [ ] product 수정, 삭제 기능 추가
+* [x] product 수정, 삭제 기능 추가
 * [ ] DB를 Product, User, Chat Service별로 분리 (느슨한 결합도)
