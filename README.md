@@ -38,7 +38,7 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC를 도�
 
 ### 2020년 12월20일
 * user auth api에서 쿠키에 jwt토큰을 보내지 않을때 400(Bad Request)응답에서 200번 응답으로 변경후 응답메세지에 { ...isAuth: false }를 추가
-* chatservice에 redis adapter 적용시 socket.emit애서 발생하는 에러해결 => socket.io-redis의 버전을 6.0.1.에서 5.2.0으로 다운그래이드함으써 해결
+* chatservice에 redis adapter 적용시 socket.emit애서 발생하는 에러해결 => socket.io-redis의 버전을 6.0.1.에서 5.2.0으로 다운그래이드함으로써 해결
 
 ### 2020년 12월30일
 * 상품삭제기능(백앤드) 추가
