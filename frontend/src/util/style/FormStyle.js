@@ -50,13 +50,23 @@ export const ProductForm = styled.form`
 			}
 		}
 
-		.image-container {
+		.image-list {
 			margin-top: 16px;
 			display: flex;
-			img {
-				max-width: 30%;
+			width: 100%;
+			flex-wrap: wrap;
+			li {
+				&:nth-child(n + 4) {
+					margin-top: 3%;
+				}
+				width: 156px;
+				height: 156px;
 				margin-right: 3%;
-				height: auto;
+				overflow: hidden;
+				img {
+					width: 100%;
+					height: auto;
+				}
 			}
 		}
 	}
