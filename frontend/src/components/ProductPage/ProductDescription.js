@@ -1,5 +1,4 @@
 import React from "react";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
 import styled from "styled-components";
 
 function ProductDescription({ article }) {
@@ -34,7 +33,7 @@ const ProductSection = styled.section`
 			background-color: #1dd1a1;
 			border-radius: 8px;
 			padding: 2px 8px;
-			margin-right: 12px;
+			margin-right: 10px;
 		}
 	}
 

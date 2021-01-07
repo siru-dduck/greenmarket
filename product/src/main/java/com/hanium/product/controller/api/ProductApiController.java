@@ -122,7 +122,7 @@ public class ProductApiController {
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> postProduct(
-            @RequestParam(name = "file") List<MultipartFile> multipartFiles, @RequestParam String title,
+            @RequestParam(name = "files") List<MultipartFile> multipartFiles, @RequestParam String title,
             @RequestParam Integer price, @RequestParam String content, @RequestParam Integer categoryId,
             @CookieValue(name = "x_auth", required = false) String token) {
         Map<String, Object> result = new HashMap<>();

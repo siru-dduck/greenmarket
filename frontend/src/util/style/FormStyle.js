@@ -28,7 +28,7 @@ export const ProductForm = styled.form`
 	.image-upload {
 		width: 520px;
 		margin-bottom: 20px;
-		button {
+		.image-upload-btn {
 			width: 80px;
 			height: 80px;
 			display: flex;
@@ -63,6 +63,15 @@ export const ProductForm = styled.form`
 				height: 156px;
 				margin-right: 3%;
 				overflow: hidden;
+				position: relative;
+				.image-delete-btn {
+					border: none;
+					outline: none;
+					background: none;
+					position: absolute;
+					right: 3px;
+					top: 3px;
+				}
 				img {
 					width: 100%;
 					height: auto;

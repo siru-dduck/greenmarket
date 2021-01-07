@@ -3,6 +3,7 @@ import { MainLayout } from "../../util/style/LayoutStyle";
 import { FormLayout, ProductForm } from "../../util/style/FormStyle";
 import TopHeader from "../Header/TopHeader";
 import { FaCamera } from "react-icons/fa";
+import { IoIosCloseCircle } from "react-icons/io";
 import axios from "axios";
 import UserContext from "../../util/context/User.context";
 
@@ -63,8 +64,8 @@ function EditFormPage(props) {
 
 	const onClickImageUplaodButton = (e) => {
 		e.preventDefault();
-		if (images.length > 10) {
-			alert("사진은 최대 10개까지만 등록할 수 있습니다.");
+		if (images.length > 12) {
+			alert("사진은 최대 12개까지만 등록할 수 있습니다.");
 			return;
 		}
 		const input = document.createElement("input");
@@ -78,6 +79,25 @@ function EditFormPage(props) {
 			setImageFiles([...imageFiles, e.target.files[0]]);
 			reader.readAsDataURL(e.target.files[0]);
 		};
+	};
+
+	const onClickImageDeleteBtn = (e) => {
+		e.preventDefault();
+		let target = e.target;
+		while (target.tagName !== "BUTTON" && target !== e.currentTarget) {
+			target = target.parentElement;
+		}
+		if (target.tagName === "BUTTON") {
+			const delteIndex = Array.from(e.currentTarget.children).indexOf(
+				target.parentElement
+			);
+			const tempImageFiles = new Array(...imageFiles);
+			const tempImages = new Array(...images);
+			tempImageFiles.splice(delteIndex, 1);
+			tempImages.splice(delteIndex, 1);
+			setImageFiles(tempImageFiles);
+			setImages(tempImages);
+		}
 	};
 
 	useEffect(() => {
@@ -126,14 +146,20 @@ function EditFormPage(props) {
 					<ProductForm onSubmit={onSubmit}>
 						<h2>상품수정</h2>
 						<div className="image-upload">
-							<button onClick={onClickImageUplaodButton}>
+							<button
+								className="image-upload-btn"
+								onClick={onClickImageUplaodButton}
+							>
 								<FaCamera size="24" color="#999" />
 								<span className="btn-text">업로드</span>
 								<span className="btn-text">{images.length}/12</span>
 							</button>
-							<ul className="image-list">
+							<ul className="image-list" onClick={onClickImageDeleteBtn}>
 								{images.map((v, i) => (
 									<li key={i}>
+										<button className="image-delete-btn">
+											<IoIosCloseCircle size="22" color="rgba(33,33,33,0.6)" />
+										</button>
 										<img src={v} alt="업로드 이미지" />
 									</li>
 								))}
