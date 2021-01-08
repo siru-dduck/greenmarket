@@ -12,8 +12,9 @@ dotenv.config();
 
 app.use(helmet());
 app.use(morgan("dev"));
+app.use("/resource", express.static("resource"));
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use("/api/user", userRouter);
