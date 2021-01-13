@@ -12,7 +12,7 @@ dotenv.config();
 
 app.use(helmet());
 app.use(morgan("dev"));
-app.use("/resource", express.static("resource"));
+app.use("/resources", express.static("resources"));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

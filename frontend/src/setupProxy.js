@@ -31,9 +31,16 @@ module.exports = function (app) {
 		})
 	);
 	app.use(
-		"/resources/images",
+		"/resources/images/product",
 		createProxyMiddleware({
 			target: "http://localhost:8080",
+			changeOrigin: true,
+		})
+	);
+	app.use(
+		"/resources/images/profile",
+		createProxyMiddleware({
+			target: "http://localhost:5000",
 			changeOrigin: true,
 		})
 	);

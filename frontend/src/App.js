@@ -12,6 +12,8 @@ import JoinPage from "./components/JoinPage/JoinPage";
 import Auth from "./hoc/auth";
 import { UserProvider } from "./util/context/User.context";
 import EditFormPage from "./components/EditFormPage/EditFormPage";
+import ProfilePage from "./components/ProfilePage/ProfilePage";
+import ProfileEditPage from "./components/ProfileEditPage/ProfileEditPage";
 
 function App() {
 	return (
@@ -37,6 +39,16 @@ function App() {
 						<Route path="/chat" exact component={Auth(ChatPage)} />
 						<Route path="/join" exact component={Auth(JoinPage, false)} />
 						<Route path="/search" exact component={Auth(SearchPage, true)} />
+						<Route
+							path="/user/:id/profile"
+							exact
+							component={Auth(ProfilePage, true)}
+						/>
+						<Route
+							path="/user/:id/profile/edit"
+							exact
+							component={Auth(ProfileEditPage)}
+						/>
 						<Route component={NotFoundPage} />
 					</Switch>
 				</BrowserRouter>

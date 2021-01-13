@@ -7,9 +7,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InvalidObjectException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ public class FileUtils {
         List<ProductImageDto> imageDtoList = new ArrayList<>();
         DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
         ZonedDateTime current = ZonedDateTime.now();
-        String fileUrl = "/resources/images/" + current.format(dateTimeFormat);
+        String fileUrl = "/resources/images/product/" + current.format(dateTimeFormat);
         String path = RESOURCE_FILE_PATH + current.format(dateTimeFormat);
         File file = new File(path);
         if(!file.exists()) {

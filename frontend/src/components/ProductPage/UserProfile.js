@@ -94,7 +94,7 @@ function UserProfile(props) {
 	return (
 		<Address>
 			<div className="user-profile-address__column">
-				<Link to={`/user/${props.user.id}`}>
+				<Link to={`/user/${props.user.id}/profile`}>
 					<div className="user-profile">
 						<div className="user-profile__image">
 							{props.user.profileImageUrl ? (
@@ -162,6 +162,7 @@ const Address = styled.address`
 			height: 40px;
 			margin-right: 14px;
 			img {
+				border-radius: 50%;
 				width: 100%;
 				height: 100%;
 			}
