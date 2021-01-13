@@ -1,5 +1,5 @@
 import multer from "multer";
 
-const multerImage = multer({ dest: "resource/images/profile" });
+const multerImage = multer({ dest: "resources/images/profile" });
 
 export const uploadImage = multerImage.single("profileImage");

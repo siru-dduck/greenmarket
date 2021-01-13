@@ -22,14 +22,9 @@ function TopHeader(props) {
 				}
 				props.history.push("/");
 			})
-			.catch((error) => {
-				console.dir(error);
-				if (error.response.status === 400) {
-					setUser(null);
-					localStorage.removeItem("user");
-				} else {
-					alert("로그아웃에 실패했습니다.");
-				}
+			.catch(() => {
+				setUser(null);
+				localStorage.removeItem("user");
 			});
 	};
 
@@ -60,8 +55,20 @@ function TopHeader(props) {
 					{user ? (
 						<>
 							<li>
-								<FaUserCircle size="24" color="#bdc3c7" />
-								<MenuText className="margin-left">{user.nickname}님</MenuText>
+								<Link to={`/user/${user.id}/profile`}>
+									{user.profile_image_url ? (
+										<div className="user-profile-image">
+											<img
+												src={user.profile_image_url}
+												alt="유저 프로필 이미지"
+											/>
+										</div>
+									) : (
+										<FaUserCircle size="24" color="#bdc3c7" />
+									)}
+
+									<MenuText className="margin-left">{user.nickname}님</MenuText>
+								</Link>
 							</li>
 							<li>
 								<MenuLink to="/chat">채팅</MenuLink>
@@ -144,14 +151,29 @@ const Menu = styled.nav`
 	flex-grow: 1;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 	ul {
 		display: flex;
+		align-items: center;
 		li {
 			position: relative;
 			margin: 0 10px;
 			font-weight: 500;
 			display: flex;
 			align-items: center;
+			a {
+				display: flex;
+				align-items: center;
+				.user-profile-image {
+					display: flex;
+					align-items: center;
+					img {
+						border-radius: 50%;
+						width: 26px;
+						height: 26px;
+					}
+				}
+			}
 			&:first-child {
 				margin-left: 0px;
 			}
