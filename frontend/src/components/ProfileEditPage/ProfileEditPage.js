@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { FormLayout } from "../../util/style/FormStyle";
 import { MainLayout } from "../../util/style/LayoutStyle";
 import TopHeader from "../Header/TopHeader";
 import { GoPencil } from "react-icons/go";
 import axios from "axios";
+import UserContext from "../../util/context/User.context";
 
 function ProfileEditPage(props) {
+	const {
+		state: { user },
+		actions: { setUser },
+	} = useContext(UserContext);
 	const [userProfile, setUserProfile] = useState({ isLoading: false });
 	const [profileImageFile, setProfileImageFile] = useState(null);
 	const onClickImageEditButton = (e) => {
@@ -57,6 +62,15 @@ function ProfileEditPage(props) {
 			.then((response) => {
 				console.log(response);
 				if (response.data.isSuccess) {
+					const upadtedUser = {
+						...user,
+						nickname: nickname.value,
+						address1: address1.value,
+						address2: address2.value,
+						profile_image_url: userProfile.profile.profile_image_url,
+					};
+					setUser(upadtedUser);
+					localStorage.setItem("user", JSON.stringify(upadtedUser));
 					props.history.push(`/user/${props.match.params.id}/profile`);
 				} else {
 					alert("프로필수정에 실패하였습니다.");
