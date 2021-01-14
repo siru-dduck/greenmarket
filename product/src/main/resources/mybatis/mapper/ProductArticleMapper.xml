@@ -4,7 +4,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hanium.product.dao.IProductArticleDao">
 	<resultMap id="detailProductArticleResultMap"
-		type="com.hanium.product.dto.ProductArticleDto">
+		type="com.hanium.product.dto.ProductArticleDto$Info">
 		<id property="id" column="id"/>
 		<result property="title" column="title"/>
 		<result property="content" column="content"/>
@@ -107,15 +107,5 @@
 		INNER JOIN category c ON pa.category_id = c.id AND pa.id = #{id}
 		INNER JOIN user u ON pa.user_id = u.id
 	</select>
-	
-	<insert id="createBy" useGeneratedKeys="true" keyProperty="id" parameterType="com.hanium.product.dto.ProductArticleDto">
-		insert 
-		into product_article(title, content, write_date, price, user_id, category_id) 
-	    values(#{productArticle.title},
-	    	#{productArticle.content}, 
-	    	now(), 
-	    	#{productArticle.price}, 
-	    	#{productArticle.user.id}, 
-	    	#{productArticle.category.id})
-	</insert>
+
 </mapper>

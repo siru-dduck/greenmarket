@@ -3,16 +3,14 @@ package com.hanium.product.dao;
 import java.util.List;
 
 import com.hanium.product.dto.ProductArticleRequestDto;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import lombok.ToString;
+import org.apache.ibatis.annotations.*;
 
 import com.hanium.product.dto.ProductArticleDto;
-import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface IProductArticleDao {
-    List<ProductArticleDto> findList(
+    List<ProductArticleDto.Info> findList(
             String keyword,
             String address1,
             String address2,
@@ -22,8 +20,18 @@ public interface IProductArticleDao {
             Integer limit,
             List<Integer> articleIds);
 
-    ProductArticleDto findBy(Integer id);
-    int createBy(@Param("productArticle") ProductArticleDto productArticle);
+    ProductArticleDto.Info findBy(Integer id);
+
+    @Insert("INSERT " +
+            "INTO product_article(title, content, write_date, price, user_id, category_id)" +
+            "values(#{title}," +
+            "#{content}," +
+            "now()," +
+            "#{price}," +
+            "#{user.id}," +
+            "#{category.id})")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    void createBy(ProductArticleDto.Info productArticle);
 
     @Update("UPDATE product_article " +
             "SET title = #{productArticle.title}," +
@@ -39,8 +47,8 @@ public interface IProductArticleDao {
     int deleteBy(Integer id);
 
     @Update("UPDATE product_article SET interest_count = interest_count + 1  WHERE id = #{articleId}")
-    int addInterestCount(Integer articleId);
+    void addInterestCount(Integer articleId);
 
     @Update("UPDATE product_article SET interest_count = interest_count - 1  WHERE id = #{articleId}")
-    int subtractInterestCount(Integer articleId);
+    void subtractInterestCount(Integer articleId);
 }

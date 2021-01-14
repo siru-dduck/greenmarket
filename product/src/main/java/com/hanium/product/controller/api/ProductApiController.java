@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +38,10 @@ public class ProductApiController {
     // TODO RequestParam을 DTO로 추상화하기
     @GetMapping
     public Map<String, Object> getProductList(
-            @RequestParam(name = "keyword", required = false) String keyword,
-            @RequestParam(name = "address1", required = false) String address1,
-            @RequestParam(name = "address2", required = false) String address2,
-            @RequestParam(name = "user_id", required = false) Integer userId,
-            @RequestParam(name = "order", required = false) String order,
-            @RequestParam(name = "offset", required = false, defaultValue = "0") Integer offset,
-            @RequestParam(name = "limit", required = false, defaultValue = "20") Integer limit,
-            @RequestParam(name = "article_ids", required = false) List<Integer> articleIds) {
+            @Valid ProductArticleDto.SearchInfo searchInfo) {
         Map<String, Object> result = new HashMap<>();
-
-        result.put("productArticles", productService.getProductArticles(keyword, address1, address2,
-                userId, order, offset, limit, articleIds));
+        System.out.println(searchInfo);
+        result.put("productArticles", productService.getProductArticles(searchInfo));
         return result;
     }
 
@@ -109,7 +102,7 @@ public class ProductApiController {
             result.put("message", "Not Authenticated");
             return ResponseEntity.status(401).body(result);
         }
-        
+
         try {
             productService.updateProductArticle(productArticleRequestDto, id);
             result.put("isSuccess", true);
@@ -122,7 +115,7 @@ public class ProductApiController {
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> postProduct(
-            @RequestParam(name = "files") List<MultipartFile> multipartFiles, @RequestParam String title,
+            @RequestParam(name = "file") List<MultipartFile> multipartFiles, @RequestParam String title,
             @RequestParam Integer price, @RequestParam String content, @RequestParam Integer categoryId,
             @CookieValue(name = "x_auth", required = false) String token) {
         Map<String, Object> result = new HashMap<>();
@@ -146,7 +139,7 @@ public class ProductApiController {
         }
 
         try {
-            ProductArticleDto article = ProductArticleDto.builder().title(title).content(content).price(price)
+            ProductArticleDto.Info article = ProductArticleDto.Info.builder().title(title).content(content).price(price)
                     .user(UserDto.builder().id((Integer) claim.getBody().get("id")).build())
                     .category(CategoryDto.builder().id(categoryId).build()).build();
             result.put("articleId", productService.createProductArticle(article, multipartFiles));

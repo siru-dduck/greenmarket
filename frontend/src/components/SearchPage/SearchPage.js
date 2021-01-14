@@ -18,7 +18,7 @@ function SearchPage(props) {
 			} else {
 				try {
 					const response = await axios.get(
-						`/api/products?keyword=${query.keyword}`
+						`/api/products?keyword=${query.keyword}&offset=0&limit=20`
 					);
 					setSearch({
 						isLoading: true,

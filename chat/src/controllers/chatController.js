@@ -43,7 +43,7 @@ export const getChatRoom = async (req, res) => {
 
 	try {
 		const sellingProductResponse = await axios.get(
-			`http://${SERVICE_PRODUCT_HOST}:${SERVICE_PRODUCT_PORT}/api/products?user_id=${user_id}`
+			`http://${SERVICE_PRODUCT_HOST}:${SERVICE_PRODUCT_PORT}/api/products?userId=${user_id}`
 		);
 		const articles = {};
 		Array.from(sellingProductResponse.data.productArticles).forEach((e) => {
@@ -92,7 +92,7 @@ export const getChatRoom = async (req, res) => {
 		}
 
 		const productResponse = await axios.get(
-			`http://${SERVICE_PRODUCT_HOST}:${SERVICE_PRODUCT_PORT}/api/products?article_ids=${articleIds}`
+			`http://${SERVICE_PRODUCT_HOST}:${SERVICE_PRODUCT_PORT}/api/products?articleIds=${articleIds}`
 		);
 		Array.from(productResponse.data.productArticles).forEach((e) => {
 			articles[e.id] = e;

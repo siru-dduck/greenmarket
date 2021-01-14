@@ -16,8 +16,7 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-    @Value("${resource.file.path}")
-    private String RESOURCE_FILE_PATH;
+
     private final IProductArticleDao productArticleDao;
     private final IProductImageDao productImageDao;
     private final FileUtils fileUtils;
@@ -29,14 +28,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductArticleDto> getProductArticles(String keyword, String address1, String address2,
-                                                      Integer userId, String order, Integer offset, Integer limit, List<Integer> articleIds) {
-        return productArticleDao.findList(keyword, address1, address2, userId, order, offset,
-                offset + limit, articleIds);
+    public List<ProductArticleDto.Info> getProductArticles(ProductArticleDto.SearchInfo searchInfo) {
+        return productArticleDao.findList(searchInfo.getKeyword(), searchInfo.getAddress1(), searchInfo.getAddress2(),
+                searchInfo.getUserId(), searchInfo.getOrder(), searchInfo.getOffset(), searchInfo.getLimit(), searchInfo.getArticleIds());
     }
 
     @Override
-    public ProductArticleDto getProductArticle(Integer articleId) {
+    public ProductArticleDto.Info getProductArticle(Integer articleId) {
         return productArticleDao.findBy(articleId);
     }
 
@@ -47,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public Integer createProductArticle(ProductArticleDto productArticle, List<MultipartFile> multipartFiles) throws Exception {
+    public Integer createProductArticle(ProductArticleDto.Info productArticle, List<MultipartFile> multipartFiles) throws Exception {
         productArticleDao.createBy(productArticle);
         List<ProductImageDto> productImages = fileUtils.parseImageInfo(productArticle.getId(), multipartFiles);
         productImageDao.createList(productImages);
