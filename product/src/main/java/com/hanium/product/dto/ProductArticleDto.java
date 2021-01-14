@@ -13,6 +13,8 @@ import java.util.List;
 
 
 public class ProductArticleDto {
+    private static final Integer DEFAULT_OFFSET_VALUE = 0;
+    private static final Integer DEFAULT_LIMIT_VALUE = 20;
 
     @Data
     @NoArgsConstructor
@@ -33,7 +35,6 @@ public class ProductArticleDto {
     }
 
     @Data
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class SearchInfo {
         @Length(min = 2, max = 30, message = "검색 키워드는 2자 이상, 20자 이하로 입력하세요.")
@@ -49,6 +50,10 @@ public class ProductArticleDto {
         @Min(value = 1, message = "limit은 1이상의 정수로 입력해야합니다.")
         private Integer limit;
         private List<Integer> articleIds;
+
+        public SearchInfo() {
+            this.offset = DEFAULT_OFFSET_VALUE;
+            this.limit = DEFAULT_LIMIT_VALUE;
+        }
     }
 }
-
