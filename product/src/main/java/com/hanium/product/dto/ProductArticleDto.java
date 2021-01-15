@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -55,5 +55,40 @@ public class ProductArticleDto {
             this.offset = DEFAULT_OFFSET_VALUE;
             this.limit = DEFAULT_LIMIT_VALUE;
         }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class RegisterInfo {
+        @NotEmpty
+        private String title;
+        @NotEmpty
+        private String content;
+        @Min(value = 0, message = "가격은 최소 0원이상 입력가능합니다.") @Max(value = 999999999, message = "가격은 1억원 미만까지 입력가능합니다.")
+        private Integer price;
+        private Integer categoryId;
+        @NotEmpty(message = "파일은 최소 1개이상 첨부해야합니다.")
+        @Size(max = 12,message = "파일은 최대 12개까지 첨부가능합니다.")
+        private List<MultipartFile> files;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ChangeInfo {
+        @NotEmpty
+        private String title;
+        @NotEmpty
+        private String content;
+        @Min(value = 0, message = "가격은 최소 0원이상 입력가능합니다.") @Max(value = 999999999, message = "가격은 1억원 미만까지 입력가능합니다.")
+        private Integer price;
+        private Byte status;
+        private Integer categoryId;
+        @NotEmpty(message = "파일은 최소 1개이상 첨부해야합니다.")
+        @Size(max = 12,message = "파일은 최대 12개까지 첨부가능합니다.")
+        private List<MultipartFile> files;
     }
 }

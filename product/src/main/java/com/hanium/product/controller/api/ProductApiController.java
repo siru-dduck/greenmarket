@@ -7,17 +7,24 @@ import com.hanium.product.service.ProductInterestService;
 import com.hanium.product.service.ProductService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/api/products")
+@AllArgsConstructor
 public class ProductApiController {
 
     private final ProductService productService;
@@ -25,21 +32,47 @@ public class ProductApiController {
     private final ChatService chatService;
     private final ProductInterestService productInterestService;
 
-    public ProductApiController(ProductService productService, JwtService jwtService, ChatService chatService, ProductInterestService productInterestService) {
-        this.productService = productService;
-        this.jwtService = jwtService;
-        this.chatService = chatService;
-        this.productInterestService = productInterestService;
-    }
-
-    // TODO RequestParam을 DTO로 추상화하기
     @GetMapping
     public Map<String, Object> getProductList(
             @Valid ProductArticleDto.SearchInfo searchInfo) {
         Map<String, Object> result = new HashMap<>();
-        System.out.println(searchInfo);
         result.put("productArticles", productService.getProductArticles(searchInfo));
         return result;
+    }
+
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> postProduct(
+            @Valid ProductArticleDto.RegisterInfo registerInfo,
+            @CookieValue(name = "x_auth", required = false) String token) {
+        Map<String, Object> result = new HashMap<>();
+
+        // TODO AOP 적용 또는 스프링 시큐리티 적용
+        // jwt 유효성 검사
+        Jws<Claims> claim = jwtService.decodeToken(token);
+        if (claim == null) {
+            result.put("message", "Not Authenticated");
+            return ResponseEntity.status(401).body(result);
+        }
+
+        try {
+            ProductArticleDto.Info productArticle = ProductArticleDto.Info.builder()
+                    .title(registerInfo.getTitle())
+                    .content(registerInfo.getContent())
+                    .price(registerInfo.getPrice())
+                    .user(UserDto.builder().id((Integer) claim.getBody().get("id")).build())
+                    .category(CategoryDto.builder().id(registerInfo.getCategoryId()).build())
+                    .build();
+            Integer articleId = productService.createProductArticle(productArticle, registerInfo.getFiles());
+            result.put("articleId", articleId);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(articleId)
+                    .toUri();
+            return ResponseEntity.created(location).body(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping(path = "/{id}")
@@ -71,81 +104,39 @@ public class ProductApiController {
         // jwt 유효성 검사
         Jws<Claims> claim = jwtService.decodeToken(token);
         if (claim == null) {
-            result.put("isSuccess", false);
             result.put("message", "Not Authenticated");
             return ResponseEntity.status(401).body(result);
         }
 
         try {
             productService.deleteProductArticle(id);
-            result.put("isSuccess", true);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("isSuccess", false);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok().body(result);
     }
 
     @PutMapping(path = "/{id}")
     public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable Integer id,
                                                              @CookieValue(name = "x_auth", required = false) String token,
-                                                             ProductArticleRequestDto productArticleRequestDto) {
+                                                             @Valid ProductArticleDto.ChangeInfo changeInfo) {
         Map<String, Object> result = new HashMap<>();
         // TODO AOP 적용 또는 스프링 시큐리티 적용
         // jwt 유효성 검사
         Jws<Claims> claim = jwtService.decodeToken(token);
         if (claim == null) {
-            result.put("isSuccess", false);
             result.put("message", "Not Authenticated");
             return ResponseEntity.status(401).body(result);
         }
 
         try {
-            productService.updateProductArticle(productArticleRequestDto, id);
-            result.put("isSuccess", true);
+            productService.updateProductArticle(changeInfo, id);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("isSuccess", false);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok().body(result);
-    }
-
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> postProduct(
-            @RequestParam(name = "file") List<MultipartFile> multipartFiles, @RequestParam String title,
-            @RequestParam Integer price, @RequestParam String content, @RequestParam Integer categoryId,
-            @CookieValue(name = "x_auth", required = false) String token) {
-        Map<String, Object> result = new HashMap<>();
-
-        // TODO validation 적용하기
-        // validation
-        if (multipartFiles.size() <= 0 || title.trim().length() <= 0 || (price <= 0 || price >= 100000000)
-                || content.trim().length() <= 0) {
-            result.put("isSuccess", false);
-            result.put("message", "Bad Request");
-            return ResponseEntity.status(400).body(result);
-        }
-
-        // TODO AOP 적용 또는 스프링 시큐리티 적용
-        // jwt 유효성 검사
-        Jws<Claims> claim = jwtService.decodeToken(token);
-        if (claim == null) {
-            result.put("isSuccess", false);
-            result.put("message", "Not Authenticated");
-            return ResponseEntity.status(401).body(result);
-        }
-
-        try {
-            ProductArticleDto.Info article = ProductArticleDto.Info.builder().title(title).content(content).price(price)
-                    .user(UserDto.builder().id((Integer) claim.getBody().get("id")).build())
-                    .category(CategoryDto.builder().id(categoryId).build()).build();
-            result.put("articleId", productService.createProductArticle(article, multipartFiles));
-            result.put("isSuccess", true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.put("isSuccess", false);
-        }
-        return ResponseEntity.ok().body(result);
     }
 
     @PostMapping(path = "/{id}/interest")
@@ -161,12 +152,13 @@ public class ProductApiController {
         }
         try {
             productInterestService.addInterestCount(id, (Integer) claim.getBody().get("id"));
-            result.put("isSuccess", true);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .build().toUri();
+            return ResponseEntity.created(location).build();
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("isSuccess", false);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok().body(result);
     }
 
     @DeleteMapping(path = "/{id}/interest")
@@ -182,12 +174,11 @@ public class ProductApiController {
         }
         try {
             productInterestService.subtractInterestCount(id, (Integer) claim.getBody().get("id"));
-            result.put("isSuccess", true);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("isSuccess", false);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok().body(result);
     }
 
 }

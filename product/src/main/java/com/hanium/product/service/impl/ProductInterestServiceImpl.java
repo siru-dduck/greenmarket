@@ -3,22 +3,16 @@ package com.hanium.product.service.impl;
 import com.hanium.product.dao.IProductArticleDao;
 import com.hanium.product.dao.IProductInterestDao;
 import com.hanium.product.service.ProductInterestService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLIntegrityConstraintViolationException;
-
 @Service
+@AllArgsConstructor
 public class ProductInterestServiceImpl implements ProductInterestService {
 
     private final IProductArticleDao productArticleDao;
     private final IProductInterestDao productInterestDao;
-
-    public ProductInterestServiceImpl(IProductArticleDao productArticleDao, IProductInterestDao productInterestDao) {
-        this.productArticleDao = productArticleDao;
-        this.productInterestDao = productInterestDao;
-    }
 
     @Override
     public int checkInterest(Integer articleId, Integer userId) {

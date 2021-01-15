@@ -7,6 +7,7 @@ import com.hanium.product.dto.ProductArticleDto;
 import com.hanium.product.dto.ProductArticleRequestDto;
 import com.hanium.product.dto.ProductImageDto;
 import com.hanium.product.service.ProductService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,17 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final IProductArticleDao productArticleDao;
     private final IProductImageDao productImageDao;
     private final FileUtils fileUtils;
-
-    public ProductServiceImpl(IProductArticleDao productArticleDao, IProductImageDao productImageDao, FileUtils fileUtils) {
-        this.productArticleDao = productArticleDao;
-        this.productImageDao = productImageDao;
-        this.fileUtils = fileUtils;
-    }
 
     @Override
     public List<ProductArticleDto.Info> getProductArticles(ProductArticleDto.SearchInfo searchInfo) {
@@ -48,16 +44,19 @@ public class ProductServiceImpl implements ProductService {
     public Integer createProductArticle(ProductArticleDto.Info productArticle, List<MultipartFile> multipartFiles) throws Exception {
         productArticleDao.createBy(productArticle);
         List<ProductImageDto> productImages = fileUtils.parseImageInfo(productArticle.getId(), multipartFiles);
+        if(productImages == null) {
+            throw new RuntimeException("NotSavedImageFiles");
+        }
         productImageDao.createList(productImages);
         return productArticle.getId();
     }
 
     @Transactional
     @Override
-    public void updateProductArticle(ProductArticleRequestDto productArticleRequestDto, Integer articleId) throws Exception {
-        productArticleDao.updateBy(productArticleRequestDto, articleId);
+    public void updateProductArticle(ProductArticleDto.ChangeInfo changeInfo, Integer articleId) throws Exception {
+        productArticleDao.updateBy(changeInfo, articleId);
         productImageDao.deleteBy(articleId);
-        List<ProductImageDto> productImages = fileUtils.parseImageInfo(articleId, productArticleRequestDto.getFiles());
+        List<ProductImageDto> productImages = fileUtils.parseImageInfo(articleId, changeInfo.getFiles());
         productImageDao.createList(productImages);
     }
 

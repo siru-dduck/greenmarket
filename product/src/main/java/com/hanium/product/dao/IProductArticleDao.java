@@ -41,7 +41,7 @@ public interface IProductArticleDao {
             "category_id = #{productArticle.categoryId}," +
             "update_date = now()" +
             "WHERE id = #{id} ")
-    int updateBy(ProductArticleRequestDto productArticle, Integer id);
+    int updateBy(ProductArticleDto.ChangeInfo productArticle, Integer id);
 
     @Delete("DELETE FROM product_article WHERE id = #{id}")
     int deleteBy(Integer id);

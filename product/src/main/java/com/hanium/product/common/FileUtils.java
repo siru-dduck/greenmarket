@@ -29,7 +29,9 @@ public class FileUtils {
         String path = RESOURCE_FILE_PATH + current.format(dateTimeFormat);
         File file = new File(path);
         if(!file.exists()) {
-            file.mkdirs();
+            if(!file.mkdirs()){
+                return null;
+            }
         }
 
         String newFileName, contentType, originalFileExtension;

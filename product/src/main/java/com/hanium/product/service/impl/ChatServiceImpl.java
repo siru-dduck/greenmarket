@@ -1,24 +1,23 @@
 package com.hanium.product.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.hanium.product.service.ChatService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
-import com.hanium.product.service.ChatService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 	private final MappingJackson2HttpMessageConverter converter;
 	private final RestTemplate restTemplate;
@@ -26,11 +25,6 @@ public class ChatServiceImpl implements ChatService {
 	private String SERVICE_CHAT_HOST;
 	@Value("${service.chat.port}")
 	private String SERVICE_CHAT_PORT;
-
-	public ChatServiceImpl(MappingJackson2HttpMessageConverter converter, RestTemplate restTemplate) {
-		this.converter = converter;
-		this.restTemplate = restTemplate;
-	}
 
 	@Override
 	public Integer getChatRoomId(Integer articleId, Integer buyerId) {
