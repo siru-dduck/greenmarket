@@ -74,6 +74,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProductArticle(Integer articleId, Integer userId) {
+        ProductArticleDto.Info article = productArticleDao.findBy(articleId);
+        if(!article.getUser().getId().equals(userId)){
+            throw new AuthorizationException("게시글 작성자만 글을 삭제할 수 있습니다.");
+        }
         productArticleDao.deleteBy(articleId);
     }
 
