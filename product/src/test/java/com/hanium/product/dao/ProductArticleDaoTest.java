@@ -1,7 +1,6 @@
 package com.hanium.product.dao;
 
 import com.hanium.product.dto.ProductArticleDto;
-import com.hanium.product.dto.ProductArticleRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

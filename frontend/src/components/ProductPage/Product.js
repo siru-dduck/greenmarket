@@ -32,7 +32,7 @@ function Product(props) {
 				<NotFoundPage isSetTopMargin={true} />
 			) : (
 				<ProductArticle>
-					<ImageSlider images={product.productImages} />
+					<ImageSlider images={product.productArticle.productImages} />
 					<UserProfile
 						{...props}
 						articleId={product.productArticle.id}

@@ -2,25 +2,16 @@ package com.hanium.product.dao;
 
 import java.util.List;
 
-import com.hanium.product.dto.ProductArticleRequestDto;
-import lombok.ToString;
 import org.apache.ibatis.annotations.*;
 
 import com.hanium.product.dto.ProductArticleDto;
 
 @Mapper
 public interface IProductArticleDao {
-    List<ProductArticleDto.Info> findList(
-            String keyword,
-            String address1,
-            String address2,
-            Integer userId,
-            String order,
-            Integer offset,
-            Integer limit,
-            List<Integer> articleIds);
+    List<ProductArticleDto.Info> findListBy(
+            ProductArticleDto.SearchInfo searchInfo);
 
-    ProductArticleDto.Info findBy(Integer id);
+    ProductArticleDto.Info findOneBy(Integer id);
 
     @Insert("INSERT " +
             "INTO product_article(title, content, write_date, price, user_id, category_id)" +
@@ -29,6 +20,8 @@ public interface IProductArticleDao {
             "now()," +
             "#{price}," +
             "#{user.id}," +
+            "#{address1}," +
+            "#{address2}," +
             "#{category.id})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void createBy(ProductArticleDto.Info productArticle);
@@ -39,6 +32,8 @@ public interface IProductArticleDao {
             "price = #{productArticle.price}," +
             "status = #{productArticle.status}," +
             "category_id = #{productArticle.categoryId}," +
+            "address1 = #{address1}," +
+            "address2 = #{address2}," +
             "update_date = now()" +
             "WHERE id = #{id} ")
     int updateBy(ProductArticleDto.ChangeInfo productArticle, Integer id);

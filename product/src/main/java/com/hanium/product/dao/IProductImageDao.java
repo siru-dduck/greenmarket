@@ -10,9 +10,8 @@ import com.hanium.product.dto.ProductImageDto;
 
 @Mapper
 public interface IProductImageDao {
-	List<ProductImageDto> findList(Integer articleId);
-	void createList(@Param("productImages") List<ProductImageDto> productImages);
+    void createList(List<ProductImageDto> productImages);
 
-	@Delete("DELETE FROM product_image WHERE article_id = #{articleId}")
-	void deleteBy(Integer articleId);
+    @Delete("DELETE FROM product_image WHERE article_id = #{articleId}")
+    void deleteBy(Integer articleId);
 }

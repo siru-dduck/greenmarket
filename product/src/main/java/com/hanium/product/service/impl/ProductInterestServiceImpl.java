@@ -26,7 +26,7 @@ public class ProductInterestServiceImpl implements ProductInterestService {
     @Override
     @Transactional
     public void addInterest(Integer articleId, Integer userId) {
-        ProductArticleDto.Info article = productArticleDao.findBy(articleId);
+        ProductArticleDto.Info article = productArticleDao.findOneBy(articleId);
         if(article.getUser().getId().equals(userId)) {
             throw new AuthorizationException("상품 작성자는 해당 관심상품을 추가할 수 없습니다.");
         }

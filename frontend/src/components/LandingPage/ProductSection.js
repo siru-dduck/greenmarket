@@ -12,8 +12,8 @@ function ProductSection(props) {
 	useEffect(() => {
 		const fetchProductArticle = async () => {
 			const REQUEST_PRODUCT_URL = user
-				? `/api/products?address1=${user.address1}&address2=${user.address2}&offset=0&limit=20`
-				: `/api/products?order=-interest_count&offset=0&limit=20`;
+				? `/api/products?address1=${user.address1}&address2=${user.address2}&limit=20`
+				: `/api/products?order=-interest_count&limit=20`;
 			try {
 				const response = await axios.get(REQUEST_PRODUCT_URL);
 				setProductArticles(...productAticles, response.data.productArticles);

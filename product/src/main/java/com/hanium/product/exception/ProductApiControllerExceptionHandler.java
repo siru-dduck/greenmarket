@@ -7,6 +7,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -86,6 +87,16 @@ public class ProductApiControllerExceptionHandler extends ResponseEntityExceptio
         return new ResponseEntity(exceptionResponse, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(ResourceAccessException.class)
+    public ResponseEntity<ExceptionResponse> handleResourceAccessException(ResourceAccessException ex) {
+        ExceptionResponse exceptionResponse = ExceptionResponse.builder()
+                .message("서비스를 이용할 수 없습니다.")
+                .details(ex.getMessage())
+                .timestamp(new Date())
+                .build();
+        return new ResponseEntity(exceptionResponse, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleAllExceptions(Exception ex, WebRequest request) {
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
@@ -93,6 +104,7 @@ public class ProductApiControllerExceptionHandler extends ResponseEntityExceptio
                 .details(request.getDescription(false))
                 .timestamp(new Date())
                 .build();
+        ex.printStackTrace();
         return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

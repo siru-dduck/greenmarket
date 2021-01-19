@@ -19,10 +19,10 @@ public class ProductInterestServiceTest {
     private IProductArticleDao productArticleDao;
     @Test
     void addInterestCountTest(){
-        int beforeInterestCount = productArticleDao.findBy(11).getInterestCount();
+        int beforeInterestCount = productArticleDao.findOneBy(11).getInterestCount();
         productInterestService.addInterest(11, 4);
         productInterestService.addInterest(11, 3);
-        int afterInterestCount = productArticleDao.findBy(11).getInterestCount();
+        int afterInterestCount = productArticleDao.findOneBy(11).getInterestCount();
         Assertions.assertThat(afterInterestCount - beforeInterestCount).isEqualTo(2);
     }
 }

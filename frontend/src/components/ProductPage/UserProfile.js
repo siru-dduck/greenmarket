@@ -91,15 +91,16 @@ function UserProfile(props) {
 				});
 		}
 	};
+
 	return (
 		<Address>
 			<div className="user-profile-address__column">
 				<Link to={`/user/${props.user.id}/profile`}>
 					<div className="user-profile">
 						<div className="user-profile__image">
-							{props.user.profileImageUrl ? (
+							{props.user.profile_image_url ? (
 								<img
-									src={props.user.profileImageUrl}
+									src={props.user.profile_image_url}
 									alt="유저의 프로필 사진"
 								/>
 							) : (

@@ -106,7 +106,7 @@ function EditFormPage(props) {
 			.then((response) => {
 				setProductArticle({ ...response.data.productArticle, isLoading: true });
 				Promise.all(
-					response.data.productImages.map((e) => {
+					response.data.productArticle.productImages.map((e) => {
 						return new Promise((resolve, reject) => {
 							axios
 								.get(e.fileUrl, {

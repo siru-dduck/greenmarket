@@ -27,7 +27,7 @@ public class UserTokenArgumentResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType() == UserDto.class;
+        return parameter.getParameterType() == UserDto.Info.class;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class UserTokenArgumentResolver implements HandlerMethodArgumentResolver 
         if (authCookie != null) {
             Claims claims = jwtUtils.decodeToken(authCookie.getValue()).getBody();
             if (claims != null) {
-                return UserDto.builder()
+                return UserDto.Info.builder()
                         .id(claims.get("id", Integer.class))
                         .build();
             }
