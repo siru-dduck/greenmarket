@@ -1,17 +1,15 @@
-package com.hanium.product.service.impl;
-
-import java.io.UnsupportedEncodingException;
-
-import org.springframework.stereotype.Service;
-
-import com.hanium.product.service.JwtService;
+package com.hanium.product.common;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Component;
 
-@Service
-public class JwtServiceImpl implements JwtService {
+import java.io.UnsupportedEncodingException;
+
+@Component
+public class JwtUtils {
+    private final String SECRET_TOKEN = "secret";
 
     private byte[] generateKey() {
         byte[] key = null;
@@ -23,16 +21,13 @@ public class JwtServiceImpl implements JwtService {
         return key;
     }
 
-    @Override
     public Jws<Claims> decodeToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parser()
+            return Jwts.parser()
                     .setSigningKey(this.generateKey())
                     .parseClaimsJws(token);
-            return claims;
         } catch (Exception e) {
             return null;
         }
     }
-
 }

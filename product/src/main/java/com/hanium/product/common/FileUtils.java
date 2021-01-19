@@ -1,12 +1,14 @@
 package com.hanium.product.common;
 
 import com.hanium.product.dto.ProductImageDto;
+import com.hanium.product.exception.NotSavedFileException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,9 +20,9 @@ public class FileUtils {
     @Value("${resource.file.path}")
     private String RESOURCE_FILE_PATH;
 
-    public List<ProductImageDto> parseImageInfo(Integer articleId, List<MultipartFile> multipartFileList) throws Exception {
+    public List<ProductImageDto> parseImageInfo(Integer articleId, List<MultipartFile> multipartFileList) throws RuntimeException {
         if(ObjectUtils.isEmpty(multipartFileList)) {
-            return null;
+            throw new NotSavedFileException("저장할 상품이미지가 없습니다.");
         }
         List<ProductImageDto> imageDtoList = new ArrayList<>();
         DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -29,7 +31,9 @@ public class FileUtils {
         String path = RESOURCE_FILE_PATH + current.format(dateTimeFormat);
         File file = new File(path);
         if(!file.exists()) {
-            file.mkdirs();
+            if(!file.mkdirs()){
+                throw new NotSavedFileException("상품이미지를 저장할 수 없습니다.");
+            }
         }
 
         String newFileName, contentType, originalFileExtension;
@@ -58,8 +62,13 @@ public class FileUtils {
                         .build();
                 imageDtoList.add(productImageDto);
                 File targetFile = new File(path + "/" + newFileName);
-                InputStream fileStream = multipartFile.getInputStream();
-                org.apache.commons.io.FileUtils.copyInputStreamToFile(fileStream, targetFile);
+                InputStream fileStream = null;
+                try {
+                    fileStream = multipartFile.getInputStream();
+                    org.apache.commons.io.FileUtils.copyInputStreamToFile(fileStream, targetFile);
+                } catch (IOException e) {
+                    throw new NotSavedFileException("파일을 저장할 수 없습니다.");
+                }
             }
         }
         return imageDtoList;

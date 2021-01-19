@@ -6,7 +6,7 @@ function ProductList(props) {
 	if (!props.productArticles) {
 		return <></>;
 	}
-	console.log();
+
 	return (
 		<ProductContainer>
 			{props.productArticles.map((e, index) => (
@@ -14,7 +14,7 @@ function ProductList(props) {
 					<Link to={`/products/${e.id}`} className="product-item_link">
 						<div className="product-item__image-card">
 							<img
-								src={e.mainImageUrl}
+								src={e.productImages[0].fileUrl}
 								alt="제품 이미지"
 								className="product-item__image"
 							/>
