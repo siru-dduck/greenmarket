@@ -70,17 +70,25 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC를 도�
 * jwt토큰 아규먼트리졸버 추가
 * 상품수정,삭제와 관심상품추가,삭제에 인가기능 추가
 
+### 2021년 1월19일
+* Product Service 리팩토링
+* 페이징 방식을 페이지방식에서 More 버튼을 이용하는 UX를 고려해 변경
+* Product Service에서 user 테이블에 직접 접근하지않고 User Service를 통해 데이터 접근
+
 ---
 
 # ✅ TODO
 
 * [x] chatservice에 redis adapter 적용시 socket.emit애서 발생하는 에러해결
-* [x] 회원정보수정 기능 
+* [x] 회원정보수정 기능
+* [ ] 구매후기 기능 
 * [ ] 구매내역 조회
 * [ ] 상품등록내역 조회
-* [ ] product service Request Param DTO 생성 및 Validation 적용
-* [ ] product service Interceptor 적용
+* [x] product service Request Param DTO 생성 및 Validation 적용
+* [x] product service Interceptor 적용
 * [x] product service 상품등록시에 트랜잭션 롤백상황시 모든 파일이 일괄삭제되지않는 버그 수정 => 파일은 Spring Batch로 처리할 예정 
 * [x] product 수정, 삭제 기능 추가
+* [ ] gRPC 또는 메세지 큐(Kafka)도입
 * [ ] DB를 Product, User, Chat Service별로 분리 (느슨한 결합도)
 * [ ] Image File Service 개발
+* [ ] CI/CD 도입
