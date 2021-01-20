@@ -47,12 +47,12 @@
         c.name,
         pi.list_num,
         pi.file_url
-        FROM product_article pa
-        INNER JOIN category c ON pa.category_id = c.id
-        INNER JOIN product_image pi ON pi.article_id = pa.id
+        FROM (
+        SELECT *
+        FROM product_article
         <where>
             <if test="offset != null">
-                pa.id &lt; #{offset}
+                id &lt; #{offset}
             </if>
             <if test="keyword != null">
                 AND (title like '%${keyword}%' || content like '%${keyword}%')
@@ -67,7 +67,7 @@
                 AND user_id = #{userId}
             </if>
             <if test="articleIds != null and articleIds.size() > 0">
-                AND pa.id IN (
+                AND id IN (
                 <foreach item="item" separator="," collection="articleIds">
                     #{item}
                 </foreach>
@@ -80,10 +80,10 @@
         </if>
         <choose>
             <when test="userId != null or articleIds != null">
-                pa.id
+                id
             </when>
             <otherwise>
-                pa.id DESC
+                id DESC
             </otherwise>
         </choose>
         <choose>
@@ -99,6 +99,9 @@
                 LIMIT 20
             </otherwise>
         </choose>
+        ) pa
+        INNER JOIN category c ON pa.category_id = c.id
+        INNER JOIN product_image pi ON pi.article_id = pa.id
     </select>
 
     <select id="findOneBy"

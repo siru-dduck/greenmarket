@@ -127,28 +127,8 @@ export const ProductForm = styled.form`
 			outline: none;
 		}
 		.region_filed {
-			padding: 8px 13px;
-			font-size: 15px;
-			font-weight: 500;
-			font-family: inherit;
-			color: #333;
-			outline: none;
-			border-radius: 6px;
-			border: 1px solid #dbdb;
-			&:first-of-type {
-				color: #333;
-				margin-right: 12px;
-			}
+			width: 160px;
+			margin-right: 12px;
 		}
-	}
-	button[type="submit"] {
-		outline: none;
-		padding: 10px 13px;
-		border-radius: 6px;
-		border: 1px solid #dbdbdb;
-		color: #fcfcfc;
-		font-weight: 500;
-		font-size: 16px;
-		background-color: #1dd1a1;
 	}
 `;

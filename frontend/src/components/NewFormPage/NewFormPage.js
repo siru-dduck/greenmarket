@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { MainLayout } from "../../util/style/LayoutStyle";
 import { FormLayout, ProductForm } from "../../util/style/FormStyle";
+import { Button } from "../../util/style/CommonStyle";
 import TopHeader from "../Header/TopHeader";
 import { FaCamera } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
@@ -15,7 +16,14 @@ function NewFormPage(props) {
 	const [imageFiles, setImageFiles] = useState([]);
 	const onSubmit = (e) => {
 		e.preventDefault();
-		const { title, content, price, category } = e.currentTarget;
+		const {
+			title,
+			content,
+			price,
+			category,
+			address1,
+			address2,
+		} = e.currentTarget;
 
 		if (
 			title.value.trim().length <= 0 ||
@@ -24,6 +32,8 @@ function NewFormPage(props) {
 			!Number(category.value) ||
 			Number(price.value) <= 0 ||
 			Number(price.value) >= 100000000 ||
+			address1.value.trim().length <= 0 ||
+			address2.value.trim().length <= 0 ||
 			imageFiles.length <= 0
 		) {
 			alert("양식을 올바르게 입력해주세요.");
@@ -43,15 +53,12 @@ function NewFormPage(props) {
 		formData.append("price", price.value);
 		formData.append("content", content.value);
 		formData.append("categoryId", category.value);
+		formData.append("address1", address1.value);
+		formData.append("address2", address2.value);
 		axios
 			.post("/api/products", formData, config)
 			.then((response) => {
-				console.log(response);
-				if (response.data.isSuccess) {
-					props.history.push(`/products/${response.data.articleId}`);
-				} else {
-					alert("상품등록에 실패하였습니다.");
-				}
+				props.history.push(`/products/${response.data.articleId}`);
 			})
 			.catch(() => {
 				// TODO jwt 유효기간 만료 및 쿠키 만료등으로 유저인증이 안될경우 현재 작성한 페이지를 저장하고 로그인페이지로 이동
@@ -61,7 +68,7 @@ function NewFormPage(props) {
 
 	const onClickImageUplaodButton = (e) => {
 		e.preventDefault();
-		if (images.length > 12) {
+		if (images.length >= 12) {
 			alert("사진은 최대 12개까지만 등록할 수 있습니다.");
 			return;
 		}
@@ -155,10 +162,20 @@ function NewFormPage(props) {
 						</div>
 						<div className="form-paragraph region">
 							<h3>지역</h3>
-							<div className="region_filed">{user.address1}</div>
-							<div className="region_filed">{user.address2}</div>
+							<input
+								type="text"
+								className="region_filed"
+								name="address1"
+								defaultValue={user.address1}
+							/>
+							<input
+								type="text"
+								className="region_filed"
+								name="address2"
+								defaultValue={user.address2}
+							/>
 						</div>
-						<button type="submit">상품등록</button>
+						<Button type="submit">상품등록</Button>
 					</ProductForm>
 				</FormLayout>
 			</MainLayout>

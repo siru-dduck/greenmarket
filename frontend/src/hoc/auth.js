@@ -8,6 +8,7 @@ export default function (SpecificComponent, option = null) {
 			actions: { setUser },
 		} = useContext(UserContext);
 		const [isLoading, setIsLoading] = useState(false);
+
 		useEffect(() => {
 			axios
 				.get("/api/user/auth")

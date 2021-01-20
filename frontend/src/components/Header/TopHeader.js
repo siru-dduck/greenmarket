@@ -12,15 +12,14 @@ function TopHeader(props) {
 		state: { user },
 		actions: { setUser },
 	} = useContext(UserContext);
+
 	const onClickLogoutButton = () => {
+		props.history.push("/");
 		axios
 			.get("/api/user/logout")
-			.then((response) => {
-				if (response.data.logoutSuccess) {
-					setUser(null);
-					localStorage.removeItem("user");
-				}
-				props.history.push("/");
+			.then(() => {
+				setUser(null);
+				localStorage.removeItem("user");
 			})
 			.catch(() => {
 				setUser(null);

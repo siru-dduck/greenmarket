@@ -25,9 +25,10 @@ function ChatPage(props) {
 			let currentChatRoom = null;
 			if (room.chatRoom && room.chatRoom.length > 0) {
 				currentChatRoom = room.chatRoom.find((e) => {
-					if (e.id == roomId) {
+					if (e.id === roomId) {
 						return true;
 					}
+					return false;
 				});
 			}
 			setChat({

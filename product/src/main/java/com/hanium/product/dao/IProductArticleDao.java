@@ -14,7 +14,7 @@ public interface IProductArticleDao {
     ProductArticleDto.Info findOneBy(Integer id);
 
     @Insert("INSERT " +
-            "INTO product_article(title, content, write_date, price, user_id, category_id)" +
+            "INTO product_article(title, content, write_date, price, user_id, address1, address2, category_id)" +
             "values(#{title}," +
             "#{content}," +
             "now()," +
@@ -32,8 +32,8 @@ public interface IProductArticleDao {
             "price = #{productArticle.price}," +
             "status = #{productArticle.status}," +
             "category_id = #{productArticle.categoryId}," +
-            "address1 = #{address1}," +
-            "address2 = #{address2}," +
+            "address1 = #{productArticle.address1}," +
+            "address2 = #{productArticle.address2}," +
             "update_date = now()" +
             "WHERE id = #{id} ")
     int updateBy(ProductArticleDto.ChangeInfo productArticle, Integer id);
