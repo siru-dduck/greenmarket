@@ -103,11 +103,12 @@ function ProfileEditPage(props) {
 				alert("유저정보를 찾을 수 없습니다.");
 				props.history.push("/");
 			});
+		// eslint-disable-next-line
 	}, []);
 
 	return (
 		<>
-			<TopHeader />
+			<TopHeader {...props} />
 			<MainLayout>
 				{!userProfile.isLoading ? (
 					"로딩중"
@@ -116,7 +117,10 @@ function ProfileEditPage(props) {
 						<EditForm onSubmit={onSubmit}>
 							<h2>프로필 수정</h2>
 							<div className="profile-image">
-								<img src={userProfile.profile.profile_image_url} />
+								<img
+									src={userProfile.profile.profile_image_url}
+									alt="유저 프로필 이미지"
+								/>
 								<button
 									onClick={onClickImageEditButton}
 									className="profile-image__edit-btn"

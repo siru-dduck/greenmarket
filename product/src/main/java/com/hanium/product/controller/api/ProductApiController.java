@@ -33,8 +33,10 @@ public class ProductApiController {
         List<ProductArticleDto.Info> articleList = productService.getProductArticles(searchInfo);
         result.put("productArticles", articleList);
         if(articleList.size() > 0) {
+            result.put("length", articleList.size());
             result.put("lastArticleId", articleList.get(articleList.size()-1).getId());
         } else {
+            result.put("length", 0);
             result.put("lastArticleId", null);
         }
         return result;

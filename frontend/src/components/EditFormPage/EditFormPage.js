@@ -1,22 +1,27 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MainLayout } from "../../util/style/LayoutStyle";
 import { FormLayout, ProductForm } from "../../util/style/FormStyle";
+import { Button } from "../../util/style/CommonStyle";
 import TopHeader from "../Header/TopHeader";
 import { FaCamera } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
 import axios from "axios";
-import UserContext from "../../util/context/User.context";
 
 function EditFormPage(props) {
-	const {
-		state: { user },
-	} = useContext(UserContext);
 	const [productArticle, setProductArticle] = useState({ isLoading: false });
 	const [images, setImages] = useState([]);
 	const [imageFiles, setImageFiles] = useState([]);
 	const onSubmit = (e) => {
 		e.preventDefault();
-		const { title, content, price, category, status } = e.currentTarget;
+		const {
+			title,
+			content,
+			price,
+			category,
+			status,
+			address1,
+			address2,
+		} = e.currentTarget;
 
 		if (
 			title.value.trim().length <= 0 ||
@@ -26,6 +31,8 @@ function EditFormPage(props) {
 			Number(price.value) <= 0 ||
 			Number(price.value) >= 100000000 ||
 			(Number(status.value) !== 0 && Number(status.value) !== 1) ||
+			address1.value.trim().length <= 0 ||
+			address2.value.trim().length <= 0 ||
 			imageFiles.length <= 0
 		) {
 			alert("양식을 올바르게 입력해주세요.");
@@ -46,15 +53,12 @@ function EditFormPage(props) {
 		formData.append("content", content.value);
 		formData.append("status", status.value);
 		formData.append("categoryId", category.value);
+		formData.append("address1", address1.value);
+		formData.append("address2", address2.value);
 		axios
 			.put(`/api/products/${props.match.params.id}`, formData, config)
-			.then((response) => {
-				console.log(response);
-				if (response.data.isSuccess) {
-					props.history.push(`/products/${props.match.params.id}`);
-				} else {
-					alert("상품수정에 실패하였습니다.");
-				}
+			.then(() => {
+				props.history.push(`/products/${props.match.params.id}`);
 			})
 			.catch(() => {
 				// TODO jwt 유효기간 만료 및 쿠키 만료등으로 유저인증이 안될경우 현재 작성한 페이지를 저장하고 로그인페이지로 이동
@@ -64,7 +68,7 @@ function EditFormPage(props) {
 
 	const onClickImageUplaodButton = (e) => {
 		e.preventDefault();
-		if (images.length > 12) {
+		if (images.length >= 12) {
 			alert("사진은 최대 12개까지만 등록할 수 있습니다.");
 			return;
 		}
@@ -136,6 +140,7 @@ function EditFormPage(props) {
 				alert("상품정보를 불러오는데 실패했습니다.");
 				props.history.push("/");
 			});
+		// eslint-disable-next-line
 	}, []);
 
 	return !productArticle.isLoading ? null : (
@@ -220,10 +225,20 @@ function EditFormPage(props) {
 						</div>
 						<div className="form-paragraph region">
 							<h3>지역</h3>
-							<div className="region_filed">{user.address1}</div>
-							<div className="region_filed">{user.address2}</div>
+							<input
+								type="text"
+								className="region_filed"
+								name="address1"
+								defaultValue={productArticle.address1}
+							/>
+							<input
+								type="text"
+								className="region_filed"
+								name="address2"
+								defaultValue={productArticle.address2}
+							/>
 						</div>
-						<button type="submit">상품수정</button>
+						<Button type="submit">상품수정</Button>
 					</ProductForm>
 				</FormLayout>
 			</MainLayout>

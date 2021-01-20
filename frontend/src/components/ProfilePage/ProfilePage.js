@@ -21,6 +21,7 @@ function ProfilePage(props) {
 				alert("유저정보를 찾을 수 없습니다.");
 				props.history.push("/");
 			});
+		// eslint-disable-next-line
 	}, []);
 
 	return (
