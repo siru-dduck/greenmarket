@@ -12,6 +12,7 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC를 도�
 * Spring Boot
 * 중고상품등록, 조회
 * 관심상품 등록
+* 상품검색
 ### User Service
 * express, jwt
 * 회원가입 로그인
@@ -74,6 +75,7 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC를 도�
 * Product Service 리팩토링
 * 페이징 방식을 페이지방식에서 More 버튼을 이용하는 UX를 고려해 변경
 * Product Service에서 user 테이블에 직접 접근하지않고 User Service를 통해 데이터 접근
+* product article 테이블에 주소(address1, address2)팔드추가
 
 ---
 
@@ -90,5 +92,6 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC를 도�
 * [x] product 수정, 삭제 기능 추가
 * [ ] gRPC 또는 메세지 큐(Kafka)도입
 * [ ] DB를 Product, User, Chat Service별로 분리 (느슨한 결합도)
-* [ ] Image File Service 개발
+* [ ] Image File Service 개발 (Image Crop 기능포함)
 * [ ] CI/CD 도입
+* [ ] 카카오톡, 네이버 로그인기능
