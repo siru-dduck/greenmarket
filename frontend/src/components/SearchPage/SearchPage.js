@@ -64,6 +64,7 @@ function SearchPage(props) {
 			}
 		};
 		fetchSearchKeyword();
+		// eslint-disable-next-line
 	}, [props.location.search]);
 	if (!search.isLoading) {
 		return <></>;

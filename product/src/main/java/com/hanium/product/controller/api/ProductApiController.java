@@ -29,7 +29,6 @@ public class ProductApiController {
     @GetMapping
     public Map<String, Object> getProductList(
             @Valid ProductArticleDto.SearchInfo searchInfo) {
-        System.out.println(searchInfo);
         Map<String, Object> result = new HashMap<>();
         List<ProductArticleDto.Info> articleList = productService.getProductArticles(searchInfo);
         result.put("productArticles", articleList);

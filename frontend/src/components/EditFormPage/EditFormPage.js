@@ -26,9 +26,9 @@ function EditFormPage(props) {
 		if (
 			title.value.trim().length <= 0 ||
 			content.value.trim().length <= 0 ||
-			Number(category.value) === NaN ||
+			Number.isNaN(Number(category.value)) ||
 			price.value.trim().length <= 0 ||
-			Number(price.value) === NaN ||
+			Number.isNaN(Number(price.value)) ||
 			Number(price.value) < 0 ||
 			Number(price.value) >= 100000000 ||
 			(Number(status.value) !== 0 && Number(status.value) !== 1) ||

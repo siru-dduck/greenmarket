@@ -79,7 +79,7 @@ function ChatPage(props) {
 			try {
 				const response = await axios.get(`/api/chat/room?user_id=${user.id}`);
 				console.log(response);
-				if (!query.room_id || Number(query.room_id) === NaN) {
+				if (!query.room_id || Number.isNaN(Number(query.room_id))) {
 					setRoom({
 						isLoading: true,
 						chatRoom: response.data.chatRoom,
@@ -153,11 +153,8 @@ function ChatPage(props) {
 				socket.off("sendMessage");
 			}
 		};
+		// eslint-disable-next-line
 	}, [socket, chat]);
-
-	if (!user) {
-		return null;
-	}
 
 	return (
 		<>
@@ -178,9 +175,9 @@ function ChatPage(props) {
 												</div>
 												<div className="chat-user-inform">
 													<div className="chat-user-name">
-														{user && user.id === e.article.user.id
-															? user.nickname
-															: null}
+														{user.id === e.user_id_seller
+															? e.user_buyer.nickname
+															: e.user_seller.nickname}
 													</div>
 													<div className="chat-product-message">
 														{e.chat_messages.length > 0
@@ -218,7 +215,7 @@ function ChatPage(props) {
 											<div className="chat-inform">
 												<h3>{chat.currentChatRoom.article.title}</h3>
 												<div className="user-nickname">
-													{chat.currentChatRoom.article.user.nickname}
+													{chat.currentChatRoom.user_seller.nickname}
 												</div>
 											</div>
 										</header>
