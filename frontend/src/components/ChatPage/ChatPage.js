@@ -17,14 +17,12 @@ function ChatPage(props) {
 	const [chat, setChat] = useState({ currentRoomId: null });
 	const [socket, setSocket] = useState(null);
 
-	const fetchChatMessages = async (roomId) => {
+	const fetchChatMessages = async (chatRoom, roomId) => {
 		try {
 			const response = await axios.get(`/api/chat/room/${roomId}/messages`);
-			console.log(response);
-
 			let currentChatRoom = null;
-			if (room.chatRoom && room.chatRoom.length > 0) {
-				currentChatRoom = room.chatRoom.find((e) => {
+			if (chatRoom && chatRoom.length > 0) {
+				currentChatRoom = chatRoom.find((e) => {
 					if (e.id === roomId) {
 						return true;
 					}
@@ -48,7 +46,7 @@ function ChatPage(props) {
 			target = target.parentElement;
 		}
 		const { roomId } = target.dataset;
-		fetchChatMessages(roomId);
+		fetchChatMessages(room.chatRoom, Number(roomId));
 	};
 
 	const onSubmitChatMessage = (e) => {
@@ -80,7 +78,8 @@ function ChatPage(props) {
 			});
 			try {
 				const response = await axios.get(`/api/chat/room?user_id=${user.id}`);
-				if (!query.room_id) {
+				console.log(response);
+				if (!query.room_id || Number(query.room_id) === NaN) {
 					setRoom({
 						isLoading: true,
 						chatRoom: response.data.chatRoom,
@@ -90,7 +89,7 @@ function ChatPage(props) {
 						isLoading: true,
 						chatRoom: response.data.chatRoom,
 					});
-					fetchChatMessages(query.room_id);
+					fetchChatMessages(response.data.chatRoom, Number(query.room_id));
 				}
 			} catch (error) {
 				console.error(error);
@@ -154,7 +153,6 @@ function ChatPage(props) {
 				socket.off("sendMessage");
 			}
 		};
-		// eslint-disable-next-line
 	}, [socket, chat]);
 
 	if (!user) {
@@ -181,16 +179,20 @@ function ChatPage(props) {
 												<div className="chat-user-inform">
 													<div className="chat-user-name">
 														{user && user.id === e.article.user.id
-															? e.user_buyer.nickname
-															: e.article.user.nickname}
+															? user.nickname
+															: null}
 													</div>
 													<div className="chat-product-message">
-														{e.chat_messages.length > 0 &&
-															e.chat_messages[0].message}
+														{e.chat_messages.length > 0
+															? e.chat_messages[0].message
+															: "새체팅방"}
 													</div>
 												</div>
 												<div className="chat-product-image-box">
-													<img src={e.article.mainImageUrl} alt="상품 이미지" />
+													<img
+														src={e.article.productImages[0].fileUrl}
+														alt="상품 이미지"
+													/>
 												</div>
 											</li>
 										) : null
@@ -206,7 +208,10 @@ function ChatPage(props) {
 										<header>
 											<div className="chat-image-box">
 												<img
-													src={chat.currentChatRoom.article.mainImageUrl}
+													src={
+														chat.currentChatRoom.article.productImages[0]
+															.fileUrl
+													}
 													alt="상품이미지"
 												/>
 											</div>

@@ -28,8 +28,9 @@ function NewFormPage(props) {
 		if (
 			title.value.trim().length <= 0 ||
 			content.value.trim().length <= 0 ||
-			!Number(price.value) ||
-			!Number(category.value) ||
+			Number(category.value) === NaN ||
+			price.value.trim().length <= 0 ||
+			Number(price.value) === NaN ||
 			Number(price.value) <= 0 ||
 			Number(price.value) >= 100000000 ||
 			address1.value.trim().length <= 0 ||
@@ -154,7 +155,7 @@ function NewFormPage(props) {
 						</div>
 						<div className="form-paragraph price">
 							<h3>가격</h3>
-							<input type="text" name="price" placeholder="가격(원)" />
+							<input type="number" name="price" placeholder="가격(원)" />
 						</div>
 						<div className="form-paragraph content">
 							<h3>게시글 내용</h3>

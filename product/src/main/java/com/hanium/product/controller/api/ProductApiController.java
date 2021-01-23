@@ -29,6 +29,7 @@ public class ProductApiController {
     @GetMapping
     public Map<String, Object> getProductList(
             @Valid ProductArticleDto.SearchInfo searchInfo) {
+        System.out.println(searchInfo);
         Map<String, Object> result = new HashMap<>();
         List<ProductArticleDto.Info> articleList = productService.getProductArticles(searchInfo);
         result.put("productArticles", articleList);
@@ -75,7 +76,7 @@ public class ProductApiController {
 
     @DeleteMapping(path = "/{articleId}")
     @AuthRequired
-    public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable Integer articleId,
+    public ResponseEntity<ProductArticleDto.Info> deleteProduct(@PathVariable Integer articleId,
                                                              UserDto.Info user) {
         productService.deleteProductArticle(articleId, user.getId());
         return ResponseEntity.noContent().build();
@@ -83,7 +84,7 @@ public class ProductApiController {
 
     @PutMapping(path = "/{articleId}")
     @AuthRequired
-    public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable Integer articleId,
+    public ResponseEntity<ProductArticleDto.Info> updateProduct(@PathVariable Integer articleId,
                                                              UserDto.Info user,
                                                              @Valid ProductArticleDto.ChangeInfo changeInfo) throws Exception {
         productService.updateProductArticle(changeInfo, articleId, user.getId());
@@ -92,7 +93,7 @@ public class ProductApiController {
 
     @PostMapping(path = "/{id}/interest")
     @AuthRequired
-    public ResponseEntity<Map<String, Object>> addProductInterestCount(@PathVariable Integer id,
+    public ResponseEntity addProductInterestCount(@PathVariable Integer id,
                                                                        UserDto.Info user) {
         productInterestService.addInterest(id, user.getId());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -102,7 +103,7 @@ public class ProductApiController {
 
     @DeleteMapping(path = "/{id}/interest")
     @AuthRequired
-    public ResponseEntity<Map<String, Object>> subtractProductInterestCount(
+    public ResponseEntity subtractProductInterestCount(
             @PathVariable Integer id,
             UserDto.Info user) {
         productInterestService.removeInterest(id, user.getId());

@@ -45,7 +45,7 @@ public class ProductArticleDto {
         private Integer offset;
         @Min(value = 1, message = "limit은 1이상의 정수로 입력해야합니다.")
         private Integer limit;
-        private List<Integer> articleIds;
+        private List<String> articleIds;
     }
 
     @Data
@@ -57,6 +57,7 @@ public class ProductArticleDto {
         private String title;
         @NotEmpty
         private String content;
+        @NotNull
         @Min(value = 0, message = "가격은 최소 0원이상 입력가능합니다.") @Max(value = 999999999, message = "가격은 1억원 미만까지 입력가능합니다.")
         private Integer price;
         @NotNull
@@ -79,6 +80,7 @@ public class ProductArticleDto {
         private String title;
         @NotEmpty
         private String content;
+        @NotNull
         @Min(value = 0, message = "가격은 최소 0원이상 입력가능합니다.") @Max(value = 999999999, message = "가격은 1억원 미만까지 입력가능합니다.")
         private Integer price;
         @NotNull
