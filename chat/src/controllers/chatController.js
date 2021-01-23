@@ -13,6 +13,26 @@ const SERVICE_PRODUCT_HOST =
 const SERVICE_PRODUCT_PORT =
 	process.env.GREENMARKET_PRODUCT_APP_SERVICE_PORT || "8080";
 
+const getProductsBy = async (articleIdList) => {
+	if (!articleIdList instanceof Array || articleIdList.length <= 0) {
+		return [];
+	}
+	const response = await axios.get(
+		`http://${SERVICE_PRODUCT_HOST}:${SERVICE_PRODUCT_PORT}/api/products?articleIds=${articleIdList}`
+	);
+	return response.data.productArticles;
+};
+
+const getUsersBy = async (userIdList) => {
+	if (!userIdList instanceof Array || userIdList.length <= 0) {
+		return [];
+	}
+	const response = await axios.get(
+		`http://${SERVICE_USER_HOST}:${SERVICE_USER_PORT}/api/user?user_ids=${userIdList}`
+	);
+	return response.data.users;
+};
+
 export const getChatMessage = async (req, res) => {
 	const { roomId } = req.params;
 	try {
@@ -42,20 +62,13 @@ export const getChatRoom = async (req, res) => {
 	}
 
 	try {
-		const sellingProductResponse = await axios.get(
-			`http://${SERVICE_PRODUCT_HOST}:${SERVICE_PRODUCT_PORT}/api/products?userId=${user_id}`
-		);
-		const articles = {};
-		Array.from(sellingProductResponse.data.productArticles).forEach((e) => {
-			articles[e.id] = e;
-		});
 		const whereCondition = {
 			[Op.or]: [
 				{
 					user_id_buyer: user_id,
 				},
 				{
-					article_id: { [Op.in]: Object.keys(articles) },
+					user_id_seller: user_id,
 				},
 			],
 		};
@@ -66,41 +79,45 @@ export const getChatRoom = async (req, res) => {
 			include: [
 				{
 					model: ChatMessage,
-					order: [
-						["create_date", "DESC"],
-						["id", "DESC"],
-					],
+					order: [["id", "DESC"]],
 					limit: 1,
 				},
 			],
 			where: whereCondition,
 			order: [["article_id"]],
 		});
-		const articleIds = chatRoom.map((e) => e.dataValues.article_id);
-		const userIds = new Set(chatRoom.map((e) => e.dataValues.user_id_buyer));
-
-		const users = {};
-		if (userIds.size > 0) {
-			const userResponse = await axios.get(
-				`http://${SERVICE_USER_HOST}:${SERVICE_USER_PORT}/api/user?user_ids=${[
-					...userIds,
-				]}`
-			);
-			Array.from(userResponse.data.users).forEach((e) => {
-				users[e.id] = e;
-			});
-		}
-
-		const productResponse = await axios.get(
-			`http://${SERVICE_PRODUCT_HOST}:${SERVICE_PRODUCT_PORT}/api/products?articleIds=${articleIds}`
-		);
-		Array.from(productResponse.data.productArticles).forEach((e) => {
-			articles[e.id] = e;
+		const articleIdList = chatRoom.map((e) => e.dataValues.article_id);
+		const buyerUserIdList = [
+			...new Set(chatRoom.map((e) => e.dataValues.user_id_buyer)),
+		];
+		const sellerUserIdList = [
+			...new Set(chatRoom.map((e) => e.dataValues.user_id_seller)),
+		];
+		const [
+			productArticleList,
+			buyerUserList,
+			sellerUserList,
+		] = await Promise.all([
+			getProductsBy(articleIdList),
+			getUsersBy(buyerUserIdList),
+			getUsersBy(sellerUserIdList),
+		]);
+		const productArticles = {};
+		const sellerUsers = {};
+		const buyerUsers = {};
+		productArticleList.forEach((e) => {
+			productArticles[e.id] = e;
 		});
-
+		sellerUserList.forEach((e) => {
+			sellerUsers[e.id] = e;
+		});
+		buyerUserList.forEach((e) => {
+			buyerUsers[e.id] = e;
+		});
 		chatRoom.forEach((e) => {
-			e.dataValues.user_buyer = users[e.dataValues.user_id_buyer];
-			e.dataValues.article = articles[e.dataValues.article_id];
+			e.dataValues.article = productArticles[e.dataValues.article_id];
+			e.dataValues.user_buyer = buyerUsers[e.dataValues.user_id_buyer];
+			e.dataValues.user_seller = sellerUsers[e.dataValues.user_id_seller];
 		});
 		res.json({ isSuccess: true, chatRoom });
 	} catch (error) {

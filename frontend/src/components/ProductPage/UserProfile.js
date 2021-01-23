@@ -22,10 +22,8 @@ function UserProfile(props) {
 			if (interest.isChecked) {
 				axios
 					.delete(`/api/products/${props.articleId}/interest`)
-					.then((response) => {
-						if (response.data.isSuccess) {
-							setInterest({ count: interest.count - 1, isChecked: false });
-						}
+					.then(() => {
+						setInterest({ count: interest.count - 1, isChecked: false });
 					})
 					.catch((error) => {
 						console.log(error);
@@ -33,10 +31,8 @@ function UserProfile(props) {
 			} else {
 				axios
 					.post(`/api/products/${props.articleId}/interest`)
-					.then((response) => {
-						if (response.data.isSuccess) {
-							setInterest({ count: interest.count + 1, isChecked: true });
-						}
+					.then(() => {
+						setInterest({ count: interest.count + 1, isChecked: true });
 					})
 					.catch((error) => {
 						console.log(error);

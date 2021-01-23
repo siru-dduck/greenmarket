@@ -26,9 +26,10 @@ function EditFormPage(props) {
 		if (
 			title.value.trim().length <= 0 ||
 			content.value.trim().length <= 0 ||
-			!Number(price.value) ||
-			!Number(category.value) ||
-			Number(price.value) <= 0 ||
+			Number.isNaN(Number(category.value)) ||
+			price.value.trim().length <= 0 ||
+			Number.isNaN(Number(price.value)) ||
+			Number(price.value) < 0 ||
 			Number(price.value) >= 100000000 ||
 			(Number(status.value) !== 0 && Number(status.value) !== 1) ||
 			address1.value.trim().length <= 0 ||
@@ -210,7 +211,7 @@ function EditFormPage(props) {
 						<div className="form-paragraph price">
 							<h3>가격</h3>
 							<input
-								type="text"
+								type="number"
 								name="price"
 								defaultValue={productArticle.price}
 								placeholder="가격(원)"
