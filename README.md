@@ -120,7 +120,7 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `send`함수�
 * [x] ~~회원정보수정 기능~~
 * [x] ~~product service Request Param DTO 생성 및 Validation 적용~~
 * [x] ~~product service Interceptor 적용~~
-* [x] ~~product service 상품등록시에 트랜잭션 롤백상황시 모든 파일이 일괄삭제되지않는 버그 수정 => 파일은 Spring Batch로 처리할 예정 ~~
+* [x] ~~product service 상품등록시에 트랜잭션 롤백상황시 모든 파일이 일괄삭제되지않는 버그 수정 => 파일은 Spring Batch로 처리할 예정~~
 * [x] ~~product 수정, 삭제 기능 추가~~
 * [ ] 구매후기 기능 
 * [ ] 구매내역 조회
