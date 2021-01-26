@@ -26,13 +26,13 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC또는 �
 ### 시스템 구성도
 ![시스템 구성도](/images/screenshot/system_design_diagram.png)
 ### [ER 다이어그램](https://www.erdcloud.com/d/BqDdP5eA6TcskXWvn)
-![ER 다이어그램](/images/screenshot/erd.png)
+![ER 다이어그램](/images/screenshot/erd.PNG)
 
 ---
 ## 실행화면
-![실행화면 - 상품조회](/images/screenshot/screenshot1.png)
-![실행화면 - 상품상세조회](/images/screenshot/screenshot2.png)
-![실행화면 - 유저간 채팅](/images/screenshot/screenshot3.png)
+![실행화면 - 상품조회](/images/screenshot/screenshot1.PNG)
+![실행화면 - 상품상세조회](/images/screenshot/screenshot2.PNG)
+![실행화면 - 유저간 채팅](/images/screenshot/screenshot3.PNG)
 
 ---
 ## 어려웠던 점 & 극복과정
