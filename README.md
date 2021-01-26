@@ -36,7 +36,7 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC또는 �
 
 ---
 ## 어려웠던 점 & 극복과정
-### socket-io.redis 적용시 ```await```이후 ```socket.send``` 호출시 발생하는 에러
+### socket-io.redis 적용시 ```await```이후 ```socket.emit``` 호출시 발생하는 에러
 ```
 io.adapter(redis({ host: REDIS_MASTER_HOST, port: Number(REDIS_MASTER_PORT) })); // socket.io-redis 적용
 // 생략 ...
@@ -51,7 +51,7 @@ socket.on("sendMessage", async ({ message, userId, roomId }) => {
 		}
 	});
 ```
-socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `send`함수에서 에러가 발생하여 개발자 커뮤니티를 통해 문제를 찾으려 했지만 해당문제에 관한 논의나 이슈가 없어 문제점을 찾지 못했는데 코드내부를 살펴본 결과 최신버전의 `socket.io.-redis`와 이전 버전의 동작이 다름을 알았고 버전을 낮춰 버전호환성의 문제임을 깨달았다. 나와 같은 문제를 겪은 사람을 위해 `socket.io-redis` github에 이슈사항에 등록했다.
+socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수에서 에러가 발생하여 개발자 커뮤니티를 통해 문제를 찾으려 했지만 해당문제에 관한 논의나 이슈가 없어 문제점을 찾지 못했는데 코드내부를 살펴본 결과 최신버전의 `socket.io.-redis`와 이전 버전의 동작이 다름을 알았고 버전을 낮춰 버전호환성의 문제임을 깨달았다. 나와 같은 문제를 겪은 사람을 위해 `socket.io-redis` github 이슈사항에 등록했다.
 
 ---
 # 📕 Daily Report 
