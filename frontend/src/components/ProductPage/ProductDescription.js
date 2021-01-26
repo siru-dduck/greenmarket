@@ -17,7 +17,16 @@ function ProductDescription({ article }) {
 					<span className="product-content__tag">무료나눔</span>
 				) : null}
 			</div>
-			<p className="product-content__description">{article.content}</p>
+			<p className="product-content__description">
+				{article.content.split("\n").map((line) => {
+					return (
+						<span>
+							{line}
+							<br />
+						</span>
+					);
+				})}
+			</p>
 			<div className="product-content__counts">
 				관심 {article.interestCount}
 			</div>

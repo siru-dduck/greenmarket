@@ -67,10 +67,15 @@ const ProductContainer = styled.section`
 		display: flex;
 		flex-direction: column;
 		align-items: start;
+		width: 200px;
 		.product-item__title {
+			width: 100%;
 			font-size: 16px;
 			margin-bottom: 4px;
 			letter-spacing: 0.5px;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
 		}
 		.product-item__price {
 			font-size: 15px;

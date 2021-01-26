@@ -1,7 +1,6 @@
 package com.hanium.product.controller.api;
 
 import com.hanium.product.common.AuthRequired;
-import com.hanium.product.dto.CategoryDto;
 import com.hanium.product.dto.ProductArticleDto;
 import com.hanium.product.dto.UserDto;
 import com.hanium.product.service.ChatService;

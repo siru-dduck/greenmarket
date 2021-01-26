@@ -1,110 +1,102 @@
-drop database green_market;
 create database green_market;
 use green_market;
 
-CREATE TABLE `product_article` (
-	`id`	int	NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '게시글 아이디' ,
-	`title`	varchar(100)	NOT NULL	COMMENT '게시글 제목',
-	`content`	text	NULL	COMMENT '게시글 내용',
-	`write_date`	datetime	NOT NULL	DEFAULT now()	COMMENT '게시글 작성시각',
-	`update_date`	datetime	NULL	COMMENT '게시글 수정시각',
-	`price`	int	NOT NULL	COMMENT '상품가격',
-	`interest_count`	int	NULL	DEFAULT 0	COMMENT '상품 관심수 (cf 좋아요 갯수와 비슷한 개념)',
-	`user_id`	int	NOT NULL	COMMENT '게시글작성자 ID (user ID)',
-	`category_id`	int	NOT NULL	COMMENT '카테고리 아이디',
-	`status`	bit	NOT NULL DEFAULT 0	COMMENT '상품거래 상태(거래진행중:0, :거래완료:1)'
+create table category
+(
+	id int auto_increment comment '카테고리 아이디'
+		primary key,
+	name varchar(30) not null comment '카테고리  이름'
 );
 
-CREATE TABLE `user` (
-	`id`	int	NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '사용자 id',
-	`email`	varchar(50)	NOT NULL UNIQUE	COMMENT 'OAuth 용 이메일 (카카오,구글,네이버)',
-	`password`	varchar(100)	NOT NULL	COMMENT '비밀번호',
-	`address1`	varchar(30)	NOT NULL	COMMENT '주소1',
-	`address2`	varchar(30)	NOT NULL	COMMENT '주소2',
-	`nickname`	varchar(30)	NOT NULL	COMMENT '사용자 별명',
-	`profile_image_url`	varchar(255)	NULL	COMMENT '프로필 이미지 파일 url',
-	`kakao_id`	int	NULL,
-	`naver_id`	int	NULL
+create table chat_room
+(
+	id int auto_increment comment '체팅방아이디'
+		primary key,
+	article_id int not null comment '게시글 아이디',
+	user_id_buyer int not null comment '사용자 id',
+	user_id_seller int not null,
+	constraint UQ_CHAT_ROOM
+		unique (article_id, user_id_buyer)
 );
 
-CREATE TABLE `product_review` (
-	`article_id`	int	NOT NULL	COMMENT '게시글 아이디',
-	`content`	text	NOT NULL	COMMENT '상품거래후기 내용',
-	`date`	datetime	NOT NULL	DEFAULT now()	COMMENT '삼품거래후기 작성시각',
-	`user_id`	int	NOT NULL	COMMENT '상품거래후기 작성자 ID (user  ID)'
+create table chat_message
+(
+	id int auto_increment
+		primary key,
+	room_id int not null comment '체팅방아이디',
+	user_id int not null comment '메세지를 보낸 사용자 아이디',
+	message text not null comment '채팅메세지',
+	create_date datetime default CURRENT_TIMESTAMP not null comment '채팅을 보낸날짜',
+	constraint chat_message_chat_room_id_fk
+		foreign key (room_id) references chat_room (id)
+			on delete cascade
 );
 
-CREATE TABLE `product_interest` (
-	`article_id`	int	NOT NULL	COMMENT '게시글 아이디',
-	`user_id`	int	NOT NULL	COMMENT '사용자 id',
-	`status`	bit(1)	NOT NULL	DEFAULT 0	COMMENT '좋아요여부(0:좋아요비활성화, 1:좋아요활성화)'
+create table product_article
+(
+	id int auto_increment comment '게시글 아이디'
+		primary key,
+	title varchar(100) not null comment '게시글 제목',
+	content text null comment '게시글 내용',
+	write_date datetime default CURRENT_TIMESTAMP not null comment '게시글 작성시각',
+	update_date datetime null comment '게시글 수정시각',
+	price int not null comment '상품가격',
+	interest_count int default 0 null comment '상품 관심수 (cf 좋아요 갯수와 비슷한 개념)',
+	user_id int not null comment '게시글작성자 ID (user ID)',
+	category_id int not null comment '카테고리 아이디',
+	status bit default b'0' not null comment '상품거래 상태(거래진행중:0, :거래완료:1)',
+	address1 varchar(255) not null comment '주소(시,군)',
+	address2 varchar(255) not null comment '주소(구,읍,면)' 
 );
 
-CREATE TABLE `category` (
-	`id`	int	NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '카테고리 아이디' ,
-	`name`	varchar(30)	NOT NULL	COMMENT '카테고리  이름'
+create table product_image
+(
+	list_num int not null comment '게시글 이미지 리스트 번호',
+	article_id int not null comment '게시글 아이디',
+	file_url varchar(255) not null comment '이미지 파일 url',
+	primary key (list_num, article_id),
+	constraint FK_product_article_TO_product_image_1
+		foreign key (article_id) references product_article (id)
+			on delete cascade
 );
 
-CREATE TABLE `product_image` (
-	`list_num`	int	NOT NULL	COMMENT '게시글 이미지 리스트 번호' ,
-	`article_id`	int	NOT NULL	COMMENT '게시글 아이디',
-	`file_url`	varchar(255)	NOT NULL	COMMENT '이미지 파일 url'
+create table product_review
+(
+	article_id int not null comment '게시글 아이디'
+		primary key,
+	content text not null comment '상품거래후기 내용',
+	date datetime default CURRENT_TIMESTAMP not null comment '삼품거래후기 작성시각',
+	user_id int not null comment '상품거래후기 작성자 ID (user  ID)',
+	constraint FK_product_article_TO_product_review_1
+		foreign key (article_id) references product_article (id)
+			on delete cascade
 );
 
-CREATE TABLE `chat_room` (
-	`id`	int	NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '체팅방아이디',
-	`article_id`	int	NOT NULL	COMMENT '게시글 아이디',
-	`user_id_buyer`	int	NOT NULL	COMMENT '사용자 id',
-    CONSTRAINT UQ_CHAT_ROOM UNIQUE (article_id, user_id_buyer)
+create table user
+(
+	id int auto_increment comment '사용자 id'
+		primary key,
+	email varchar(50) not null comment 'OAuth 용 이메일 (카카오,구글,네이버)',
+	password varchar(100) not null comment '비밀번호',
+	address1 varchar(30) not null comment '주소1',
+	address2 varchar(30) not null comment '주소2',
+	nickname varchar(30) not null comment '사용자 별명',
+	profile_image_url varchar(255) null comment '프로필 이미지 파일 url',
+	kakao_id int null,
+	naver_id int null,
+	constraint email
+		unique (email)
 );
 
-CREATE TABLE `chat_message` (
-	`id`	int	NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`room_id`	int	NOT NULL	COMMENT '체팅방아이디',
-	`user_id`	int	NOT NULL	COMMENT '메세지를 보낸 사용자 아이디',
-	`message`	text NOT NULL	COMMENT '채팅메세지',
-	`create_date`	datetime NOT NULL	DEFAULT now()	COMMENT '채팅을 보낸날짜'
-);
-
-
-ALTER TABLE `product_review` ADD CONSTRAINT `PK_PRODUCT_REVIEW` PRIMARY KEY (
-	`article_id`
-);
-
-ALTER TABLE `product_image` ADD CONSTRAINT `PK_PRODUCT_IMAGE` PRIMARY KEY (
-	`list_num`,
-	`article_id`
-);
-
-ALTER TABLE `product_interest` ADD CONSTRAINT `PK_PRODUCT_INTEREST` PRIMARY KEY (
-	`article_id`,
-	`user_id`
-);
-
-ALTER TABLE `product_review` ADD CONSTRAINT `FK_product_article_TO_product_review_1` FOREIGN KEY (
-	`article_id`
+create table product_interest
+(
+	article_id int not null comment '상품게시글 아이디', 
+	user_id int not null comment '사용자 아이디',
+	constraint product_interest_pk
+		unique (article_id, user_id),
+	constraint product_interest_product_article_id_fk
+		foreign key (article_id) references product_article (id)
+			on delete cascade,
+	constraint product_interest_user_id_fk
+		foreign key (user_id) references user (id)
 )
-REFERENCES `product_article` (
-	`id`
-);
-
-ALTER TABLE `product_image` ADD CONSTRAINT `FK_product_article_TO_product_image_1` FOREIGN KEY (
-	`article_id`
-)
-REFERENCES `product_article` (
-	`id`
-);
-
-ALTER TABLE `product_interest` ADD CONSTRAINT `FK_product_article_TO_product_interest_1` FOREIGN KEY (
-	`article_id`
-)
-REFERENCES `product_article` (
-	`id`
-);
-
-ALTER TABLE `product_interest` ADD CONSTRAINT `FK_user_TO_product_interest_1` FOREIGN KEY (
-	`user_id`
-)
-REFERENCES `user` (
-	`id`
-);

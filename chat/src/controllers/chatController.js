@@ -152,7 +152,7 @@ export const createChatRoom = async (req, res) => {
 				user_id_buyer: buyerId,
 				user_id_seller: sellerId,
 			});
-			console.dir(chatRoom);
+
 			return res.json({
 				isSuccess: true,
 				code: 200,

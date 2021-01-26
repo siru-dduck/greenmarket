@@ -186,17 +186,19 @@ function EditFormPage(props) {
 							<select defaultValue={productArticle.category.id} name="category">
 								<option hidden>카테고리</option>
 								<option value="1">디지털/가전</option>
-								<option value="2">유아동/유아도서</option>
-								<option value="3">생활/가공식품</option>
-								<option value="4">스포츠/레저</option>
-								<option value="5">여성잡화</option>
-								<option value="6">여성의류</option>
-								<option value="7">남성패션/잡화</option>
-								<option value="8">게임/취미</option>
-								<option value="9">뷰티/내용</option>
-								<option value="10">반려동물용품</option>
-								<option value="11">도서티켓/음반</option>
-								<option value="12">기타중고용품</option>
+								<option value="2">가구/인테리어</option>
+								<option value="3">유아동/유아도서</option>
+								<option value="4">생활/가공식품</option>
+								<option value="5">스포츠/레저</option>
+								<option value="6">여성잡화</option>
+								<option value="7">여성의류</option>
+								<option value="8">남성패션/잡화</option>
+								<option value="9">게임/취미</option>
+								<option value="10">뷰티/미용</option>
+								<option value="11">반려동물용품</option>
+								<option value="12">도서티켓/음반</option>
+								<option value="13">식물</option>
+								<option value="14">기타 중고물품</option>
 							</select>
 						</div>
 						<div className="form-paragraph title">
