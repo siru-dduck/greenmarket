@@ -36,6 +36,9 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC또는 �
 
 ---
 ## 어려웠던 점 & 극복과정
+### 마이크로 서비스간의 통신
+마이크로 서비스 설계시 서비스간의 주고받는 데이터와 데이터베이스의 논리적인 분리가 처음 설계하는 부분이어서 어려웠지만 서비스간의 의존성을 분석하고 정리하여 chat, user, product서비스로 분리하여 설계하고 개발할 수 있었다. 현재는 트랜잭션이 없지만 앞으로 Image File Service, Commuity Service(게시판 기반의 커뮤니티)로 확장할때 논리적으로 분리된 서비스간에 어떻게 트랜잭션을 할지에 대한 고민이 있었다. 현재 생각하고 있는 방법은 Message Queue기반의 Saga패턴을 이용해 서비스간의 트랜잭션을 구현할 예정이다.
+
 ### socket-io.redis 적용시 ```await```이후 ```socket.emit``` 호출시 발생하는 에러
 ```
 io.adapter(redis({ host: REDIS_MASTER_HOST, port: Number(REDIS_MASTER_PORT) })); // socket.io-redis 적용
@@ -112,6 +115,9 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 * 카테고리 항목추가(가구/인테리어, 식물)
 * 상품설명에 있는 개행문자('\n')를 ```<br>```태그로 변환
 
+### 2021년 1월28일
+* Chat Service 3 layer 아키택처 적용
+
 ---
 
 # ✅ TODO
@@ -128,5 +134,6 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 * [ ] gRPC 또는 메세지 큐(Kafka)도입
 * [ ] DB를 Product, User, Chat Service별로 분리 (느슨한 결합도)
 * [ ] Image File Service 개발 (Image Crop 기능포함)
+* [ ] Community Service 개발 (게시판 기반의 커뮤니티)
 * [ ] CI/CD 도입
 * [ ] 카카오톡, 네이버 로그인기능
