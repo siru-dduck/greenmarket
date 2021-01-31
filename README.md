@@ -1,7 +1,7 @@
 # 초록장터
 
 2020년 한이음 ICT 멘토링 프로젝트 '쿠버네티스기반 MSA 어플리케이션'에서 진행한 프로젝트로 중고거래사이트를 각각 독립적으로 배포가 가능한 Micro Service로 개발후 쿠버네티스에 배포하는것을 목표로 진행된 프로젝트입니다. 해당 프로젝트는 중고거래사이트 프로젝트이며 인증과 사용자 정보를 담당하는 user 서비스, 상품을 담당하는 product 서비스, 채팅을 담당하는 chat service로 나누어져 있어 각각 독립적으로 배포 및 개발이 가능 합니다. 각각의 서비스는 도커이미지로 만든 후에 쿠버네티스상에 배포됩니다. 각각의 서비스는 느슨한 결합도를 위해 서비스간에 http통신을 통해 느슨한 결합을 지향했습니다. 
-http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC또는 메세지큐(Kafka)를 도입할 예정입니다.<br><br>
+http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리고 메세지큐(Kafka)를 도입할 예정입니다.<br><br>
 **프로젝트기간** : 2020년 5월 ~ 2020년 11월 
 (💻현재 개인으로 리팩토링 중)
 
@@ -21,6 +21,14 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC또는 �
 **사용기술** :  express, sequelize, socket.io
 * 판매자와 구매자간의 채팅
   
+## 💾 프로젝트 디렉토리 구조
+|Directory|Description|
+|------|------|
+|[frontend](https://github.com/sinwoo1225/greenmarket/tree/master/frontend)|어플리케이션의 화면을 담당하는 React기반의 프로젝트 입니다. 웹페이지에 필요한 컴포넌트와 API간의 통신을 담당하고 있습니다.|
+|[product](https://github.com/sinwoo1225/greenmarket/tree/master/product)|`product`는 상품에 대한 전반적인 기능을 담당하는 프로젝트입니다. 중고거래를 이용하는 사용자가 등록된 상품을 읽고 검색할 수 있으며 중고거래를 위해 상품을 등록,수정,삭제가 가능합니다. 상품에 대한 관심을 추가할 수 있습니다.|
+|[user](https://github.com/sinwoo1225/greenmarket/tree/master/user)|`user`는 사용자의 인증과 조회, 회원가입, 프로필 수정에 대한 부분을 다루는 프로젝트입니다. 인증은 Jwt 발급을 통해 다른 각각의 서비스에서 인증을 할 수 있도록 했습니다.|
+|[chat](https://github.com/sinwoo1225/greenmarket/tree/master/chat)|`chat`은 사용자간의 채팅을 담당하는 프로젝트입니다. `socket-io`를 통해 양방향 통신 채팅을 구현했습니다. 사용자간의 채팅을 통해 거래가 이루어집니다.|
+|[deployments](https://github.com/sinwoo1225/greenmarket/tree/master/deployments)|`deployments`는 각강의 서비스를 쿠버네티스에 배포하는데 필요한 `yaml`파일들을 정의했습니다. 어플리케이션 배포에 필요한 ingress, deployment, dashboard, persistent-volume을 생성할 수 있습니다.
 ---
 ## 설계
 ### 시스템 구성도
@@ -40,7 +48,7 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC또는 �
 마이크로 서비스 설계시 서비스간의 주고받는 데이터와 데이터베이스의 논리적인 분리가 처음 설계하는 부분이어서 어려웠지만 서비스간의 의존성을 분석하고 정리하여 chat, user, product서비스로 분리하여 설계하고 개발할 수 있었다. 현재는 트랜잭션이 없지만 앞으로 Image File Service, Commuity Service(게시판 기반의 커뮤니티)로 확장할때 논리적으로 분리된 서비스간에 어떻게 트랜잭션을 할지에 대한 고민이 있었다. 현재 생각하고 있는 방법은 Message Queue기반의 Saga패턴을 이용해 서비스간의 트랜잭션을 구현할 예정이다.
 
 ### socket-io.redis 적용시 ```await```이후 ```socket.emit``` 호출시 발생하는 에러
-```
+```javascript
 io.adapter(redis({ host: REDIS_MASTER_HOST, port: Number(REDIS_MASTER_PORT) })); // socket.io-redis 적용
 // 생략 ...
 socket.on("sendMessage", async ({ message, userId, roomId }) => {

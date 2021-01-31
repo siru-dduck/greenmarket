@@ -43,43 +43,24 @@ export const loginUser = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
-		res.json({ loginSuccess: false });
+		res.status(500).json({ loginSuccess: false });
 	}
 };
 
 export const logoutUser = (req, res) => {
-	const token = req.cookies.x_auth;
-	if (!token) {
-		return res.status(400).json({
-			logoutSuccess: false,
-			code: 400,
-			message: "전송된 토큰이 없습니다.",
-		});
-	}
 	return res
 		.cookie("x_auth", "", { expires: new Date(Date.now()), httpOnly: true })
 		.json({ logoutSuccess: true });
 };
 
 export const authUser = (req, res) => {
-	const token = req.cookies.x_auth;
-	if (!token) {
+	const { decodedToken } = req;
+	if (!decodedToken) {
 		return res
 			.status(200)
 			.json({ isAuth: false, code: 200, message: "전송된 토큰이 없습니다." });
 	}
-	try {
-		const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
-		const { id, email } = decoded;
-		return res.json({ isAuth: true, code: 200, user: { id, email } });
-	} catch (error) {
-		if (error.name === "TokenExpiredError") {
-			return json
-				.status(419)
-				.json({ isAuth: false, code: 419, message: "토큰이 만료되었습니다." });
-		}
-		return res
-			.status(401)
-			.json({ isAuth: false, code: 401, message: "유효하지 않은 토큰입니다." });
-	}
+
+	const { id, email } = decodedToken;
+	return res.json({ isAuth: true, code: 200, user: { id, email } });
 };
