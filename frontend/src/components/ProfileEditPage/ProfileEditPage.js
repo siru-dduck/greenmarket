@@ -61,20 +61,16 @@ function ProfileEditPage(props) {
 			.put(`/api/user/${props.match.params.id}`, formData, config)
 			.then((response) => {
 				console.log(response);
-				if (response.data.isSuccess) {
-					const upadtedUser = {
-						...user,
-						nickname: nickname.value,
-						address1: address1.value,
-						address2: address2.value,
-						profile_image_url: userProfile.profile.profile_image_url,
-					};
-					setUser(upadtedUser);
-					localStorage.setItem("user", JSON.stringify(upadtedUser));
-					props.history.push(`/user/${props.match.params.id}/profile`);
-				} else {
-					alert("프로필수정에 실패하였습니다.");
-				}
+				const upadtedUser = {
+					...user,
+					nickname: nickname.value,
+					address1: address1.value,
+					address2: address2.value,
+					profile_image_url: userProfile.profile.profile_image_url,
+				};
+				setUser(upadtedUser);
+				localStorage.setItem("user", JSON.stringify(upadtedUser));
+				props.history.push(`/user/${props.match.params.id}/profile`);
 			})
 			.catch(() => {
 				alert("프로필수정에 실패하였습니다.");
