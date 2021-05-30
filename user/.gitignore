@@ -114,8 +114,6 @@ dist
 .yarn/build-state.yml
 .pnp.*
 
-config/
-
 manifest.yml
 build
 resources

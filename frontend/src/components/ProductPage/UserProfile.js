@@ -74,8 +74,8 @@ function UserProfile(props) {
 			axios
 				.delete(`/api/products/${id}`)
 				.then((response) => {
-					console.log(response);
-					if (response.data.isSuccess) {
+					if (response.status === 204) {
+						alert("게시글을 삭제했습니다.");
 						props.history.push("/");
 					} else {
 						alert("게시글 삭제에 실패했습니다.");

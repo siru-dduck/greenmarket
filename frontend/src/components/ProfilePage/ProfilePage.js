@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import TopHeader from "../Header/TopHeader";
 import { MainLayout } from "../../util/style/LayoutStyle";
+import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import UserContext from "../../util/context/User.context";
@@ -35,10 +36,14 @@ function ProfilePage(props) {
 						<h1 className="user-profile__title">프로필</h1>
 						<div className="user-profile">
 							<div className="user-profile__image">
-								<img
-									src={userProfile.profile.profile_image_url}
-									alt="유저 프로필 이미지"
-								/>
+								{userProfile.profile.profile_image_url ? (
+									<img
+										src={userProfile.profile.profile_image_url}
+										alt="유저 프로필 이미지"
+									/>
+								): (
+									<FaUserCircle size="24" color="#bdc3c7" />
+								)}
 							</div>
 							<div className="user-profile__description">
 								<span className="user-profile__nickname">

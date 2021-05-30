@@ -4,7 +4,7 @@ metadata:
     name: greenmarket-chat-app
     namespace: production
 spec:
-    replicas: 1
+    replicas: 2
     selector:
         matchLabels:
             app: greenmarket-chat-app

@@ -4,6 +4,7 @@ import { FormLayout } from "../../util/style/FormStyle";
 import { MainLayout } from "../../util/style/LayoutStyle";
 import TopHeader from "../Header/TopHeader";
 import { GoPencil } from "react-icons/go";
+import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 import UserContext from "../../util/context/User.context";
 
@@ -113,10 +114,14 @@ function ProfileEditPage(props) {
 						<EditForm onSubmit={onSubmit}>
 							<h2>프로필 수정</h2>
 							<div className="profile-image">
-								<img
-									src={userProfile.profile.profile_image_url}
-									alt="유저 프로필 이미지"
-								/>
+								{userProfile.profile.profile_image_url ? (
+									<img
+										src={userProfile.profile.profile_image_url}
+										alt="유저 프로필 이미지"
+									/>
+								): (
+									<FaUserCircle size="24" color="#bdc3c7" />
+								)}
 								<button
 									onClick={onClickImageEditButton}
 									className="profile-image__edit-btn"

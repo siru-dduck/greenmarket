@@ -50,18 +50,29 @@ function NewFormPage(props) {
 		imageFiles.forEach((file) => {
 			formData.append("files", file);
 		});
-		formData.append("title", title.value);
-		formData.append("price", price.value);
-		formData.append("content", content.value);
-		formData.append("categoryId", category.value);
-		formData.append("address1", address1.value);
-		formData.append("address2", address2.value);
+		formData.append("title", 		title.value);
+		formData.append("price", 		price.value);
+		formData.append("content", 		content.value);
+		formData.append("categoryId", 	category.value);
+		formData.append("address1", 	address1.value);
+		formData.append("address2", 	address2.value);
+		
+		console.debug("[Project Regist] FormData");
+		console.dir(formData);
+		console.debug("==== Project Regist ====");
+		console.debug(title.value
+			,price.value
+			,content.value
+			,category.value
+			,address1.value
+			,address2.value);
 		axios
 			.post("/api/products", formData, config)
 			.then((response) => {
 				props.history.push(`/products/${response.data.articleId}`);
 			})
-			.catch(() => {
+			.catch((e) => {
+				console.error("Produst Regist Error", e);
 				// TODO jwt 유효기간 만료 및 쿠키 만료등으로 유저인증이 안될경우 현재 작성한 페이지를 저장하고 로그인페이지로 이동
 				alert("상품등록에 실패하였습니다.");
 			});

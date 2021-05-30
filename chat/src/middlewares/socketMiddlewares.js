@@ -13,11 +13,14 @@ const SERVICE_PRODUCT_PORT =
 export const authJwt = (socket, next) => {
 	try {
 		const token = socket.request.cookies.x_auth;
+		console.dir(socket.request);
+		console.log(token.cookies);
 		const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
 		const { id } = decoded;
 		socket.userId = id;
 		next();
 	} catch (error) {
+		console.error(error);
 		const err = new Error("NotAuthorized");
 		err.data = { type: "NotAuthorized" };
 		next(err);
