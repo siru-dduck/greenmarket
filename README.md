@@ -137,11 +137,18 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 * [x] ~~product service Interceptor 적용~~
 * [x] ~~product service 상품등록시에 트랜잭션 롤백상황시 모든 파일이 일괄삭제되지않는 버그 수정 => 파일은 Spring Batch로 처리할 예정~~
 * [x] ~~product 수정, 삭제 기능 추가~~
+* [ ] Chat Service DB MongoDB로 변경
+* [ ] 카테고리별 검색기능
 * [ ] 구매후기 기능 
 * [ ] 구매내역 조회
 * [ ] 상품등록내역 조회
-* [ ] gRPC 또는 메세지 큐(Kafka)도입
+* [ ] gRPC, 메세지 큐(Kafka)도입
+* [ ] 이벤트 소싱 도입
+* [ ] Product 서비스 JPA 리뉴얼
+* [ ] Swagger 도입
+* [ ] React App Notification 기능추가
 * [ ] DB를 Product, User, Chat Service별로 분리 (느슨한 결합도)
 * [ ] Image File Service 개발 (Image Crop 기능포함)
 * [ ] CI/CD 도입
 * [ ] 카카오톡, 네이버 로그인기능
+* [ ] Refresh Token 도입
