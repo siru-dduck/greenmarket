@@ -127,6 +127,9 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 * 카테고리 항목추가(가구/인테리어, 식물)
 * 상품설명에 있는 개행문자('\n')를 ```<br>```태그로 변환
 
+### 2021년 10월3일
+* product service 리뉴얼 준비 (jpa기반으로 준비)
+* 지금까지 데이터의 조합을 client-side에서 처리했는데 front-aggregation server 설계 고민
 ---
 
 # ✅ TODO
@@ -137,6 +140,7 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 * [x] ~~product service Interceptor 적용~~
 * [x] ~~product service 상품등록시에 트랜잭션 롤백상황시 모든 파일이 일괄삭제되지않는 버그 수정 => 파일은 Spring Batch로 처리할 예정~~
 * [x] ~~product 수정, 삭제 기능 추가~~
+* [ ] 개발환경 docker-compose기반으로 구성
 * [ ] Chat Service DB MongoDB로 변경
 * [ ] 카테고리별 검색기능
 * [ ] 구매후기 기능 
