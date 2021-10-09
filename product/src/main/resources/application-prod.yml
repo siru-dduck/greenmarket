@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+# ??? ??
+spring:
+  devtools:
+    livereload:
+      enabled: true
+
+  # ?????? ??
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_SERVICE_HOST}:${MYSQL_SERVICE_PORT}/green_market
+    username: root
+    password: k8s123!@#
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+# ??? ?? ??
+resource:
+  file:
+    path: /resources/images/
+
+# Another Micro Service Config
+service:
+  chat:
+    host: ${GREENMARKET_CHAT_APP_SERVICE_HOST}
+    port: ${GREENMARKET_CHAT_APP_SERVICE_PORT}
+  user:
+    host: ${GREENMARKET_USER_APP_SERVICE_HOST}
+    port: ${GREENMARKET_USER_APP_SERVICE_PORT}
+
+# mybatis
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/**/**.xml
