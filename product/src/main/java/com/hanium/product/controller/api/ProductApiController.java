@@ -25,7 +25,11 @@ public class ProductApiController {
     private final ChatService chatService;
     private final ProductInterestService productInterestService;
 
+    /**
+     * 상품 리스트 검색은 elasticsearch 기반의 별도의 검색서비스로 분리예정
+     */
     @GetMapping
+    @Deprecated
     public Map<String, Object> getProductList(
             @Valid ProductArticleDto.SearchInfo searchInfo) {
         Map<String, Object> result = new HashMap<>();

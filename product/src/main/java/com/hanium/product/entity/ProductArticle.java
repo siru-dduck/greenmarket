@@ -1,9 +1,6 @@
 package com.hanium.product.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Entity;
@@ -18,7 +15,7 @@ import java.util.Objects;
  */
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access =  AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class ProductArticle {
