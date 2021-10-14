@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import siru.fileservice.domain.file.FileType;
 import siru.fileservice.dto.UploadImageDto;
@@ -27,7 +24,8 @@ import java.net.URI;
  */
 @Slf4j
 @RequiredArgsConstructor
-@RestController("/api/file-service")
+@RestController
+//@RequestMapping("/api/file-service")
 public class FileController {
 
     private final FileService fileService;
@@ -42,7 +40,8 @@ public class FileController {
     @GetMapping(GET_UPLOAD_IMAGE_PATH)
     public ResponseEntity<Void> getProductImage(@PathVariable long fileId) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/resources/images/product/nongdamgom.jpeg"));
+        String fileUrl = fileService.findFileUrl(fileId);
+        headers.setLocation(URI.create(fileUrl));
         return ResponseEntity.status(HttpStatus.SEE_OTHER).headers(headers).build();
     }
 
