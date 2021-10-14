@@ -1,29 +1,76 @@
 package siru.fileservice.controller;
 
-
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import siru.fileservice.domain.file.FileType;
+import siru.fileservice.dto.UploadImageDto;
+import siru.fileservice.service.FileService;
 
+import javax.validation.constraints.NotEmpty;
+import java.io.IOException;
+import java.net.URI;
+
+/**
+ * 파일 업로드, 다운로드 컨트롤러
+ * @author siru
+ */
 @Slf4j
+@RequiredArgsConstructor
 @RestController("/api/file-service")
 public class FileController {
 
-    @ApiOperation(value = "상품 파일 이미지 조회", notes = "상품 파일 이미지 조회후 리소스 경로로 리다렉트")
+    private final FileService fileService;
+
+    private static final String GET_UPLOAD_IMAGE_PATH = "/upload/{fileId}/image";
+
+    @ApiOperation(value = "이미지 파일 리다이렉트", notes = "상품 파일 이미지 조회후 리소스 경로로 리다렉트")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "ok"),
-            @ApiResponse(code = 404, message = "page not found!")
+            @ApiResponse(code = 303, message = "see other"),
+            @ApiResponse(code = 404, message = "file not found")
     })
-    @GetMapping("/upload/products/{fileId}/image")
+    @GetMapping(GET_UPLOAD_IMAGE_PATH)
     public ResponseEntity<Void> getProductImage(@PathVariable long fileId) {
-        log.info("Get Product Image {}", fileId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/resources/images/product/nongdamgom.jpeg"));
+        return ResponseEntity.status(HttpStatus.SEE_OTHER).headers(headers).build();
     }
 
+    /**
+     * TODO validation
+     */
+    @ApiOperation(value = "이미지 파일 업로드", notes = "상품 파일 이미지 업로드")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "created")
+    })
+    @PostMapping("/upload/{fileType}/image")
+    public ResponseEntity<Void> uploadProductImage(@PathVariable FileType fileType
+            , @NotEmpty(message = "파일은 필수로 첨부해야합니다.") MultipartFile file) throws IOException {
+        log.info("Upload {} file: {} {}", fileType, file.getContentType(), file.getSize());
+
+        // 파일 업로드
+        UploadImageDto uploadImageInfo = UploadImageDto.builder()
+                .fileType(fileType)
+                .uploadFile(file)
+                .build();
+        long resultFileId = fileService.uploadImageFile(uploadImageInfo);
+
+        // 응답
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(GET_UPLOAD_IMAGE_PATH.replace("{fileId}", String.valueOf(resultFileId))));
+
+        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).build();
+    }
+
+    // TODO Exception Handling
 }

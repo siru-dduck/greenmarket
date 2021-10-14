@@ -18,10 +18,19 @@ public class MvcConfig implements WebMvcConfigurer {
 
     private final FileResourceProp fileResourceProp;
 
+    /**
+     * static 파일설정
+     * @param registry
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 상품이미지 파일경로 및 핸들러 설정
         registry.addResourceHandler("/resources/images/product/**")
-                .addResourceLocations("file:" + fileResourceProp.getSavePath());
+                .addResourceLocations("file:" + fileResourceProp.getProductImageSavePath());
+
+        // 유저 프로필이미지 파일경로 및 핸들러 설정
+        registry.addResourceHandler("/resources/images/profile/**")
+                .addResourceLocations("file:" + fileResourceProp.getProfileImageSavePath());
     }
 
 }

@@ -21,7 +21,10 @@ spring:
 
 # 업로드 파일 설정
 file-resource:
-    save-path: src/main/resources/images/product/
+    product-image-url: /resources/images/product/
+    profile-image-url: /resources/images/profile/
+    product-image-save-path: src/main/resources/images/product/
+    profile-image-save-path: src/main/resources/images/profile/
 
 logging:
   level:
