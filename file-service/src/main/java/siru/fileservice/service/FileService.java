@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.imgscalr.Scalr;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
@@ -14,9 +15,10 @@ import siru.fileservice.configuration.properties.FileResourceProp;
 import siru.fileservice.domain.file.FileStatus;
 import siru.fileservice.domain.file.FileType;
 import siru.fileservice.domain.file.ImageFile;
+import siru.fileservice.dto.FindImageFileDto;
 import siru.fileservice.dto.UploadImageDto;
-import siru.fileservice.exception.BadRequestException;
 import siru.fileservice.exception.FileSaveException;
+import siru.fileservice.exception.IllegalRequestException;
 import siru.fileservice.exception.NotFoundException;
 import siru.fileservice.exception.NotSupportedException;
 import siru.fileservice.repository.ImageFileRepository;
@@ -43,6 +45,7 @@ import java.util.UUID;
 public class FileService {
 
     private final ImageFileRepository imageFileRepository;
+    private final ModelMapper modelMapper;
     private final Tika tika;
     private final FileResourceProp fileResourceProp;
 
@@ -54,10 +57,13 @@ public class FileService {
      * @param fileId
      * @return
      */
-    public String findFileUrl(long fileId) {
+    public FindImageFileDto findImageFile(long fileId) {
         ImageFile findFile = imageFileRepository.findById(fileId)
                 .orElseThrow(() -> new NotFoundException("파일을 찾을 수 없습니다."));
-        return findFile.getFileUrl();
+
+        FindImageFileDto resultImageFileInfo = modelMapper.map(findFile, FindImageFileDto.class);
+
+        return resultImageFileInfo;
     }
 
     /**
@@ -114,7 +120,7 @@ public class FileService {
 
             // 이미지 크기검증
             if (!validateImageSize(tempFile)) {
-                throw new BadRequestException("이미지 크기는 380x380 이상이어야 합니다.");
+                throw new IllegalRequestException("이미지 크기는 380x380 이상이어야 합니다.");
             }
 
             // 이미지 crop 및 저장

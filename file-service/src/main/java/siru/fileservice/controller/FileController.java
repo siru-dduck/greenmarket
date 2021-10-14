@@ -9,12 +9,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import siru.fileservice.domain.file.FileType;
+import siru.fileservice.dto.FindImageFileDto;
 import siru.fileservice.dto.UploadImageDto;
+import siru.fileservice.exception.*;
 import siru.fileservice.service.FileService;
 
-import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.net.URI;
 
@@ -25,36 +28,50 @@ import java.net.URI;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-//@RequestMapping("/api/file-service")
+@RequestMapping("/api/file-service")
 public class FileController {
 
     private final FileService fileService;
 
-    private static final String GET_UPLOAD_IMAGE_PATH = "/upload/{fileId}/image";
+    private static final String GET_ORIGIN_IMAGE_PATH = "/image/{fileId}/origin";
 
-    @ApiOperation(value = "이미지 파일 리다이렉트", notes = "상품 파일 이미지 조회후 리소스 경로로 리다렉트")
+    @ApiOperation(value = "이미지 파일 리다이렉트", notes = "파일 원본 이미지 조회후 리소스 경로로 리다렉트")
     @ApiResponses({
             @ApiResponse(code = 303, message = "see other"),
             @ApiResponse(code = 404, message = "file not found")
     })
-    @GetMapping(GET_UPLOAD_IMAGE_PATH)
-    public ResponseEntity<Void> getProductImage(@PathVariable long fileId) {
+    @GetMapping(GET_ORIGIN_IMAGE_PATH)
+    public ResponseEntity<Void> getOriginImage(@PathVariable long fileId) {
+        FindImageFileDto imageFileInfo = fileService.findImageFile(fileId);
+        String fileUrl = imageFileInfo.getFileUrl();
+
         HttpHeaders headers = new HttpHeaders();
-        String fileUrl = fileService.findFileUrl(fileId);
         headers.setLocation(URI.create(fileUrl));
         return ResponseEntity.status(HttpStatus.SEE_OTHER).headers(headers).build();
     }
 
-    /**
-     * TODO validation
-     */
+    @ApiOperation(value = "썸네일 이미지 파일 리다이렉트", notes = "파일 썸네일 이미지 조회후 리소스 경로로 리다렉트")
+    @ApiResponses({
+            @ApiResponse(code = 303, message = "see other"),
+            @ApiResponse(code = 404, message = "file not found")
+    })
+    @GetMapping("/image/{fileId}/thumbnail")
+    public ResponseEntity<Void> getThumbnailImage(@PathVariable long fileId) {
+        FindImageFileDto imageFileInfo = fileService.findImageFile(fileId);
+        String fileUrl = imageFileInfo.getFileCropUrl();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(fileUrl));
+        return ResponseEntity.status(HttpStatus.SEE_OTHER).headers(headers).build();
+    }
+
     @ApiOperation(value = "이미지 파일 업로드", notes = "상품 파일 이미지 업로드")
     @ApiResponses({
             @ApiResponse(code = 201, message = "created")
     })
-    @PostMapping("/upload/{fileType}/image")
+    @PostMapping("/image/{fileType}")
     public ResponseEntity<Void> uploadProductImage(@PathVariable FileType fileType
-            , @NotEmpty(message = "파일은 필수로 첨부해야합니다.") MultipartFile file) throws IOException {
+            , @RequestPart MultipartFile file) throws IOException {
         log.info("Upload {} file: {} {}", fileType, file.getContentType(), file.getSize());
 
         // 파일 업로드
@@ -66,10 +83,9 @@ public class FileController {
 
         // 응답
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(GET_UPLOAD_IMAGE_PATH.replace("{fileId}", String.valueOf(resultFileId))));
+        headers.setLocation(URI.create(GET_ORIGIN_IMAGE_PATH.replace("{fileId}", String.valueOf(resultFileId))));
 
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).build();
     }
 
-    // TODO Exception Handling
 }
