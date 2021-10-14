@@ -14,7 +14,16 @@ import org.springframework.stereotype.Component;
 @Getter @Setter
 public class FileResourceProp {
 
-    // 파일 저장 위치
-    private String savePath;
+    // 상품 이미지 파일 url
+    private String productImageUrl;
+
+    // 프로필 이미지 파일 url
+    private String profileImageUrl;
+
+    // 상품 이미지 파일 저장 위치
+    private String productImageSavePath;
+
+    // 프로필 이미지 파일 저장 위치
+    private String profileImageSavePath;
 
 }
