@@ -9,13 +9,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import siru.fileservice.domain.file.FileType;
 import siru.fileservice.dto.FindImageFileDto;
 import siru.fileservice.dto.UploadImageDto;
-import siru.fileservice.exception.*;
 import siru.fileservice.service.FileService;
 
 import java.io.IOException;
@@ -70,7 +67,7 @@ public class FileController {
             @ApiResponse(code = 201, message = "created")
     })
     @PostMapping("/image/{fileType}")
-    public ResponseEntity<Void> uploadProductImage(@PathVariable FileType fileType
+    public ResponseEntity<UploadResponse> uploadProductImage(@PathVariable FileType fileType
             , @RequestPart MultipartFile file) throws IOException {
         log.info("Upload {} file: {} {}", fileType, file.getContentType(), file.getSize());
 
@@ -79,13 +76,15 @@ public class FileController {
                 .fileType(fileType)
                 .uploadFile(file)
                 .build();
-        long resultFileId = fileService.uploadImageFile(uploadImageInfo);
+        long fileId = fileService.uploadImageFile(uploadImageInfo);
 
         // 응답
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(GET_ORIGIN_IMAGE_PATH.replace("{fileId}", String.valueOf(resultFileId))));
+        UploadResponse response = UploadResponse.builder()
+                .fileId(fileId)
+                .result("success")
+                .build();
 
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).build();
+        return ResponseEntity.ok(response);
     }
 
 }
