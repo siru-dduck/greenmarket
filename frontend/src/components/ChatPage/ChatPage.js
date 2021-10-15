@@ -97,7 +97,7 @@ function ChatPage(props) {
 		};
 		fetchChatRoom();
 		setSocket(
-			io.connect("localhost:4000/", {
+			io.connect("localhost:8140/", {
 				path: "/ws/chat",
 				transports: ["websocket"],
 			})

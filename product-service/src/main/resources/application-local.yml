@@ -1,0 +1,44 @@
+server:
+  port: 8110
+
+# 스프링 설정
+spring:
+  devtools:
+    livereload:
+      enabled: true
+
+  # 데이터베이스 세팅
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+# 업로드 파일 설정
+resource:
+  file:
+    path: src/main/resources/images/product/
+
+# Another Micro Service Config
+service:
+  chat:
+    host: localhost
+    port: 8140
+  user:
+    host: localhost
+    port: 8130
+
+# mybatis
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/**/**.xml
+
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
