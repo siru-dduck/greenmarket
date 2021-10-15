@@ -1,13 +1,17 @@
-const env = require("dotenv");
-
-env.config();
-
 const sequelizeConfig = {
-  development: {
+  local: {
     username: "root",
-    password: "k8s123@",
+    password: "siru@dev1",
     database: "green_market",
     host: "localhost",
+    port: 3306,
+    dialect: "mysql"
+  },
+  development: {
+    username: "root",
+    password: "siru@dev1",
+    database: "green_market",
+    host: "greenmarket_mysql",
     port: 3306,
     dialect: "mysql"
   },

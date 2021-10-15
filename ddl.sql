@@ -54,10 +54,7 @@ create table product_image
 	list_num int not null comment '게시글 이미지 리스트 번호',
 	article_id int not null comment '게시글 아이디',
 	file_url varchar(255) not null comment '이미지 파일 url',
-	primary key (list_num, article_id),
-	constraint FK_product_article_TO_product_image_1
-		foreign key (article_id) references product_article (id)
-			on delete cascade
+	primary key (list_num, article_id)
 );
 
 create table product_review
@@ -66,10 +63,7 @@ create table product_review
 		primary key,
 	content text not null comment '상품거래후기 내용',
 	date datetime default CURRENT_TIMESTAMP not null comment '삼품거래후기 작성시각',
-	user_id int not null comment '상품거래후기 작성자 ID (user  ID)',
-	constraint FK_product_article_TO_product_review_1
-		foreign key (article_id) references product_article (id)
-			on delete cascade
+	user_id int not null comment '상품거래후기 작성자 ID (user  ID)'
 );
 
 create table user
@@ -93,10 +87,5 @@ create table product_interest
 	article_id int not null comment '상품게시글 아이디', 
 	user_id int not null comment '사용자 아이디',
 	constraint product_interest_pk
-		unique (article_id, user_id),
-	constraint product_interest_product_article_id_fk
-		foreign key (article_id) references product_article (id)
-			on delete cascade,
-	constraint product_interest_user_id_fk
-		foreign key (user_id) references user (id)
+		unique (article_id, user_id)
 )

@@ -12,7 +12,7 @@ RUN npm install
 
 # 앱 소스 추가
 COPY . .
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 EXPOSE 8130
 RUN npm run build
 CMD ["node", "./build/index.js"]
