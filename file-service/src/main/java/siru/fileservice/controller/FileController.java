@@ -7,15 +7,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.MissingServletRequestPartException;
+import siru.fileservice.controller.response.UploadResponse;
 import siru.fileservice.domain.file.FileType;
 import siru.fileservice.dto.FindImageFileDto;
 import siru.fileservice.dto.UploadImageDto;
-import siru.fileservice.exception.*;
 import siru.fileservice.service.FileService;
 
 import java.io.IOException;
@@ -67,11 +66,11 @@ public class FileController {
 
     @ApiOperation(value = "이미지 파일 업로드", notes = "상품 파일 이미지 업로드")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "created")
+            @ApiResponse(code = 200, message = "success")
     })
-    @PostMapping("/image/{fileType}")
-    public ResponseEntity<Void> uploadProductImage(@PathVariable FileType fileType
-            , @RequestPart MultipartFile file) throws IOException {
+    @PostMapping(value = "/image/{fileType}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<UploadResponse> uploadProductImage(@PathVariable FileType fileType
+            , @RequestParam MultipartFile file) throws IOException {
         log.info("Upload {} file: {} {}", fileType, file.getContentType(), file.getSize());
 
         // 파일 업로드
@@ -79,13 +78,15 @@ public class FileController {
                 .fileType(fileType)
                 .uploadFile(file)
                 .build();
-        long resultFileId = fileService.uploadImageFile(uploadImageInfo);
+        long fileId = fileService.uploadImageFile(uploadImageInfo);
 
         // 응답
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(GET_ORIGIN_IMAGE_PATH.replace("{fileId}", String.valueOf(resultFileId))));
+        UploadResponse response = UploadResponse.builder()
+                .fileId(fileId)
+                .result("success")
+                .build();
 
-        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).build();
+        return ResponseEntity.ok(response);
     }
 
 }

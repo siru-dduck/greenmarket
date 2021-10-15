@@ -1,5 +1,6 @@
 package siru.fileservice.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tika.Tika;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -22,6 +23,12 @@ public class UtilConfig {
     public ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        return mapper;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
         return mapper;
     }
 }

@@ -1,0 +1,11 @@
+# 업로드 파일 설정
+file-resource:
+  product-image-url: /resources/images/product/
+  profile-image-url: /resources/images/profile/
+  product-image-save-path: src/test/resources/images/product/
+  profile-image-save-path: src/test/resources/images/profile/
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace

@@ -106,16 +106,19 @@ public class FileService {
             // input stream 임시파일로 복사
             StreamUtils.copy(uploadFileInputStream, new FileOutputStream(tempFile));
 
-            // media type 추출
+            // media type 추출 및 content type과 비교
+            String detectMediaType = tika.detect(tempFile);
             if (StringUtils.isBlank(contentType)) {
-                contentType = tika.detect(uploadFileInputStream);
+                contentType = detectMediaType;
+            } else if(!detectMediaType.equals(contentType)) {
+                throw new IllegalRequestException("요청한 content type과 실제 파일의 media type이 다릅니다.");
             }
 
             // 이미지 파일 검증 및 파일 확장자 추출
             if (validateImageType(contentType)) {
                 fileExtension = parseImageFileExtension(contentType);
             } else {
-                throw new NotSupportedException("jpeg, png 파일만 지원합니다.");
+                throw new NotSupportedException("jpeg, png 이미지만 지원합니다.");
             }
 
             // 이미지 크기검증
