@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import siru.fileservice.controller.response.UploadResponse;
 import siru.fileservice.domain.file.FileType;
 import siru.fileservice.dto.FindImageFileDto;
 import siru.fileservice.dto.UploadImageDto;

@@ -3,7 +3,6 @@ HELP.md
 build/
 src/main/resources/images
 src/test/resources/images
-src/test/resources/test
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/

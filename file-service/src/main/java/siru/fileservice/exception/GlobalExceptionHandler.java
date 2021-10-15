@@ -43,8 +43,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalRequestException.class)
     public ResponseEntity<ErrorResponse> handleIllegalRequestException(IllegalRequestException ex) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(generateErrorResponse(HttpStatus.SERVICE_UNAVAILABLE.value(), ex));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(generateErrorResponse(HttpStatus.BAD_REQUEST.value(), ex));
     }
 
     @ExceptionHandler(FileSaveException.class)

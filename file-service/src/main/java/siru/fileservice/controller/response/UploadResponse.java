@@ -1,10 +1,11 @@
-package siru.fileservice.controller;
+package siru.fileservice.controller.response;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UploadResponse {
 
