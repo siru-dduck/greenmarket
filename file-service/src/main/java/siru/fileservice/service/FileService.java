@@ -115,7 +115,7 @@ public class FileService {
             if (validateImageType(contentType)) {
                 fileExtension = parseImageFileExtension(contentType);
             } else {
-                throw new NotSupportedException("jpeg, png 파일만 지원합니다.");
+                throw new NotSupportedException("jpeg, png 이미지만 지원합니다.");
             }
 
             // 이미지 크기검증

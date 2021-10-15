@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,11 +65,11 @@ public class FileController {
 
     @ApiOperation(value = "이미지 파일 업로드", notes = "상품 파일 이미지 업로드")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "created")
+            @ApiResponse(code = 200, message = "success")
     })
-    @PostMapping("/image/{fileType}")
+    @PostMapping(value = "/image/{fileType}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<UploadResponse> uploadProductImage(@PathVariable FileType fileType
-            , @RequestPart MultipartFile file) throws IOException {
+            , @RequestParam MultipartFile file) throws IOException {
         log.info("Upload {} file: {} {}", fileType, file.getContentType(), file.getSize());
 
         // 파일 업로드
