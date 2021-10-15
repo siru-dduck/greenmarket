@@ -9,10 +9,10 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리�
 
 ## 💻 서비스별 요약
 ### Product Service
-**사용기술** : Spring Boot, Spring Web MVC, Mybatis
+**사용기술** : Spring Boot, Spring Web MVC, Mybatis, JPA
 * 중고상품등록, 조회
 * 관심상품 등록
-* 상품검색
+* ~~상품검색~~ -> elasticsearch기반의 search service로 분리
 ### User Service
 **사용기술** :  express, sequelize, jwt
 * 회원가입 로그인
@@ -20,14 +20,18 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리�
 ### Chat Service
 **사용기술** :  express, sequelize, socket.io
 * 판매자와 구매자간의 채팅
-  
+### File Service
+**사용기술** : Spring Boot, Spring Web MVC, JPA
+* file 업로드, 조회
+
 ## 💾 프로젝트 디렉토리 구조
 |Directory|Description|
 |------|------|
 |[frontend](https://github.com/sinwoo1225/greenmarket/tree/master/frontend)|어플리케이션의 화면을 담당하는 React기반의 프로젝트 입니다. 웹페이지에 필요한 컴포넌트와 API간의 통신을 담당하고 있습니다.|
-|[product](https://github.com/sinwoo1225/greenmarket/tree/master/product)|`product`는 상품에 대한 전반적인 기능을 담당하는 프로젝트입니다. 중고거래를 이용하는 사용자가 등록된 상품을 읽고 검색할 수 있으며 중고거래를 위해 상품을 등록,수정,삭제가 가능합니다. 상품에 대한 관심을 추가할 수 있습니다.|
-|[user](https://github.com/sinwoo1225/greenmarket/tree/master/user)|`user`는 사용자의 인증과 조회, 회원가입, 프로필 수정에 대한 부분을 다루는 프로젝트입니다. 인증은 Jwt 발급을 통해 다른 각각의 서비스에서 인증을 할 수 있도록 했습니다.|
-|[chat](https://github.com/sinwoo1225/greenmarket/tree/master/chat)|`chat`은 사용자간의 채팅을 담당하는 프로젝트입니다. `socket-io`를 통해 양방향 통신 채팅을 구현했습니다. 사용자간의 채팅을 통해 거래가 이루어집니다.|
+|[product-serivce](https://github.com/sinwoo1225/greenmarket/tree/master/product-service)|`product service`는 상품에 대한 전반적인 기능을 담당하는 프로젝트입니다. 중고거래를 이용하는 사용자가 등록된 상품을 읽고 검색할 수 있으며 중고거래를 위해 상품을 등록,수정,삭제가 가능합니다. 상품에 대한 관심을 추가할 수 있습니다.|
+|[user-service](https://github.com/sinwoo1225/greenmarket/tree/master/user-service)|`user service`는 사용자의 인증과 조회, 회원가입, 프로필 수정에 대한 부분을 다루는 프로젝트입니다. 인증은 Jwt 발급을 통해 다른 각각의 서비스에서 인증을 할 수 있도록 했습니다.|
+|[chat-service](https://github.com/sinwoo1225/greenmarket/tree/master/chat-service)|`chat service`은 사용자간의 채팅을 담당하는 프로젝트입니다. `socket-io`를 통해 양방향 통신 채팅을 구현했습니다. 사용자간의 채팅을 통해 거래가 이루어집니다.|
+|[file-service](https://github.com/sinwoo1225/greenmarket/tree/master/file-service)|`file service`은 프로필 이미지, 상풍의 이미지 업로드하고 조회할 수 있는 서비스 입니다.
 |[deployments](https://github.com/sinwoo1225/greenmarket/tree/master/deployments)|`deployments`는 각강의 서비스를 쿠버네티스에 배포하는데 필요한 `yaml`파일들을 정의했습니다. 어플리케이션 배포에 필요한 ingress, deployment, dashboard, persistent-volume을 생성할 수 있습니다.
 ---
 ## 설계
@@ -130,6 +134,10 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 ### 2021년 10월3일
 * product service 리뉴얼 준비 (jpa기반으로 준비)
 * 지금까지 데이터의 조합을 client-side에서 처리했는데 front-aggregation server 설계 고민
+
+### 2021년 10월15일
+* file 업로드기능을 별도의 서비스로 분리한 file-service 1차개발 완료
+
 ---
 
 # ✅ TODO
@@ -149,7 +157,7 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 * [ ] gRPC, 메세지 큐(Kafka)도입
 * [ ] 이벤트 소싱 도입
 * [ ] Product 서비스 JPA 리뉴얼
-* [ ] Swagger 도입
+* [x] Swagger 도입
 * [ ] React App Notification 기능추가
 * [ ] DB를 Product, User, Chat Service별로 분리 (느슨한 결합도)
 * [ ] Image File Service 개발 (Image Crop 기능포함)
