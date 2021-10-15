@@ -9,12 +9,14 @@ spring:
 
   # 데이터베이스 세팅
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://greenmarket_mysql:3306/green_market
+    username: root
+    password: siru@dev1
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -22,15 +24,15 @@ spring:
 # 업로드 파일 설정
 resource:
   file:
-    path: src/main/resources/images/product/
+    path: /resources/images/product/
 
 # Another Micro Service Config
 service:
   chat:
-    host: localhost
+    host: host.docker.internal
     port: 8140
   user:
-    host: localhost
+    host: host.docker.internal
     port: 8130
 
 # mybatis

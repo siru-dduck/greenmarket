@@ -1,5 +1,6 @@
 import express from "express";
 import socketIo from "socket.io";
+import path from "path"
 import dotenv from "dotenv";
 import logger from "morgan";
 import helmet from "helmet";
@@ -11,11 +12,24 @@ import redis from "socket.io-redis";
 import socketController from "./controllers/socketController";
 import { authJwt, initializeSocket } from "./middlewares/socketMiddlewares";
 
-dotenv.config();
+/* dotnet config */
+const __dirname = path.resolve();
+if (process.env.NODE_ENV === 'production') {
+	dotenv.config({ path: path.join(__dirname, '.env.production') })
+} else if (process.env.NODE_ENV === 'development') {
+	console.log("⚙️ development env");
+	dotenv.config({ path: path.join(__dirname, '.env.development') })
+} else {
+	console.log("⚙️ local env");
+	dotenv.config({ path: path.join(__dirname, '.env') })
+}
+console.dir(process.env);
+
+/* express setting */
 const app = express();
 
-const REDIS_MASTER_HOST = process.env.REDIS_MASTER_SERVICE_HOST || "localhost";
-const REDIS_MASTER_PORT = process.env.REDIS_MASTER_SERVICE_PORT || "6379";
+const REDIS_MASTER_HOST = process.env.REDIS_MASTER_SERVICE_HOST;
+const REDIS_MASTER_PORT = process.env.REDIS_MASTER_SERVICE_PORT;
 
 app.use(helmet());
 app.use(logger("dev"));

@@ -1,14 +1,12 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import axios from "axios";
 import { Op } from "sequelize";
 import { ChatRoom } from "../models";
-dotenv.config();
 
 const SERVICE_PRODUCT_HOST =
-	process.env.GREENMARKET_PRODUCT_APP_SERVICE_HOST || "localhost";
+	process.env.GREENMARKET_PRODUCT_APP_SERVICE_HOST;
 const SERVICE_PRODUCT_PORT =
-	process.env.GREENMARKET_PRODUCT_APP_SERVICE_PORT || "8080";
+	process.env.GREENMARKET_PRODUCT_APP_SERVICE_PORT;
 
 export const authJwt = (socket, next) => {
 	try {
