@@ -1,4 +1,4 @@
-package com.hanium.product.entity;
+package com.hanium.product.domain;
 
 import lombok.*;
 import org.hibernate.Hibernate;
