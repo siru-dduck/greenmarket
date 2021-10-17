@@ -15,6 +15,9 @@ public class JwtProp {
     private String secret;
 
     // jwt access token 유효기간(초 단위)
-    private long tokenValidityInSeconds;
+    private long accessTokenValidityInSeconds;
+
+    // jwt refresh token 유효기간(초 단위)
+    private long refreshTokenValidityInSeconds;
 
 }

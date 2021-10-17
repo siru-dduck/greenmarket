@@ -10,6 +10,7 @@ public class UserDetail {
 
     private long userId;
     private String email;
-    private long profileImageId;
+    private Long profileImageId;
+    private String tokenId;
 
 }

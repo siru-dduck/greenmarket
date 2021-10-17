@@ -6,21 +6,15 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
-import io.jsonwebtoken.impl.JwtMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -29,16 +23,12 @@ public class JwtProvider {
 
     private final JwtProp jwtProp;
 
-
-    public String createToken(Authentication authentication) {
-        if(!(authentication.getDetails() instanceof UserDetail)) {
-            throw new IllegalStateException();
-        }
+    public String createAccessToken(Authentication authentication) {
+        UserDetail userDetail = getUserDetail(authentication);
 
         Date now = new Date();
-        Date expiration = new Date(now.getTime() + jwtProp.getTokenValidityInSeconds());
+        Date expiration = new Date(now.getTime() + jwtProp.getAccessTokenValidityInSeconds() * 1000);
 
-        UserDetail userDetail = (UserDetail) authentication.getDetails();
         Claims claims = new DefaultClaims();
         claims.setSubject(authentication.getName());
         claims.setIssuer("greenmarket");
@@ -51,6 +41,34 @@ public class JwtProvider {
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS256, jwtProp.getSecret())
                 .compact();
+    }
+
+    public String createRefreshToken(Authentication authentication) {
+        UserDetail userDetail = getUserDetail(authentication);
+
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + jwtProp.getRefreshTokenValidityInSeconds() * 1000);
+
+        Claims claims = new DefaultClaims();
+        claims.setId(userDetail.getTokenId());
+        claims.setSubject(authentication.getName());
+        claims.setIssuer("greenmarket");
+        claims.setIssuedAt(now);
+        claims.setExpiration(expiration);
+        claims.put("userId", userDetail.getUserId());
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS256, jwtProp.getSecret())
+                .compact();
+    }
+
+    private UserDetail getUserDetail(Authentication authentication) {
+        if(!(authentication.getDetails() instanceof UserDetail)) {
+            throw new IllegalStateException();
+        }
+        UserDetail userDetail = (UserDetail) authentication.getDetails();
+        return userDetail;
     }
 
     public Authentication getAuthentication(String token) {
