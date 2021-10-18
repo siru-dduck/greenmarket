@@ -1,14 +1,17 @@
 package com.hanium.userservice.service;
 
-import com.hanium.userservice.config.properties.JwtProp;
-import com.hanium.userservice.controller.dto.LoginDto;
+import com.hanium.userservice.domain.RefreshToken;
 import com.hanium.userservice.domain.User;
 import com.hanium.userservice.domain.UserStatus;
-import com.hanium.userservice.dto.AuthenticationDto;
 import com.hanium.userservice.dto.JoinDto;
+import com.hanium.userservice.dto.LoginDto;
+import com.hanium.userservice.dto.LoginResultDto;
 import com.hanium.userservice.exception.UserAuthenticationException;
+import com.hanium.userservice.jwt.JwtProvider;
+import com.hanium.userservice.repository.RefreshTokenRepository;
 import com.hanium.userservice.repository.UserRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.Map;
 
 @SpringBootTest
 @Transactional
@@ -26,21 +29,28 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
-    private JwtProp jwtProp;
+    private JwtProvider jwtProvider;
+
+    private JoinDto createJoinInfo(String email, String password, String address1, String address2, String nickname) {
+        return JoinDto.builder()
+                .email(email)
+                .password(password)
+                .address1(address1)
+                .address2(address2)
+                .nickname(nickname)
+                .build();
+    }
 
     @Test
     public void 회원가입_성공_테스트() throws Exception {
         // given
-        JoinDto joinInfo = JoinDto.builder()
-                .email("test@email.com")
-                .password("password")
-                .address1("서울특별시")
-                .address2("강남구")
-                .nickname("siru")
-                .build();
+        JoinDto joinInfo = createJoinInfo("test@email.com", "password", "서울특별시", "강남구", "siru");
 
         // when
         long joinUserId = userService.join(joinInfo);
@@ -60,16 +70,8 @@ class UserServiceTest {
         // given
         String email = "test@email.com";
         String password = "password";
-        User user = User.builder()
-                .email(email)
-                .address1("서울특별시")
-                .address2("강남구")
-                .nickname("siru")
-                .status(UserStatus.NORMAL)
-                .creatDate(LocalDateTime.now())
-                .updateDate(LocalDateTime.now())
-                .build();
-        user.setPassword(password);
+        JoinDto joinInfo = createJoinInfo(email, password, "서울특별시", "강남구", "siru");
+        User user = User.createUser(joinInfo);
         userRepository.save(user);
 
         LoginDto loginInfo = LoginDto.builder()
@@ -78,15 +80,19 @@ class UserServiceTest {
                 .build();
 
         // when
-        AuthenticationDto loginResult = userService.login(loginInfo);
-        String accessToken = loginResult.getAccessToken();
-        String refreshToken = loginResult.getRefreshToken();
-        Claims accessTokenClaims = parseJwt(accessToken);
-        Claims refreshTokenClaims = parseJwt(refreshToken);
+        LoginResultDto loginResult = userService.login(loginInfo);
 
         // then
+        String accessToken = loginResult.getAccessToken();
+        String refreshToken = loginResult.getRefreshToken();
+        Claims accessTokenClaims = jwtProvider.parseJwt(accessToken).getBody();
+        Claims refreshTokenClaims = jwtProvider.parseJwt(refreshToken).getBody();
+
+        RefreshToken findRefreshToken = refreshTokenRepository.findByTokenId(refreshTokenClaims.getId());
         Assertions.assertEquals(email, accessTokenClaims.getSubject());
         Assertions.assertEquals(email, refreshTokenClaims.getSubject());
+        Assertions.assertNotNull(findRefreshToken);
+        Assertions.assertEquals(refreshToken, findRefreshToken.getToken());
     }
 
     @Test
@@ -103,11 +109,4 @@ class UserServiceTest {
                 , "not found user!");
     }
 
-    private Claims parseJwt(String token) {
-        return Jwts
-                .parser()
-                .setSigningKey(jwtProp.getSecret())
-                .parseClaimsJws(token)
-                .getBody();
-    }
 }

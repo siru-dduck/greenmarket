@@ -1,4 +1,4 @@
-package com.hanium.userservice.model;
+package com.hanium.userservice.domain;
 
 import lombok.*;
 
