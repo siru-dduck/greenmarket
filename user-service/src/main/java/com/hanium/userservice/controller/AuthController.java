@@ -42,4 +42,10 @@ public class AuthController {
         LoginResponse loginResponse = modelMapper.map(loginResult, LoginResponse.class);
         return ResponseEntity.ok(loginResponse);
     }
+
+    /**
+     * TODO
+     * 로그아웃 api
+     * jwt 유효성 검사 api
+     */
 }
