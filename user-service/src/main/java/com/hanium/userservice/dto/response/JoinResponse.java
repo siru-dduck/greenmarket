@@ -1,10 +1,11 @@
-package com.hanium.userservice.controller.response;
+package com.hanium.userservice.dto.response;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 public class JoinResponse {
 

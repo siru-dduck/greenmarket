@@ -1,7 +1,7 @@
 package com.hanium.userservice.controller;
 
-import com.hanium.userservice.controller.request.LoginRequest;
-import com.hanium.userservice.controller.response.LoginResponse;
+import com.hanium.userservice.dto.request.LoginRequest;
+import com.hanium.userservice.dto.response.LoginResponse;
 import com.hanium.userservice.dto.LoginDto;
 import com.hanium.userservice.dto.LoginResultDto;
 import com.hanium.userservice.service.UserService;

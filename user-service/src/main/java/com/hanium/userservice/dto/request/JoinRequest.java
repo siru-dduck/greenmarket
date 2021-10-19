@@ -1,4 +1,4 @@
-package com.hanium.userservice.controller.request;
+package com.hanium.userservice.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

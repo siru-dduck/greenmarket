@@ -1,9 +1,13 @@
-package com.hanium.userservice.controller.response;
+package com.hanium.userservice.dto.response;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LoginResponse {
 
     @ApiModelProperty(name = "access token ", notes = "access token 유효기간 1시간")
