@@ -22,9 +22,6 @@ public class RefreshToken {
     @Column(length = 100, nullable = false, unique = true)
     private String tokenId;
 
-    @Column(length = 300, nullable = false)
-    private String userAgent;
-
     @Column(length = 1500, nullable = false)
     private String token;
 

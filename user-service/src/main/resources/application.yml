@@ -19,6 +19,9 @@ spring:
       hibernate:
         format_sql: true
 
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+
 # jwt 설정
 jwt:
   secret: sd0dfjnl!@123:23090ejasd1!@123Ko)9sdkf{}s*56&*27fnvpPxz0tamxzz.sf!@93a6nzlk9e2ro4&sa78df7jxnmgl

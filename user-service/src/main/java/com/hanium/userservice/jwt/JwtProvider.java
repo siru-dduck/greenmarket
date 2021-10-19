@@ -1,10 +1,8 @@
 package com.hanium.userservice.jwt;
 
 import com.hanium.userservice.config.properties.JwtProp;
-import com.hanium.userservice.model.UserDetail;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.hanium.userservice.domain.UserDetail;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +20,40 @@ import java.util.Date;
 public class JwtProvider {
 
     private final JwtProp jwtProp;
+
+    private UserDetail getUserDetail(Authentication authentication) {
+        if(!(authentication.getDetails() instanceof UserDetail)) {
+            throw new IllegalStateException();
+        }
+        UserDetail userDetail = (UserDetail) authentication.getDetails();
+        return userDetail;
+    }
+
+    public Jws<Claims> parseJwt(String token) {
+        return Jwts
+                .parser()
+                .setSigningKey(jwtProp.getSecret())
+                .parseClaimsJws(token);
+    }
+
+
+    public Authentication getAuthentication(String token) {
+        Claims claims = Jwts
+                .parser()
+                .setSigningKey(jwtProp.getSecret())
+                .parseClaimsJws(token)
+                .getBody();
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(claims.getSubject(), token, new ArrayList<>());
+        UserDetail userDetail = UserDetail.builder()
+                .userId(claims.get("userId", Long.class))
+                .email(claims.getSubject())
+                .profileImageId(claims.get("profileImageId", Long.class))
+                .build();
+        authentication.setDetails(userDetail);
+
+        return authentication;
+    }
 
     public String createAccessToken(Authentication authentication) {
         UserDetail userDetail = getUserDetail(authentication);
@@ -61,32 +93,6 @@ public class JwtProvider {
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS256, jwtProp.getSecret())
                 .compact();
-    }
-
-    private UserDetail getUserDetail(Authentication authentication) {
-        if(!(authentication.getDetails() instanceof UserDetail)) {
-            throw new IllegalStateException();
-        }
-        UserDetail userDetail = (UserDetail) authentication.getDetails();
-        return userDetail;
-    }
-
-    public Authentication getAuthentication(String token) {
-        Claims claims = Jwts
-                .parser()
-                .setSigningKey(jwtProp.getSecret())
-                .parseClaimsJws(token)
-                .getBody();
-
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(claims.getSubject(), token, new ArrayList<>());
-        UserDetail userDetail = UserDetail.builder()
-                .userId(claims.get("userId", Long.class))
-                .email(claims.getSubject())
-                .profileImageId(claims.get("profileImageId", Long.class))
-                .build();
-        authentication.setDetails(userDetail);
-
-        return authentication;
     }
 
     public boolean validateToken(String token) {

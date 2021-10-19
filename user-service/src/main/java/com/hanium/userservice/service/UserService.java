@@ -1,26 +1,17 @@
 package com.hanium.userservice.service;
 
-import com.hanium.userservice.controller.dto.LoginDto;
-import com.hanium.userservice.domain.RefreshToken;
 import com.hanium.userservice.domain.User;
-import com.hanium.userservice.domain.UserStatus;
-import com.hanium.userservice.dto.AuthenticationDto;
 import com.hanium.userservice.dto.JoinDto;
+import com.hanium.userservice.dto.LoginDto;
+import com.hanium.userservice.dto.LoginResultDto;
+import com.hanium.userservice.exception.DuplicationUserException;
 import com.hanium.userservice.exception.UserAuthenticationException;
 import com.hanium.userservice.jwt.JwtProvider;
-import com.hanium.userservice.model.UserDetail;
 import com.hanium.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.Local;
-import org.modelmapper.ModelMapper;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * @author siru
@@ -34,8 +25,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
+    /**
+     * 로그인 & jwt 발행
+     * @param loginDto
+     * @return
+     */
     @Transactional
-    public AuthenticationDto login(LoginDto loginDto) {
+    public LoginResultDto login(LoginDto loginDto) {
         // 사용자 조회
         User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new UserAuthenticationException("not found user"));
 
@@ -45,47 +41,37 @@ public class UserService {
         }
 
         // jwt 토큰 생성
-        String jti = UUID.randomUUID().toString();
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), null, new ArrayList<>());
-        UserDetail userDetail = UserDetail.builder()
-                .userId(user.getId())
-                .email(user.getEmail())
-                .profileImageId(user.getProfileFileId())
-                .tokenId(jti)
-                .build();
-        authentication.setDetails(userDetail);
+        Authentication authentication = user.createAuthentication();
         String accessTokenStr = jwtProvider.createAccessToken(authentication);
-        String refreshTokenStr = jwtProvider.createAccessToken(authentication);
+        String refreshTokenStr = jwtProvider.createRefreshToken(authentication);
 
         // refresh token 저장
-        RefreshToken refreshToken = RefreshToken.builder()
-                .tokenId(jti)
-                .user(user)
-                .token(refreshTokenStr)
-                .createDate(LocalDateTime.now())
-                .build();
+        user.setRefreshToken(jwtProvider.parseJwt(refreshTokenStr), refreshTokenStr);
 
         // 반환객체 생성
-        AuthenticationDto authenticationResult = AuthenticationDto.builder()
+        LoginResultDto loginResult = LoginResultDto.builder()
                 .accessToken(accessTokenStr)
                 .refreshToken(refreshTokenStr)
                 .build();
 
-        return authenticationResult;
+        return loginResult;
     }
 
+    /**
+     * 회원가입
+     * @param joinDto
+     * @return
+     */
     @Transactional
     public Long join(JoinDto joinDto) {
-        User user = User.builder()
-                .email(joinDto.getEmail())
-                .address1(joinDto.getAddress1())
-                .address2(joinDto.getAddress2())
-                .nickname(joinDto.getNickname())
-                .status(UserStatus.NORMAL)
-                .creatDate(LocalDateTime.now())
-                .updateDate(LocalDateTime.now())
-                .build();
-        user.setPassword(joinDto.getPassword());
+        // 중복 사용자 체크
+        userRepository.findByEmail(joinDto.getEmail())
+                .ifPresent(user -> {
+                    throw new DuplicationUserException(String.format("%s는 중복된 이메일 입니다.", joinDto.getEmail()));
+                });
+
+        // 회원가입
+        User user = User.createUser(joinDto);
         userRepository.save(user);
 
         return user.getId();
