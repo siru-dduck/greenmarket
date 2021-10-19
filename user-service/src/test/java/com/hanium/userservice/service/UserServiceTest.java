@@ -11,15 +11,11 @@ import com.hanium.userservice.jwt.JwtProvider;
 import com.hanium.userservice.repository.RefreshTokenRepository;
 import com.hanium.userservice.repository.UserRepository;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 @SpringBootTest
 @Transactional

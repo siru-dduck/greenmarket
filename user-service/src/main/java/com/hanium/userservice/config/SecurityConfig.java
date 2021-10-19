@@ -6,6 +6,7 @@ import com.hanium.userservice.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,11 +24,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtProvider jwtProvider;
 
     @Override
+    public void configure(WebSecurity web) {
+        web.ignoring()
+                .antMatchers(
+                        "/h2-console/**"
+                        ,"/swagger-ui/**"
+                        ,"/swagger-resources/**"
+                        ,"/v2/api-docs"
+                        ,"/favicon.ico"
+                        ,"/error"
+                );
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
 
-            // enable h2-console
             .headers()
             .frameOptions()
             .sameOrigin()
@@ -39,9 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .authorizeRequests()
-                .antMatchers("/api/hello").permitAll()
-                .antMatchers("/api/authenticate").permitAll()
-                .antMatchers("/api/signup").permitAll()
+                .antMatchers("/auth/login").permitAll()
+                .antMatchers("/users/join").permitAll()
                 .anyRequest().authenticated()
 
             // jwt config
