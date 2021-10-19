@@ -42,4 +42,12 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * TODO
+     * 이메일 중복 체크 api
+     * 사용자 정보 조회 api
+     * 사용자 정보 수정 api
+     * 사용자 리스트 조회 api
+     * 회원탈퇴 api
+     */
 }
