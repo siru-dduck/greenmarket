@@ -13,6 +13,10 @@ public class UploadResponse {
     private long fileId;
 
     @ApiModelProperty(name = "업로드 결과", notes = "업로드 결과")
-    private String result;
+    private Result result;
+
+     public enum Result {
+        SUCCESS, FAIL
+    }
 
 }

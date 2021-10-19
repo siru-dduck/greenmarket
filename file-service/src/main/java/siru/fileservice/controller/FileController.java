@@ -83,7 +83,7 @@ public class FileController {
         // 응답
         UploadResponse response = UploadResponse.builder()
                 .fileId(fileId)
-                .result("success")
+                .result(UploadResponse.Result.SUCCESS)
                 .build();
 
         return ResponseEntity.ok(response);
