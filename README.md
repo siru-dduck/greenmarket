@@ -12,13 +12,13 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리�
 **사용기술** : Spring Boot, Spring Web MVC, Mybatis, JPA
 * 중고상품등록, 조회
 * 관심상품 등록
-* ~~상품검색~~ -> elasticsearch기반의 search service로 분리
+* ~~상품검색~~ -> elasticsearch기반의 search service로 분리예정
 ### User Service
-**사용기술** :  express, sequelize, jwt
-* 회원가입 로그인
-* 사용자 조회
+**사용기술** :  Spring Boot, Spring Web MVC, JPA, jwt, Spring Security
+* 회원가입 로그인 jwt 발급
+* 사용자 조회, 수정, 탈퇴
 ### Chat Service
-**사용기술** :  express, sequelize, socket.io
+**사용기술** :  express, sequelize, socket.io, redis(pub-sub)
 * 판매자와 구매자간의 채팅
 ### File Service
 **사용기술** : Spring Boot, Spring Web MVC, JPA
