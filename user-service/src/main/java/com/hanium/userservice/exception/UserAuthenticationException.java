@@ -1,12 +1,8 @@
 package com.hanium.userservice.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * @author siru
  */
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class UserAuthenticationException extends RuntimeException {
     public UserAuthenticationException() {
         super();

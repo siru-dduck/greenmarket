@@ -1,7 +1,7 @@
 package com.hanium.userservice.controller;
 
-import com.hanium.userservice.controller.request.JoinRequest;
-import com.hanium.userservice.controller.response.JoinResponse;
+import com.hanium.userservice.dto.request.JoinRequest;
+import com.hanium.userservice.dto.response.JoinResponse;
 import com.hanium.userservice.dto.JoinDto;
 import com.hanium.userservice.service.UserService;
 import io.swagger.annotations.ApiOperation;

@@ -4,7 +4,7 @@ import com.hanium.userservice.domain.User;
 import com.hanium.userservice.dto.JoinDto;
 import com.hanium.userservice.dto.LoginDto;
 import com.hanium.userservice.dto.LoginResultDto;
-import com.hanium.userservice.exception.DuplicationUserException;
+import com.hanium.userservice.exception.UserAlreadyExistException;
 import com.hanium.userservice.exception.UserAuthenticationException;
 import com.hanium.userservice.jwt.JwtProvider;
 import com.hanium.userservice.repository.UserRepository;
@@ -67,7 +67,7 @@ public class UserService {
         // 중복 사용자 체크
         userRepository.findByEmail(joinDto.getEmail())
                 .ifPresent(user -> {
-                    throw new DuplicationUserException(String.format("%s는 중복된 이메일 입니다.", joinDto.getEmail()));
+                    throw new UserAlreadyExistException(String.format("%s는 중복된 이메일 입니다.", joinDto.getEmail()));
                 });
 
         // 회원가입
