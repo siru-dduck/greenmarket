@@ -1,7 +1,7 @@
 # 초록장터
 
 2020년 한이음 ICT 멘토링 프로젝트 '쿠버네티스기반 MSA 어플리케이션'에서 진행한 프로젝트로 중고거래사이트를 각각 독립적으로 배포가 가능한 Micro Service로 개발후 쿠버네티스에 배포하는것을 목표로 진행된 프로젝트입니다. 해당 프로젝트는 중고거래사이트 프로젝트이며 인증과 사용자 정보를 담당하는 user 서비스, 상품을 담당하는 product 서비스, 채팅을 담당하는 chat service로 나누어져 있어 각각 독립적으로 배포 및 개발이 가능 합니다. 각각의 서비스는 도커이미지로 만든 후에 쿠버네티스상에 배포됩니다. 각각의 서비스는 느슨한 결합도를 위해 서비스간에 http통신을 통해 느슨한 결합을 지향했습니다. 
-http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리고 메세지큐(Kafka)를 도입할 예정입니다.<br><br>
+http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리고 데이터의 동기화와 일관성을 위해 메세지큐(Kafka)를 도입할 예정입니다.<br><br>
 **프로젝트기간** : 2020년 5월 ~ 2020년 11월 
 (💻현재 개인으로 리팩토링 중)
 
@@ -23,6 +23,7 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리�
 ### File Service
 **사용기술** : Spring Boot, Spring Web MVC, JPA
 * file 업로드, 조회
+* 이미지 crop 및 리사이징
 
 ## 💾 프로젝트 디렉토리 구조
 |Directory|Description|
@@ -148,7 +149,7 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 * [x] ~~product service Interceptor 적용~~
 * [x] ~~product service 상품등록시에 트랜잭션 롤백상황시 모든 파일이 일괄삭제되지않는 버그 수정 => 파일은 Spring Batch로 처리할 예정~~
 * [x] ~~product 수정, 삭제 기능 추가~~
-* [ ] 개발환경 docker-compose기반으로 구성
+* [x] ~~개발환경 docker-compose기반으로 구성~~
 * [ ] Chat Service DB MongoDB로 변경
 * [ ] 카테고리별 검색기능
 * [ ] 구매후기 기능 
@@ -157,10 +158,11 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 * [ ] gRPC, 메세지 큐(Kafka)도입
 * [ ] 이벤트 소싱 도입
 * [ ] Product 서비스 JPA 리뉴얼
-* [x] Swagger 도입
+* [x] ~~Swagger 도입~~
 * [ ] React App Notification 기능추가
 * [ ] DB를 Product, User, Chat Service별로 분리 (느슨한 결합도)
-* [ ] Image File Service 개발 (Image Crop 기능포함)
+* [x] ~~Image File Service 개발 (Image Crop 기능포함)~~
 * [ ] CI/CD 도입
 * [ ] 카카오톡, 네이버 로그인기능
-* [ ] Refresh Token 도입
+* [x] ~~Refresh Token 도입~~
+* [ ] Circuit Breaker 도입
