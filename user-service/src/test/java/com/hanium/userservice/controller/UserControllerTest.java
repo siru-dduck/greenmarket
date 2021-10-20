@@ -48,6 +48,7 @@ class UserControllerTest {
         EmailValidationRequest validationRequest = EmailValidationRequest.builder().email(email).build();
 
         // when
+        given(userService.checkEmailDuplication(any())).willReturn(false);
         ResultActions notExistResult = requestValidateEmailDuplication(validationRequest); // 이메일이 존재하지 않는 경우
 
         given(userService.checkEmailDuplication(any())).willReturn(true);
