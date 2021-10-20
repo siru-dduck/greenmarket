@@ -47,5 +47,6 @@ public class AuthController {
      * TODO
      * 로그아웃 api
      * jwt 유효성 검사 api
+     * refresh token api
      */
 }
