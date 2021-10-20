@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDetail {
+public class AuthUserDetail {
 
     private long userId;
     private String email;

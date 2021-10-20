@@ -1,8 +1,11 @@
 package com.hanium.userservice.jwt;
 
 import com.hanium.userservice.config.properties.JwtProp;
-import com.hanium.userservice.domain.UserDetail;
-import io.jsonwebtoken.*;
+import com.hanium.userservice.domain.AuthUserDetail;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +24,11 @@ public class JwtProvider {
 
     private final JwtProp jwtProp;
 
-    private UserDetail getUserDetail(Authentication authentication) {
-        if(!(authentication.getDetails() instanceof UserDetail)) {
+    private AuthUserDetail getUserDetail(Authentication authentication) {
+        if(!(authentication.getDetails() instanceof AuthUserDetail)) {
             throw new IllegalStateException();
         }
-        UserDetail userDetail = (UserDetail) authentication.getDetails();
+        AuthUserDetail userDetail = (AuthUserDetail) authentication.getDetails();
         return userDetail;
     }
 
@@ -45,7 +48,7 @@ public class JwtProvider {
                 .getBody();
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(claims.getSubject(), token, new ArrayList<>());
-        UserDetail userDetail = UserDetail.builder()
+        AuthUserDetail userDetail = AuthUserDetail.builder()
                 .userId(claims.get("userId", Long.class))
                 .email(claims.getSubject())
                 .profileImageId(claims.get("profileImageId", Long.class))
@@ -56,7 +59,7 @@ public class JwtProvider {
     }
 
     public String createAccessToken(Authentication authentication) {
-        UserDetail userDetail = getUserDetail(authentication);
+        AuthUserDetail userDetail = getUserDetail(authentication);
 
         Date now = new Date();
         Date expiration = new Date(now.getTime() + jwtProp.getAccessTokenValidityInSeconds() * 1000);
@@ -76,7 +79,7 @@ public class JwtProvider {
     }
 
     public String createRefreshToken(Authentication authentication) {
-        UserDetail userDetail = getUserDetail(authentication);
+        AuthUserDetail userDetail = getUserDetail(authentication);
 
         Date now = new Date();
         Date expiration = new Date(now.getTime() + jwtProp.getRefreshTokenValidityInSeconds() * 1000);

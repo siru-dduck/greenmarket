@@ -17,6 +17,7 @@ public enum ErrorCode {
     // Member
     EMAIL_DUPLICATION(400, "M001", "Email is Duplication"),
     USER_ALREADY_EXIST(409, "M002", "User already exist"),
+    USER_NOT_FOUND(404, "M003", "User not found")
     ;
 
     private final String code;

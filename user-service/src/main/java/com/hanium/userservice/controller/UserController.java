@@ -1,10 +1,12 @@
 package com.hanium.userservice.controller;
 
+import com.hanium.userservice.dto.UserInfoDto;
 import com.hanium.userservice.dto.request.EmailValidationRequest;
 import com.hanium.userservice.dto.request.JoinRequest;
 import com.hanium.userservice.dto.response.EmailValidationResponse;
 import com.hanium.userservice.dto.response.JoinResponse;
 import com.hanium.userservice.dto.JoinDto;
+import com.hanium.userservice.dto.response.UserInfoResponse;
 import com.hanium.userservice.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -57,6 +59,19 @@ public class UserController {
                 .email(email)
                 .result(isEmailExist ? EmailValidationResponse.Result.exist : EmailValidationResponse.Result.notExist)
                 .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiOperation(value = "사용자 정보 조회", notes = "사용자 정보 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "ok with user info"),
+            @ApiResponse(code = 404, message = "not found")
+    })
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<UserInfoResponse> getUserInfo(@PathVariable long userId) {
+        // 사용자 조회
+        UserInfoDto findResult = userService.findUserById(userId);
+        UserInfoResponse response = modelMapper.map(findResult, UserInfoResponse.class);
         return ResponseEntity.ok(response);
     }
 

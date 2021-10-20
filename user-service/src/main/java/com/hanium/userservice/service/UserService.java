@@ -4,12 +4,16 @@ import com.hanium.userservice.domain.User;
 import com.hanium.userservice.dto.JoinDto;
 import com.hanium.userservice.dto.LoginDto;
 import com.hanium.userservice.dto.LoginResultDto;
+import com.hanium.userservice.dto.UserInfoDto;
 import com.hanium.userservice.exception.UserAlreadyExistException;
 import com.hanium.userservice.exception.UserAuthenticationException;
+import com.hanium.userservice.exception.UserNotFoundException;
 import com.hanium.userservice.jwt.JwtProvider;
 import com.hanium.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +28,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
-
+    private final ModelMapper modelMapper;
     /**
      * 로그인 & jwt 발행
      * @param loginDto
@@ -84,5 +88,17 @@ public class UserService {
      */
     public boolean checkEmailDuplication(String email) {
         return userRepository.findByEmail(email).isPresent();
+    }
+
+    /**
+     * 사용자 정보 조회
+     * @param userId
+     * @return
+     */
+    public UserInfoDto findUserById(long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> { throw new UserNotFoundException("사용자를 찾을 수 없습니다."); });
+
+        UserInfoDto userInfo = modelMapper.map(user, UserInfoDto.class);
+        return userInfo;
     }
 }

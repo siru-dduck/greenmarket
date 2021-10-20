@@ -1,6 +1,5 @@
 package com.hanium.userservice.domain;
 
-import com.hanium.userservice.config.properties.JwtProp;
 import com.hanium.userservice.dto.JoinDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -57,9 +56,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private final List<RefreshToken> refreshTokenList = new ArrayList<>();
 
-    @Transient
-    private JwtProp jwtProp;
-
     public static User createUser(JoinDto joinDto) {
         return User.builder()
                 .email(joinDto.getEmail())
@@ -76,7 +72,7 @@ public class User {
     public Authentication createAuthentication() {
         String jti = UUID.randomUUID().toString();
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(getEmail(), null, new ArrayList<>());
-        UserDetail userDetail = UserDetail.builder()
+        AuthUserDetail userDetail = AuthUserDetail.builder()
                 .userId(getId())
                 .email(getEmail())
                 .profileImageId(getProfileFileId())
