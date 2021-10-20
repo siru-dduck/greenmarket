@@ -105,4 +105,21 @@ class UserServiceTest {
                 , "not found user!");
     }
 
+    @Test
+    public void 이메일_중복테스트() throws Exception {
+        // given
+        String email = "test@email.com";
+        JoinDto joinInfo = createJoinInfo(email, "password", "서울특별시", "강남구", "siru");
+        User user = User.createUser(joinInfo);
+        userRepository.save(user);
+
+        // when
+        boolean emailExistResult = userService.checkEmailDuplication(email);
+        boolean emailNotExistResult = userService.checkEmailDuplication("notExistEmail~");
+
+        // then
+        Assertions.assertTrue(emailExistResult);
+        Assertions.assertFalse(emailNotExistResult);
+    }
+
 }

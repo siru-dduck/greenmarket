@@ -76,4 +76,13 @@ public class UserService {
 
         return user.getId();
     }
+
+    /**
+     * 이메일 존재 여부 체크
+     * @param email
+     * @return
+     */
+    public boolean checkEmailDuplication(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
 }

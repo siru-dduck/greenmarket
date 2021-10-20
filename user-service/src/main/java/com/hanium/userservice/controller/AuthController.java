@@ -48,5 +48,7 @@ public class AuthController {
      * 로그아웃 api
      * jwt 유효성 검사 api
      * refresh token api
+     * 비밀번호 찾기 api
+     * 이메일 인증 api
      */
 }

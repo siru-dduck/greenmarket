@@ -1,6 +1,8 @@
 package com.hanium.userservice.controller;
 
+import com.hanium.userservice.dto.request.EmailValidationRequest;
 import com.hanium.userservice.dto.request.JoinRequest;
+import com.hanium.userservice.dto.response.EmailValidationResponse;
 import com.hanium.userservice.dto.response.JoinResponse;
 import com.hanium.userservice.dto.JoinDto;
 import com.hanium.userservice.service.UserService;
@@ -10,9 +12,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -42,9 +42,27 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @ApiOperation(value = "이메일 중복 체크", notes = "이메일 중복 체크 api")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "ok with email existence")
+    })
+    @GetMapping("/users/email/exist")
+    public ResponseEntity<EmailValidationResponse> validateEmailDuplication(@Valid EmailValidationRequest emailValidationRequest) {
+        // 이메일 중복체크
+        String email = emailValidationRequest.getEmail();
+        boolean isEmailExist = userService.checkEmailDuplication(email);
+
+        // 응답
+        EmailValidationResponse response = EmailValidationResponse.builder()
+                .email(email)
+                .result(isEmailExist ? EmailValidationResponse.Result.exist : EmailValidationResponse.Result.notExist)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * TODO
-     * 이메일 중복 체크 api
+     * 이메일 중복 체크 api (✅)
      * 사용자 정보 조회 api
      * 사용자 정보 수정 api
      * 사용자 리스트 조회 api
