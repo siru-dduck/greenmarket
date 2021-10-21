@@ -6,7 +6,6 @@ import com.hanium.userservice.dto.response.LoginResponse;
 import com.hanium.userservice.dto.LoginDto;
 import com.hanium.userservice.dto.LoginResultDto;
 import com.hanium.userservice.service.UserAuthService;
-import com.hanium.userservice.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -61,7 +60,7 @@ public class AuthController {
 
     /**
      * TODO
-     * 로그아웃 api
+     * 로그아웃 api(✅)
      * jwt 유효성 검사 api
      * refresh token api
      * 비밀번호 찾기 api
