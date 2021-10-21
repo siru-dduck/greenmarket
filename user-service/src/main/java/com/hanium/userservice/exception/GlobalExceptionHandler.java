@@ -59,10 +59,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * Authentication 객체가 필요한 권한을 보유하지 않은 경우 발생합
      */
     @ExceptionHandler(UserAuthenticationException.class)
-    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(UserAuthenticationException e) {
+    protected ResponseEntity<ErrorResponse> handleUnAuthenticationException(UserAuthenticationException e) {
         log.error("handleAccessDeniedException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.UN_AUTHENTICATION);
         return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.UN_AUTHENTICATION.getStatus()));
+    }
+
+    /**
+     * 인가 관련 예외 처리시 발생
+     */
+    @ExceptionHandler(UserAuthorizationException.class)
+    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(UserAuthorizationException e) {
+        log.error("handleAccessDeniedException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.HANDLE_ACCESS_DENIED);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.HANDLE_ACCESS_DENIED.getStatus()));
     }
 
     @ExceptionHandler(BusinessException.class)

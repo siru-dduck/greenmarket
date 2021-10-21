@@ -1,19 +1,17 @@
 package com.hanium.userservice.service;
 
+import com.hanium.userservice.domain.AuthUserDetail;
 import com.hanium.userservice.domain.User;
-import com.hanium.userservice.dto.JoinDto;
-import com.hanium.userservice.dto.LoginDto;
-import com.hanium.userservice.dto.LoginResultDto;
-import com.hanium.userservice.dto.UserInfoDto;
+import com.hanium.userservice.dto.*;
 import com.hanium.userservice.exception.UserAlreadyExistException;
 import com.hanium.userservice.exception.UserAuthenticationException;
+import com.hanium.userservice.exception.UserAuthorizationException;
 import com.hanium.userservice.exception.UserNotFoundException;
 import com.hanium.userservice.jwt.JwtProvider;
 import com.hanium.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
+
     /**
      * 로그인 & jwt 발행
      * @param loginDto
@@ -37,7 +36,8 @@ public class UserService {
     @Transactional
     public LoginResultDto login(LoginDto loginDto) {
         // 사용자 조회
-        User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new UserAuthenticationException("not found user"));
+        User user = userRepository.findByEmail(loginDto.getEmail())
+                .orElseThrow(() -> new UserAuthenticationException("not found user"));
 
         // 패스워드 검증
         if(!user.validatePassword(loginDto.getPassword())) {
@@ -87,7 +87,7 @@ public class UserService {
      * @return
      */
     public boolean checkEmailDuplication(String email) {
-        return userRepository.findByEmail(email).isPresent();
+        return userRepository.existsByEmail(email);
     }
 
     /**
@@ -99,6 +99,28 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> { throw new UserNotFoundException("사용자를 찾을 수 없습니다."); });
 
         UserInfoDto userInfo = modelMapper.map(user, UserInfoDto.class);
+        userInfo.setUserId(user.getId());
+        return userInfo;
+    }
+
+    /**
+     * 사용자 정보 수장
+     * @param updateUserInfo
+     * @return
+     */
+    @Transactional
+    public UserInfoDto updateUserInfo(UpdateUserInfoDto updateUserInfo, AuthUserDetail authUserDetail) {
+        User user = userRepository.findById(updateUserInfo.getUserId())
+                .orElseThrow(() -> { throw new UserNotFoundException("사용자를 찾을 수 없습니다."); });
+
+        // 권한 검사
+        if(authUserDetail.getUserId() != user.getId()) {
+            throw new UserAuthorizationException("권한이 없는 사용자 입니다.");
+        }
+
+        user.updateUserInfo(updateUserInfo);
+        UserInfoDto userInfo = modelMapper.map(user, UserInfoDto.class);
+        userInfo.setUserId(user.getId());
         return userInfo;
     }
 }

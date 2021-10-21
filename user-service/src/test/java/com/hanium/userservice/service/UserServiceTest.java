@@ -1,11 +1,10 @@
 package com.hanium.userservice.service;
 
+import com.hanium.userservice.domain.AuthUserDetail;
 import com.hanium.userservice.domain.RefreshToken;
 import com.hanium.userservice.domain.User;
 import com.hanium.userservice.domain.UserStatus;
-import com.hanium.userservice.dto.JoinDto;
-import com.hanium.userservice.dto.LoginDto;
-import com.hanium.userservice.dto.LoginResultDto;
+import com.hanium.userservice.dto.*;
 import com.hanium.userservice.exception.UserAuthenticationException;
 import com.hanium.userservice.jwt.JwtProvider;
 import com.hanium.userservice.repository.RefreshTokenRepository;
@@ -16,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @SpringBootTest
 @Transactional
@@ -43,6 +44,12 @@ class UserServiceTest {
                 .build();
     }
 
+    private User createUser(String email, String password, String address1, String address2, String nickname) {
+        JoinDto joinInfo= createJoinInfo(email, password, address1, address2, nickname);
+        User user = User.createUser(joinInfo);
+        return userRepository.save(user);
+    }
+
     @Test
     public void 회원가입_성공_테스트() throws Exception {
         // given
@@ -66,9 +73,7 @@ class UserServiceTest {
         // given
         String email = "test@email.com";
         String password = "password";
-        JoinDto joinInfo = createJoinInfo(email, password, "서울특별시", "강남구", "siru");
-        User user = User.createUser(joinInfo);
-        userRepository.save(user);
+        createUser(email, password, "서울특별시", "강남구", "siru");
 
         LoginDto loginInfo = LoginDto.builder()
                 .email(email)
@@ -99,10 +104,15 @@ class UserServiceTest {
                 .password("1234567890")
                 .build();
 
-        // when then
-        Assertions.assertThrows(UserAuthenticationException.class
-                , () -> userService.login(loginInfo)
-                , "not found user!");
+        // when
+        Throwable thrown = catchThrowable(()-> {
+            userService.login(loginInfo);
+        });
+
+        // then
+        assertThat(thrown)
+                .isInstanceOf(UserAuthenticationException.class)
+                .hasMessage("not found user");
     }
 
     @Test
@@ -120,6 +130,53 @@ class UserServiceTest {
         // then
         Assertions.assertTrue(emailExistResult);
         Assertions.assertFalse(emailNotExistResult);
+    }
+
+    @Test
+    public void 사용자_조회_테스트() throws Exception {
+        // given
+        User user = createUser("test@email.com", "password", "서울특별시", "강남구", "siru");
+
+        // when
+        UserInfoDto userInfo = userService.findUserById(user.getId());
+
+        // then
+        assertThat(userInfo.getUserId()).isEqualTo(user.getId());
+        assertThat(userInfo.getNickname()).isEqualTo(user.getNickname());
+        assertThat(userInfo.getAddress1()).isEqualTo(user.getAddress1());
+        assertThat(userInfo.getAddress2()).isEqualTo(user.getAddress2());
+    }
+    
+    @Test
+    public void 사용자정보_수정_테스트() throws Exception {
+        // given
+        User user = createUser("test@email.com", "password", "서울특별시", "강남구", "siru");
+        AuthUserDetail authUserDetail = AuthUserDetail.builder()
+                .userId(user.getId())
+                .build();
+
+        String updateAddress1 = "인천광역시";
+        String updateAddress2 = "연수구";
+        String updateNickname = "시루";
+        long updateProfileFileId = 1;
+        UpdateUserInfoDto updateUserInfo = UpdateUserInfoDto.builder()
+                .userId(user.getId())
+                .address1(updateAddress1)
+                .address2(updateAddress2)
+                .nickname(updateNickname)
+                .profileFileId(updateProfileFileId)
+                .build();
+
+
+        // when
+        UserInfoDto userInfo = userService.updateUserInfo(updateUserInfo, authUserDetail);
+
+        // then
+        assertThat(userInfo.getUserId()).isEqualTo(user.getId());
+        assertThat(userInfo.getAddress1()).isEqualTo(updateAddress1);
+        assertThat(userInfo.getAddress2()).isEqualTo(updateAddress2);
+        assertThat(userInfo.getNickname()).isEqualTo(updateNickname);
+        assertThat(userInfo.getProfileFileId()).isEqualTo(updateProfileFileId);
     }
 
 }

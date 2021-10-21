@@ -1,8 +1,11 @@
 package com.hanium.userservice.controller;
 
+import com.hanium.userservice.domain.AuthUserDetail;
+import com.hanium.userservice.dto.UpdateUserInfoDto;
 import com.hanium.userservice.dto.UserInfoDto;
 import com.hanium.userservice.dto.request.EmailValidationRequest;
 import com.hanium.userservice.dto.request.JoinRequest;
+import com.hanium.userservice.dto.request.UpdateUserInfoRequest;
 import com.hanium.userservice.dto.response.EmailValidationResponse;
 import com.hanium.userservice.dto.response.JoinResponse;
 import com.hanium.userservice.dto.JoinDto;
@@ -14,9 +17,12 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,9 +31,11 @@ public class UserController {
     private final UserService userService;
     private final ModelMapper modelMapper;
 
+    private static final String USERS_URL = "/users/{userId}";
+
     @ApiOperation(value = "회원가입", notes = "회원가입 api")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "ok status with user id, nickname"),
+            @ApiResponse(code = 201, message = "ok status with user id, nickname"),
             @ApiResponse(code = 400, message = "bad request"),
             @ApiResponse(code = 409, message = "duplication user")
     })
@@ -36,12 +44,13 @@ public class UserController {
         JoinDto joinInfo = modelMapper.map(joinRequest, JoinDto.class);
         long userId = userService.join(joinInfo);
 
+        URI uri = URI.create(USERS_URL.replace("{userId}", String.valueOf(userId)));
         JoinResponse response = JoinResponse.builder()
                 .userId(userId)
                 .nickname(joinInfo.getNickname())
                 .build();
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.created(uri).body(response);
     }
 
     @ApiOperation(value = "이메일 중복 체크", notes = "이메일 중복 체크 api")
@@ -75,12 +84,33 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @ApiOperation(value = "사용자 정보 수정", notes = "사용자 정보 수정")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "no content"),
+            @ApiResponse(code = 401, message = "not authentication"),
+            @ApiResponse(code = 403, message = "access denied"),
+            @ApiResponse(code = 404, message = "not found")
+    })
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<Void> updateUserInfo(@PathVariable long userId
+            , @Valid @RequestBody UpdateUserInfoRequest updateUserInfoRequest) {
+        UpdateUserInfoDto updateUserInfo = modelMapper.map(updateUserInfoRequest, UpdateUserInfoDto.class);
+        updateUserInfo.setUserId(userId);
+
+        AuthUserDetail authUserDetail = (AuthUserDetail) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        // 사용자 정보 수정
+        userService.updateUserInfo(updateUserInfo, authUserDetail);
+
+        return ResponseEntity.noContent().build();
+    }
+
     /**
      * TODO
      * 이메일 중복 체크 api (✅)
-     * 사용자 정보 조회 api
-     * 사용자 정보 수정 api
-     * 사용자 리스트 조회 api
-     * 회원탈퇴 api
+     * 사용자 정보 조회 api (✅)
+     * 사용자 정보 수정 api (✅)
+     * 사용자 리스트 조회 api ( )
+     * 회원탈퇴 api ( )
      */
 }

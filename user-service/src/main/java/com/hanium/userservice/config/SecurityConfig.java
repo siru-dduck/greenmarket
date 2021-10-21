@@ -5,6 +5,7 @@ import com.hanium.userservice.jwt.JwtAuthenticationFilter;
 import com.hanium.userservice.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -52,8 +53,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             .and()
             .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/users/{\\d+}").permitAll()
+                .antMatchers("/users/join").permitAll()
+                .antMatchers("/users/email/exist").permitAll()
                 .antMatchers("/auth/login").permitAll()
-                .antMatchers("/users/**").permitAll()
                 .anyRequest().authenticated()
 
             // jwt config

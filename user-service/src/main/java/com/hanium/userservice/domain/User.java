@@ -1,6 +1,7 @@
 package com.hanium.userservice.domain;
 
 import com.hanium.userservice.dto.JoinDto;
+import com.hanium.userservice.dto.UpdateUserInfoDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.*;
@@ -104,5 +105,13 @@ public class User {
 
         getRefreshTokenList().add(refreshToken);
     }
+
+    public void updateUserInfo(UpdateUserInfoDto updateUserInfo) {
+        this.address1 = updateUserInfo.getAddress1();
+        this.address2 = updateUserInfo.getAddress2();
+        this.nickname = updateUserInfo.getNickname();
+        this.profileFileId = updateUserInfo.getProfileFileId();
+    }
+
 
 }

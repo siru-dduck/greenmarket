@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class UserInfoDto {
     private long userId;
+    private String email;
     private String nickname;
     private String address1;
     private String address2;

@@ -7,8 +7,8 @@ public enum ErrorCode {
 
     // Common
     INVALID_INPUT_VALUE(400, "C001", " Invalid Input Value"),
-    METHOD_NOT_ALLOWED(405, "C002", " Invalid Input Value"),
-    NOT_FOUND(400, "C003", " Not Found"),
+    METHOD_NOT_ALLOWED(405, "C002", "Method not allowed"),
+    NOT_FOUND(404, "C003", " Not Found"),
     INVALID_TYPE_VALUE(400, "C004", " Invalid Type Value"),
     UN_AUTHENTICATION(401, "C005", "Not Authentication"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
