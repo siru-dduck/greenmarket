@@ -51,6 +51,7 @@ public class JwtProvider {
         AuthUserDetail userDetail = AuthUserDetail.builder()
                 .userId(claims.get("userId", Long.class))
                 .email(claims.getSubject())
+                .tokenId(claims.getId())
                 .profileImageId(claims.get("profileImageId", Long.class))
                 .build();
         authentication.setDetails(userDetail);
@@ -65,6 +66,7 @@ public class JwtProvider {
         Date expiration = new Date(now.getTime() + jwtProp.getAccessTokenValidityInSeconds() * 1000);
 
         Claims claims = new DefaultClaims();
+        claims.setId(userDetail.getTokenId());
         claims.setSubject(authentication.getName());
         claims.setIssuer("greenmarket");
         claims.setIssuedAt(now);

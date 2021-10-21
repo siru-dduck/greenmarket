@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * @author siru
- * 사용자 및 인증 서비스
+ * 사용자 서비스
  */
 @Service
 @RequiredArgsConstructor
@@ -28,41 +28,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
-
-    /**
-     * 로그인 & jwt 발행
-     * @param loginDto
-     * @return
-     */
-    @Transactional
-    public LoginResultDto login(LoginDto loginDto) {
-        // 사용자 조회
-        User user = userRepository.findByEmail(loginDto.getEmail())
-                .orElseThrow(() -> new UserAuthenticationException("not found user"));
-
-        // 패스워드 검증
-        if(!user.validatePassword(loginDto.getPassword())) {
-            throw new UserAuthenticationException("password is not correct");
-        }
-
-        // jwt 토큰 생성
-        Authentication authentication = user.createAuthentication();
-        String accessTokenStr = jwtProvider.createAccessToken(authentication);
-        String refreshTokenStr = jwtProvider.createRefreshToken(authentication);
-
-        // refresh token 저장
-        user.setRefreshToken(jwtProvider.parseJwt(refreshTokenStr), refreshTokenStr);
-
-        // 반환객체 생성
-        LoginResultDto loginResult = LoginResultDto.builder()
-                .accessToken(accessTokenStr)
-                .refreshToken(refreshTokenStr)
-                .build();
-
-        return loginResult;
-    }
 
     /**
      * 회원가입

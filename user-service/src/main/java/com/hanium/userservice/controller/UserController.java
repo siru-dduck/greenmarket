@@ -103,6 +103,7 @@ public class UserController {
         UpdateUserInfoDto updateUserInfo = modelMapper.map(updateUserInfoRequest, UpdateUserInfoDto.class);
         updateUserInfo.setUserId(userId);
 
+        // TODO authDetail 추출 로직 별도의 클래스와 메소드로 분리
         AuthUserDetail authUserDetail = (AuthUserDetail) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
         // 사용자 정보 수정

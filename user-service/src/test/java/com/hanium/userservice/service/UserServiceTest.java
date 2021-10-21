@@ -30,13 +30,7 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
-    private JwtProvider jwtProvider;
 
     private JoinDto createJoinInfo(String email, String password, String address1, String address2, String nickname) {
         return JoinDto.builder()
@@ -72,52 +66,6 @@ class UserServiceTest {
         Assertions.assertEquals(UserStatus.NORMAL, user.getStatus());
     }
 
-    @Test
-    public void 로그인_성공_테스트() throws Exception {
-        // given
-        String email = "test@email.com";
-        String password = "password";
-        createUser(email, password, "서울특별시", "강남구", "siru");
-
-        LoginDto loginInfo = LoginDto.builder()
-                .email(email)
-                .password(password)
-                .build();
-
-        // when
-        LoginResultDto loginResult = userService.login(loginInfo);
-
-        // then
-        String accessToken = loginResult.getAccessToken();
-        String refreshToken = loginResult.getRefreshToken();
-        Claims accessTokenClaims = jwtProvider.parseJwt(accessToken).getBody();
-        Claims refreshTokenClaims = jwtProvider.parseJwt(refreshToken).getBody();
-
-        RefreshToken findRefreshToken = refreshTokenRepository.findByTokenId(refreshTokenClaims.getId());
-        Assertions.assertEquals(email, accessTokenClaims.getSubject());
-        Assertions.assertEquals(email, refreshTokenClaims.getSubject());
-        Assertions.assertNotNull(findRefreshToken);
-        Assertions.assertEquals(refreshToken, findRefreshToken.getToken());
-    }
-
-    @Test
-    public void 존재하지않는_회원로그인_실패_테스트() throws Exception {
-        // given
-        LoginDto loginInfo = LoginDto.builder()
-                .email("notExist@email.test")
-                .password("1234567890")
-                .build();
-
-        // when
-        Throwable thrown = catchThrowable(()-> {
-            userService.login(loginInfo);
-        });
-
-        // then
-        assertThat(thrown)
-                .isInstanceOf(UserAuthenticationException.class)
-                .hasMessage("not found user");
-    }
 
     @Test
     public void 이메일_중복테스트() throws Exception {

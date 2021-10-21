@@ -113,5 +113,12 @@ public class User {
         this.profileFileId = updateUserInfo.getProfileFileId();
     }
 
-
+    public void expireRefreshToken(String tokenId) {
+        getRefreshTokenList().stream()
+                .filter(refreshToken -> refreshToken.getTokenId().equals(tokenId))
+                .findFirst()
+                .ifPresent(refreshToken -> {
+                    getRefreshTokenList().remove(refreshToken);
+                });
+    }
 }
