@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,7 +46,7 @@ public class User {
     private Long profileFileId;
 
     @Column(nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @Column(nullable = false)
@@ -54,7 +55,7 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime updateDate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<RefreshToken> refreshTokenList = new ArrayList<>();
 
     public static User createUser(JoinDto joinDto) {
@@ -120,5 +121,10 @@ public class User {
                 .ifPresent(refreshToken -> {
                     getRefreshTokenList().remove(refreshToken);
                 });
+    }
+
+    public void deleteAccount() {
+        getRefreshTokenList().clear();
+        this.status = UserStatus.DELETE_ACCOUNT;
     }
 }

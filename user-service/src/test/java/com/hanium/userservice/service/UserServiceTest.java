@@ -1,26 +1,23 @@
 package com.hanium.userservice.service;
 
 import com.hanium.userservice.domain.AuthUserDetail;
-import com.hanium.userservice.domain.RefreshToken;
 import com.hanium.userservice.domain.User;
 import com.hanium.userservice.domain.UserStatus;
 import com.hanium.userservice.dto.*;
-import com.hanium.userservice.exception.UserAuthenticationException;
 import com.hanium.userservice.jwt.JwtProvider;
-import com.hanium.userservice.repository.RefreshTokenRepository;
 import com.hanium.userservice.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -31,6 +28,12 @@ class UserServiceTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserAuthService userAuthService;
+
+    @Autowired
+    private JwtProvider jwtProvider;
 
     private JoinDto createJoinInfo(String email, String password, String address1, String address2, String nickname) {
         return JoinDto.builder()
@@ -46,6 +49,17 @@ class UserServiceTest {
         JoinDto joinInfo= createJoinInfo(email, password, address1, address2, nickname);
         User user = User.createUser(joinInfo);
         return userRepository.save(user);
+    }
+
+    private AuthUserDetail login(String email, String password) {
+        LoginDto loginInfo = LoginDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        LoginResultDto loginResult = userAuthService.login(loginInfo);
+        Authentication authentication = jwtProvider.getAuthentication(loginResult.getAccessToken());
+        return (AuthUserDetail) authentication.getDetails();
     }
 
     @Test
@@ -149,5 +163,21 @@ class UserServiceTest {
 
         // then
         assertThat(userInfoList.size()).isEqualTo(5);
+    }
+
+    @Test
+    public void 회원탈퇴_테스트() throws Exception {
+        // given
+        User user = createUser("test@email.com", "password", "서울특별시", "강남구", "siru");
+        AuthUserDetail authUserDetail = login("test@email.com", "password");
+
+        // when
+        userService.deleteAccount(user.getId(), authUserDetail);
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> { throw new IllegalStateException(); });
+
+        // then
+        assertThat(findUser.getRefreshTokenList().size()).isEqualTo(0);
+        assertThat(findUser.getStatus()).isEqualTo(UserStatus.DELETE_ACCOUNT);
     }
 }

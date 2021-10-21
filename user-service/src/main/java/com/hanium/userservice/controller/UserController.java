@@ -112,6 +112,24 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value = "사용자 탈퇴", notes = "사용자 탈퇴 api")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "no content"),
+            @ApiResponse(code = 401, message = "not authentication"),
+            @ApiResponse(code = 403, message = "access denied"),
+            @ApiResponse(code = 404, message = "not found")
+    })
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable long userId) {
+        // TODO authDetail 추출 로직 별도의 클래스와 메소드로 분리
+        AuthUserDetail authUserDetail = (AuthUserDetail) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        // 사용자 탈퇴
+        userService.deleteAccount(userId, authUserDetail);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @ApiOperation(value = "사용자 정보 리스트 조회", notes = "사용자 정보 리스트 조회")
     @ApiResponses({
             @ApiResponse(code = 200, message = "ok with user info list"),
@@ -138,6 +156,6 @@ public class UserController {
      * 사용자 정보 조회 api (✅)
      * 사용자 정보 수정 api (✅)
      * 사용자 리스트 조회 api (✅)
-     * 회원탈퇴 api ( )
+     * 회원탈퇴 api (✅)
      */
 }

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -107,5 +108,23 @@ public class UserService {
             userInfoList.add(userInfo);
         });
         return userInfoList;
+    }
+
+    /**
+     * 회원탈퇴
+     * @param authUserDetail
+     */
+    @Transactional
+    public void deleteAccount(long userId, AuthUserDetail authUserDetail) {
+        // 사용자 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> { throw new UserNotFoundException("사용자를 찾을 수 없습니다."); });
+
+        // 권한 검사
+        if(authUserDetail.getUserId() != user.getId()) {
+            throw new UserAuthorizationException("권한이 없는 사용자 입니다.");
+        }
+
+        user.deleteAccount();
     }
 }
