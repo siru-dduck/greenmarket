@@ -16,6 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @SpringBootTest
@@ -179,4 +183,23 @@ class UserServiceTest {
         assertThat(userInfo.getProfileFileId()).isEqualTo(updateProfileFileId);
     }
 
+    @Test
+    public void 사용자리스트_조회() throws Exception {
+        // given
+        User user1 = createUser("test1@email.com", "password", "서울특별시", "강남구", "siru1");
+        User user2 = createUser("test2@email.com", "password", "서울특별시", "성북구", "siru2");
+        User user3 = createUser("test3@email.com", "password", "부산광역시", "해운대구", "siru3");
+        User user4 = createUser("test4@email.com", "password", "성남시", "수지구", "siru4");
+        User user5 = createUser("test5@email.com", "password", "인천광역시", "부평구", "siru5");
+
+        List<Long> userIdList = Stream.of(user1,user2,user3,user4,user5)
+                .map(User::getId)
+                .collect(Collectors.toList());
+
+        // when
+        List<UserInfoDto> userInfoList = userService.findUserList(userIdList);
+
+        // then
+        assertThat(userInfoList.size()).isEqualTo(5);
+    }
 }

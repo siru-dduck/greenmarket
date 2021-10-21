@@ -15,15 +15,21 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -105,12 +111,32 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value = "사용자 정보 리스트 조회", notes = "사용자 정보 리스트 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "ok with user info list"),
+            @ApiResponse(code = 404, message = "not found")
+    })
+    @GetMapping("/users")
+    public ResponseEntity<List<UserInfoResponse>> getUserInfo(@RequestParam(required = false) List<Long> userIdList) {
+        // 사용자 조회
+        log.info("User Id List: {}", userIdList);
+        if(CollectionUtils.isEmpty(userIdList)) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+        List<UserInfoResponse> response = new ArrayList<>();
+        List<UserInfoDto> userInfoList = userService.findUserList(userIdList);
+        userInfoList.forEach(userInfo -> {
+            response.add(modelMapper.map(userInfo, UserInfoResponse.class));
+        });
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * TODO
      * 이메일 중복 체크 api (✅)
      * 사용자 정보 조회 api (✅)
      * 사용자 정보 수정 api (✅)
-     * 사용자 리스트 조회 api ( )
+     * 사용자 리스트 조회 api (✅)
      * 회원탈퇴 api ( )
      */
 }
