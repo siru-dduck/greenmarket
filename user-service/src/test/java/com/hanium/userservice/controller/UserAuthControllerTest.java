@@ -1,35 +1,21 @@
 package com.hanium.userservice.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hanium.userservice.domain.AuthUserDetail;
 import com.hanium.userservice.domain.User;
 import com.hanium.userservice.dto.JoinDto;
 import com.hanium.userservice.dto.LoginDto;
 import com.hanium.userservice.dto.LoginResultDto;
-import com.hanium.userservice.dto.request.EmailValidationRequest;
 import com.hanium.userservice.jwt.JwtProvider;
-import com.hanium.userservice.repository.RefreshTokenRepository;
 import com.hanium.userservice.repository.UserRepository;
 import com.hanium.userservice.service.UserAuthService;
-import com.hanium.userservice.service.UserService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
-import java.util.Map;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

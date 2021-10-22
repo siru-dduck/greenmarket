@@ -104,7 +104,7 @@ public class User {
                 .updateDate(LocalDateTime.now())
                 .expireDate(expireDateTime)
                 .build();
-
+        refreshToken.setUser(this);
         getRefreshTokenList().add(refreshToken);
     }
 

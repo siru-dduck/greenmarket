@@ -123,6 +123,23 @@ public class UserAuthServiceTest {
         userAuthService.logout(authUserDetail);
 
         // then
-        assertThat(user.getRefreshTokenList().size()).isEqualTo(0);
+        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void 토큰리프레시_테스트() throws Exception {
+        // given
+        String email = "test@email.com";
+        String password = "password";
+        createUser(email, password, "서울특별시", "강남구", "siru");
+
+        AuthUserDetail authUserDetail = login(email, password);
+        RefreshToken refreshToken = refreshTokenRepository.findByTokenId(authUserDetail.getTokenId());
+
+        // when
+        LoginResultDto refreshResult = userAuthService.refreshToken(refreshToken.getToken());
+
+        // then
+        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
     }
 }

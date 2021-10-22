@@ -6,6 +6,7 @@ import com.hanium.userservice.dto.response.AuthUserInfoResponse;
 import com.hanium.userservice.dto.response.LoginResponse;
 import com.hanium.userservice.dto.LoginDto;
 import com.hanium.userservice.dto.LoginResultDto;
+import com.hanium.userservice.dto.response.RefreshTokenResponse;
 import com.hanium.userservice.service.UserAuthService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -70,12 +71,24 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @ApiOperation(value = "jwt 리프레시", notes = "jwt 리프레시 api")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "ok with jwt auth info"),
+            @ApiResponse(code = 401, message = "not authentication")
+    })
+    @PostMapping("/refreshToken")
+    public ResponseEntity<RefreshTokenResponse> refreshToken(@RequestHeader("x-user-refresh-token") String refreshToken) {
+        LoginResultDto refreshResult = userAuthService.refreshToken(refreshToken);
+
+        RefreshTokenResponse response = modelMapper.map(refreshResult, RefreshTokenResponse.class);
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * TODO
      * 로그아웃 api(✅)
      * jwt 유효성 검사 인증정보 api (✅)
-     * refresh token api ()
+     * refresh token api (✅)
      * 비밀번호 찾기 api
      * 이메일 인증 api
      * 소셜로그인 카카오, 네이버
