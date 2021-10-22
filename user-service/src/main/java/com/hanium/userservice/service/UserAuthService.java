@@ -9,7 +9,6 @@ import com.hanium.userservice.exception.UserNotFoundException;
 import com.hanium.userservice.jwt.JwtProvider;
 import com.hanium.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

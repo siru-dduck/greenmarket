@@ -77,6 +77,7 @@ public class User {
         AuthUserDetail userDetail = AuthUserDetail.builder()
                 .userId(getId())
                 .email(getEmail())
+                .nickname(getNickname())
                 .profileImageId(getProfileFileId())
                 .tokenId(jti)
                 .build();

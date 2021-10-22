@@ -52,6 +52,7 @@ public class JwtProvider {
                 .userId(claims.get("userId", Long.class))
                 .email(claims.getSubject())
                 .tokenId(claims.getId())
+                .nickname(claims.get("nickname", String.class))
                 .profileImageId(claims.get("profileImageId", Long.class))
                 .build();
         authentication.setDetails(userDetail);
@@ -73,6 +74,7 @@ public class JwtProvider {
         claims.setExpiration(expiration);
         claims.put("userId", userDetail.getUserId());
         claims.put("profileImageId", userDetail.getProfileImageId());
+        claims.put("nickname", userDetail.getNickname());
 
         return Jwts.builder()
                 .setClaims(claims)
