@@ -1,7 +1,7 @@
 package com.hanium.userservice.domain;
 
-import com.hanium.userservice.config.properties.JwtProp;
 import com.hanium.userservice.dto.JoinDto;
+import com.hanium.userservice.dto.UpdateUserInfoDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.*;
@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,7 +46,7 @@ public class User {
     private Long profileFileId;
 
     @Column(nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @Column(nullable = false)
@@ -54,11 +55,8 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime updateDate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<RefreshToken> refreshTokenList = new ArrayList<>();
-
-    @Transient
-    private JwtProp jwtProp;
 
     public static User createUser(JoinDto joinDto) {
         return User.builder()
@@ -76,9 +74,10 @@ public class User {
     public Authentication createAuthentication() {
         String jti = UUID.randomUUID().toString();
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(getEmail(), null, new ArrayList<>());
-        UserDetail userDetail = UserDetail.builder()
+        AuthUserDetail userDetail = AuthUserDetail.builder()
                 .userId(getId())
                 .email(getEmail())
+                .nickname(getNickname())
                 .profileImageId(getProfileFileId())
                 .tokenId(jti)
                 .build();
@@ -105,8 +104,28 @@ public class User {
                 .updateDate(LocalDateTime.now())
                 .expireDate(expireDateTime)
                 .build();
-
+        refreshToken.setUser(this);
         getRefreshTokenList().add(refreshToken);
     }
 
+    public void updateUserInfo(UpdateUserInfoDto updateUserInfo) {
+        this.address1 = updateUserInfo.getAddress1();
+        this.address2 = updateUserInfo.getAddress2();
+        this.nickname = updateUserInfo.getNickname();
+        this.profileFileId = updateUserInfo.getProfileFileId();
+    }
+
+    public void expireRefreshToken(String tokenId) {
+        getRefreshTokenList().stream()
+                .filter(refreshToken -> refreshToken.getTokenId().equals(tokenId))
+                .findFirst()
+                .ifPresent(refreshToken -> {
+                    getRefreshTokenList().remove(refreshToken);
+                });
+    }
+
+    public void deleteAccount() {
+        getRefreshTokenList().clear();
+        this.status = UserStatus.DELETE_ACCOUNT;
+    }
 }

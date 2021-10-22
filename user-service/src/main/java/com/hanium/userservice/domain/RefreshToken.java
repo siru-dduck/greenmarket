@@ -33,4 +33,8 @@ public class RefreshToken {
 
     @Column(nullable = false)
     private LocalDateTime updateDate;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

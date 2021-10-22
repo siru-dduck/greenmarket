@@ -6,10 +6,10 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class JoinDto {
-    private String email;
-    private String password;
+public class UpdateUserInfoDto {
+    private long userId;
     private String address1;
     private String address2;
     private String nickname;
+    private Long profileFileId;
 }
