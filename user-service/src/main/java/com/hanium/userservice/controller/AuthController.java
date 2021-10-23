@@ -80,8 +80,8 @@ public class AuthController {
 
     /**
      * TODO
-     * 비밀번호 찾기 api
      * 이메일 인증 api
+     * 비밀번호 reset api
      * 소셜로그인 카카오, 네이버
      */
 }
