@@ -3,9 +3,13 @@ package siru.fileservice.configuration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import siru.fileservice.configuration.properties.FileResourceProp;
+import siru.fileservice.controller.argumentResolver.SecurityArgumentResolver;
+
+import java.util.List;
 
 /**
  * MVC 설정
@@ -14,9 +18,14 @@ import siru.fileservice.configuration.properties.FileResourceProp;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class MvcConfig implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer {
 
     private final FileResourceProp fileResourceProp;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new SecurityArgumentResolver());
+    }
 
     /**
      * static 파일설정

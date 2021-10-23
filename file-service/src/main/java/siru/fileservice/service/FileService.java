@@ -17,10 +17,10 @@ import siru.fileservice.domain.file.FileType;
 import siru.fileservice.domain.file.ImageFile;
 import siru.fileservice.dto.FindImageFileDto;
 import siru.fileservice.dto.UploadImageDto;
-import siru.fileservice.exception.FileSaveException;
+import siru.fileservice.exception.FileNotFoundException;
+import siru.fileservice.exception.FileNotSupportedException;
 import siru.fileservice.exception.IllegalRequestException;
-import siru.fileservice.exception.NotFoundException;
-import siru.fileservice.exception.NotSupportedException;
+
 import siru.fileservice.repository.ImageFileRepository;
 
 import javax.imageio.ImageIO;
@@ -59,7 +59,7 @@ public class FileService {
      */
     public FindImageFileDto findImageFile(long fileId) {
         ImageFile findFile = imageFileRepository.findById(fileId)
-                .orElseThrow(() -> new NotFoundException("파일을 찾을 수 없습니다."));
+                .orElseThrow(() -> new FileNotFoundException("파일을 찾을 수 없습니다."));
 
         FindImageFileDto resultImageFileInfo = modelMapper.map(findFile, FindImageFileDto.class);
 
@@ -118,7 +118,7 @@ public class FileService {
             if (validateImageType(contentType)) {
                 fileExtension = parseImageFileExtension(contentType);
             } else {
-                throw new NotSupportedException("jpeg, png 이미지만 지원합니다.");
+                throw new FileNotSupportedException("jpeg, png 이미지만 지원합니다.");
             }
 
             // 이미지 크기검증
@@ -146,7 +146,7 @@ public class FileService {
          */
         ImageFile imageFile = ImageFile.builder()
                 .fileUrl(fileUrl)
-                .fileCropUrl(fileCropUrl) // TODO 수정
+                .fileCropUrl(fileCropUrl)
                 .userId(-999L) // TODO 시큐리티 적용후 수정
                 .mimeType(contentType)
                 .extension(fileExtension)
@@ -166,44 +166,36 @@ public class FileService {
      * @param path
      * @param imageFile
      */
-    private void makeThumbnail(String path, File imageFile) {
-        try {
-            BufferedImage image = ImageIO.read(imageFile);
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
+    private void makeThumbnail(String path, File imageFile) throws IOException {
+        BufferedImage image = ImageIO.read(imageFile);
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
 
-            int newWidth = imageWidth;
-            int newHeight = (imageWidth * IMAGE_THUMBNAIL_HEIGHT) / IMAGE_THUMBNAIL_WIDTH;
+        int newWidth = imageWidth;
+        int newHeight = (imageWidth * IMAGE_THUMBNAIL_HEIGHT) / IMAGE_THUMBNAIL_WIDTH;
 
-            if(newHeight > imageHeight) {
-                newWidth = (imageHeight * IMAGE_THUMBNAIL_WIDTH) / IMAGE_THUMBNAIL_HEIGHT;
-                newHeight = imageHeight;
-            }
-
-            // 이미지 crop
-            BufferedImage cropImage = Scalr.crop(image, (imageWidth - newWidth) / 2, (imageHeight - newHeight) / 2, newWidth, newHeight);
-
-            // 이미지 resizing
-            BufferedImage destImage = Scalr.resize(cropImage, IMAGE_THUMBNAIL_WIDTH, IMAGE_THUMBNAIL_HEIGHT);
-
-            // 썸네일 저장
-            ImageIO.write(destImage, "JPEG", new File(path));
-        } catch (IOException e) {
-            throw new FileSaveException("이미지를 저장할 수 없습니다.", e);
+        if (newHeight > imageHeight) {
+            newWidth = (imageHeight * IMAGE_THUMBNAIL_WIDTH) / IMAGE_THUMBNAIL_HEIGHT;
+            newHeight = imageHeight;
         }
+
+        // 이미지 crop
+        BufferedImage cropImage = Scalr.crop(image, (imageWidth - newWidth) / 2, (imageHeight - newHeight) / 2, newWidth, newHeight);
+
+        // 이미지 resizing
+        BufferedImage destImage = Scalr.resize(cropImage, IMAGE_THUMBNAIL_WIDTH, IMAGE_THUMBNAIL_HEIGHT);
+
+        // 썸네일 저장
+        ImageIO.write(destImage, "JPEG", new File(path));
     }
 
     /**
      * 이미지 사이즈 검증
      * @param imageFile
      */
-    private boolean validateImageSize(File imageFile) {
-        try {
-            BufferedImage image = ImageIO.read(imageFile);
-            return image.getWidth() >= IMAGE_THUMBNAIL_WIDTH && image.getHeight() >= IMAGE_THUMBNAIL_HEIGHT;
-        } catch (IOException e) {
-            throw new FileSaveException("이미지를 읽을 수 없습니다.", e);
-        }
+    private boolean validateImageSize(File imageFile) throws IOException {
+        BufferedImage image = ImageIO.read(imageFile);
+        return image.getWidth() >= IMAGE_THUMBNAIL_WIDTH && image.getHeight() >= IMAGE_THUMBNAIL_HEIGHT;
     }
 
     /**
@@ -232,24 +224,20 @@ public class FileService {
      * @param src
      * @return
      */
-    private void saveFile(String path, File src) {
+    private void saveFile(String path, File src) throws IOException{
         File targetFile = new File(path);
-        try {
-            FileCopyUtils.copy(src, targetFile);
-        } catch (IOException e) {
-            throw new FileSaveException("파일을 저장할 수 없습니다.", e);
-        }
+        FileCopyUtils.copy(src, targetFile);
     }
 
     /**
      * 디렉토리 생성 메소드
      * @param path
      */
-    private void makeDirectory(String path) {
+    private void makeDirectory(String path) throws IOException {
         File file = new File(path);
         if (!file.exists()) {
             if (!file.mkdirs()) {
-                throw new FileSaveException("fail to derectory to save image file");
+                throw new IOException("fail to directory to save image file");
             }
         }
     }

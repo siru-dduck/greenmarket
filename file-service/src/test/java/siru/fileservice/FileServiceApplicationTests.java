@@ -7,18 +7,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import siru.fileservice.controller.response.UploadResponse;
+import org.springframework.test.web.servlet.ResultActions;
+import siru.fileservice.configuration.security.jwt.JwtProvider;
+import siru.fileservice.domain.user.AuthUserDetail;
+import siru.fileservice.dto.response.UploadResponse;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
+import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -31,27 +37,44 @@ class FileServiceApplicationTests {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JwtProvider jwtProvider;
+
+    private String createAccessToken() {
+        String jti = UUID.randomUUID().toString();
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("test@email.com", null, new ArrayList<>());
+        AuthUserDetail userDetail = AuthUserDetail.builder()
+                .userId(1)
+                .email("test@email.com")
+                .nickname("test name")
+                .profileImageId(null)
+                .tokenId(jti)
+                .build();
+        authentication.setDetails(userDetail);
+        return jwtProvider.createAccessToken(authentication);
+    }
+
     @Test
     void 파일업로드_조회_성공() throws Exception {
         // given
         InputStream inputStream = this.getClass().getResourceAsStream("/test/nongdamgom.jpeg");
         MockMultipartFile file = new MockMultipartFile("file", "test/nongdamgom.jpeg", "image/jpeg", inputStream);
 
-        // when, then
+        // when
 
         /**
          * 업로드 테스트
          */
-        MvcResult result = mockMvc.perform(multipart("/api/file-service/image/PROFILE_IMAGE")
-                        .file(file))
-                .andExpect(status().isOk())
-                .andReturn();
-        UploadResponse uploadResponse = objectMapper.readValue(result.getResponse().getContentAsString(), UploadResponse.class);
+        ResultActions uploadResult = requestFileUpload(file, createAccessToken());
+        UploadResponse uploadResponse = objectMapper.readValue(uploadResult.andReturn().getResponse().getContentAsString(), UploadResponse.class);
 
         /**
          * 조회 테스트
          */
-        mockMvc.perform(get(String.format("/api/file-service/image/%d/origin", uploadResponse.getFileId())))
+        ResultActions getFileResult = requestGetFileResult(uploadResponse.getFileId());
+
+        // then
+        getFileResult
                 .andExpect(status().isSeeOther());
     }
 
@@ -61,11 +84,12 @@ class FileServiceApplicationTests {
         InputStream inputStream =this.getClass().getResourceAsStream("/test/nongdamgom.gif");
         MockMultipartFile file = new MockMultipartFile("file", "test/nongdamgom.gif", "image/gif", inputStream);
 
-        // when, then
-        mockMvc.perform(multipart("/api/file-service/image/PROFILE_IMAGE")
-                        .file(file))
-                .andExpect(status().isUnsupportedMediaType());
+        // when
+        ResultActions uploadResult = requestFileUpload(file, createAccessToken());
 
+        // then
+        uploadResult
+                .andExpect(status().isUnsupportedMediaType());
     }
 
     @Test
@@ -73,11 +97,12 @@ class FileServiceApplicationTests {
         // given
         InputStream inputStream =this.getClass().getResourceAsStream("/test/small_nongdamgom.jpeg");
         MockMultipartFile file = new MockMultipartFile("file", "test/small_nongdamgom.jpeg", "image/jpeg", inputStream);
+        // when
+        ResultActions uploadResult = requestFileUpload(file, createAccessToken());
 
-        // when, then
-        mockMvc.perform(multipart("/api/file-service/image/PROFILE_IMAGE")
-                        .file(file))
-                .andExpect(status().isBadRequest());
+        // then
+        uploadResult
+                .andExpect(status().isForbidden());
 
     }
 
@@ -85,10 +110,12 @@ class FileServiceApplicationTests {
     void 존재하지않는_이미지조회() throws Exception {
         // given
         long fileId = -1; // 존재하지 않는 파일번호
-        URI uri = URI.create(String.format("/api/file-service/image/%d/origin", fileId));
 
-        // when, then
-        mockMvc.perform(get(uri))
+        // when
+        ResultActions getFileResult = requestGetFileResult(fileId);
+
+        // then
+        getFileResult
                 .andExpect(status().isNotFound());
 
     }
@@ -98,4 +125,20 @@ class FileServiceApplicationTests {
         // 이미지 파일 디렉토리 정리
         FileUtils.deleteDirectory(new File("src/test/resources/images"));
     }
+
+    private ResultActions requestFileUpload(MockMultipartFile multipartFile, String accessToken) throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        return mockMvc.perform(multipart("/files/image/PROFILE_IMAGE")
+                        .file(multipartFile)
+                        .headers(headers))
+                .andDo(print());
+    }
+
+    private ResultActions requestGetFileResult(long fileId) throws Exception {
+        return mockMvc.perform(get(String.format("/files/%d/image/origin", fileId)))
+                .andDo(print());
+    }
+
 }

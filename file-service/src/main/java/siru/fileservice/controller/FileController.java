@@ -11,10 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import siru.fileservice.controller.response.UploadResponse;
 import siru.fileservice.domain.file.FileType;
+import siru.fileservice.domain.user.AuthUserDetail;
 import siru.fileservice.dto.FindImageFileDto;
 import siru.fileservice.dto.UploadImageDto;
+import siru.fileservice.dto.response.UploadResponse;
 import siru.fileservice.service.FileService;
 
 import java.io.IOException;
@@ -27,12 +28,12 @@ import java.net.URI;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/file-service")
+@RequestMapping("/files")
 public class FileController {
 
     private final FileService fileService;
 
-    private static final String GET_ORIGIN_IMAGE_PATH = "/image/{fileId}/origin";
+    private static final String GET_ORIGIN_IMAGE_PATH = "/{fileId}/image/origin";
 
     @ApiOperation(value = "이미지 파일 리다이렉트", notes = "파일 원본 이미지 조회후 리소스 경로로 리다렉트")
     @ApiResponses({
@@ -54,7 +55,7 @@ public class FileController {
             @ApiResponse(code = 303, message = "see other"),
             @ApiResponse(code = 404, message = "file not found")
     })
-    @GetMapping("/image/{fileId}/thumbnail")
+    @GetMapping("/{fileId}/image/thumbnail")
     public ResponseEntity<Void> getThumbnailImage(@PathVariable long fileId) {
         FindImageFileDto imageFileInfo = fileService.findImageFile(fileId);
         String fileUrl = imageFileInfo.getFileCropUrl();
@@ -70,7 +71,8 @@ public class FileController {
     })
     @PostMapping(value = "/image/{fileType}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<UploadResponse> uploadProductImage(@PathVariable FileType fileType
-            , @RequestParam MultipartFile file) throws IOException {
+            , @RequestParam MultipartFile file
+            , AuthUserDetail authUserDetail) throws IOException {
         log.info("Upload {} file: {} {}", fileType, file.getContentType(), file.getSize());
 
         // 파일 업로드
