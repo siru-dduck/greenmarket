@@ -1,11 +1,11 @@
 package com.hanium.userservice.controller;
 
 import com.hanium.userservice.domain.AuthUserDetail;
+import com.hanium.userservice.dto.LoginDto;
+import com.hanium.userservice.dto.LoginResultDto;
 import com.hanium.userservice.dto.request.LoginRequest;
 import com.hanium.userservice.dto.response.AuthUserInfoResponse;
 import com.hanium.userservice.dto.response.LoginResponse;
-import com.hanium.userservice.dto.LoginDto;
-import com.hanium.userservice.dto.LoginResultDto;
 import com.hanium.userservice.dto.response.RefreshTokenResponse;
 import com.hanium.userservice.service.UserAuthService;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -50,9 +49,7 @@ public class AuthController {
             @ApiResponse(code = 401, message = "not authentication")
     })
     @PostMapping("/logout")
-    public ResponseEntity<Void> logoutUser() {
-        // TODO authDetail 추출 로직 별도의 클래스와 메소드로 분리 => arguments resolver로 이걸?
-        AuthUserDetail authUserDetail = (AuthUserDetail) SecurityContextHolder.getContext().getAuthentication().getDetails();
+    public ResponseEntity<Void> logoutUser(AuthUserDetail authUserDetail) {
         userAuthService.logout(authUserDetail);
         return ResponseEntity.noContent().build();
     }
@@ -63,10 +60,7 @@ public class AuthController {
             @ApiResponse(code = 401, message = "not authentication")
     })
     @GetMapping("/info")
-    public ResponseEntity<AuthUserInfoResponse> authInfo() {
-        // TODO authDetail 추출 로직 별도의 클래스와 메소드로 분리 => arguments resolver로 이걸?
-        AuthUserDetail authUserDetail = (AuthUserDetail) SecurityContextHolder.getContext().getAuthentication().getDetails();
-
+    public ResponseEntity<AuthUserInfoResponse> authInfo(AuthUserDetail authUserDetail) {
         AuthUserInfoResponse response = modelMapper.map(authUserDetail, AuthUserInfoResponse.class);
         return ResponseEntity.ok(response);
     }
@@ -86,9 +80,6 @@ public class AuthController {
 
     /**
      * TODO
-     * 로그아웃 api(✅)
-     * jwt 유효성 검사 인증정보 api (✅)
-     * refresh token api (✅)
      * 비밀번호 찾기 api
      * 이메일 인증 api
      * 소셜로그인 카카오, 네이버

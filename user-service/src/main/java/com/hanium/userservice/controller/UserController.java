@@ -1,6 +1,7 @@
 package com.hanium.userservice.controller;
 
 import com.hanium.userservice.domain.AuthUserDetail;
+import com.hanium.userservice.dto.JoinDto;
 import com.hanium.userservice.dto.UpdateUserInfoDto;
 import com.hanium.userservice.dto.UserInfoDto;
 import com.hanium.userservice.dto.request.EmailValidationRequest;
@@ -8,7 +9,6 @@ import com.hanium.userservice.dto.request.JoinRequest;
 import com.hanium.userservice.dto.request.UpdateUserInfoRequest;
 import com.hanium.userservice.dto.response.EmailValidationResponse;
 import com.hanium.userservice.dto.response.JoinResponse;
-import com.hanium.userservice.dto.JoinDto;
 import com.hanium.userservice.dto.response.UserInfoResponse;
 import com.hanium.userservice.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -18,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -99,12 +97,10 @@ public class UserController {
     })
     @PutMapping("/users/{userId}")
     public ResponseEntity<Void> updateUserInfo(@PathVariable long userId
-            , @Valid @RequestBody UpdateUserInfoRequest updateUserInfoRequest) {
+            , @Valid @RequestBody UpdateUserInfoRequest updateUserInfoRequest
+            , AuthUserDetail authUserDetail) {
         UpdateUserInfoDto updateUserInfo = modelMapper.map(updateUserInfoRequest, UpdateUserInfoDto.class);
         updateUserInfo.setUserId(userId);
-
-        // TODO authDetail 추출 로직 별도의 클래스와 메소드로 분리
-        AuthUserDetail authUserDetail = (AuthUserDetail) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
         // 사용자 정보 수정
         userService.updateUserInfo(updateUserInfo, authUserDetail);
@@ -120,10 +116,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "not found")
     })
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable long userId) {
-        // TODO authDetail 추출 로직 별도의 클래스와 메소드로 분리
-        AuthUserDetail authUserDetail = (AuthUserDetail) SecurityContextHolder.getContext().getAuthentication().getDetails();
-
+    public ResponseEntity<Void> deleteAccount(@PathVariable long userId, AuthUserDetail authUserDetail) {
         // 사용자 탈퇴
         userService.deleteAccount(userId, authUserDetail);
 
@@ -150,12 +143,4 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * TODO
-     * 이메일 중복 체크 api (✅)
-     * 사용자 정보 조회 api (✅)
-     * 사용자 정보 수정 api (✅)
-     * 사용자 리스트 조회 api (✅)
-     * 회원탈퇴 api (✅)
-     */
 }
