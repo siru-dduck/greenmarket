@@ -2,6 +2,7 @@ package siru.fileservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import siru.fileservice.configuration.security.jwt.JwtProvider;
+import siru.fileservice.domain.file.ImageFile;
 import siru.fileservice.domain.user.AuthUserDetail;
 import siru.fileservice.dto.response.UploadResponse;
+import siru.fileservice.repository.ImageFileRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +25,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -33,6 +37,9 @@ class FileServiceApplicationTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ImageFileRepository imageFileRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -74,8 +81,13 @@ class FileServiceApplicationTests {
         ResultActions getFileResult = requestGetFileResult(uploadResponse.getFileId());
 
         // then
+        ImageFile findFile = imageFileRepository.findById(uploadResponse.getFileId())
+                .orElseThrow();
         getFileResult
                 .andExpect(status().isSeeOther());
+        assertThat(findFile.getId()).isEqualTo(uploadResponse.getFileId());
+        assertThat(findFile.getMimeType()).isEqualTo("image/jpeg");
+        assertThat(findFile.getUserId()).isEqualTo(1);
     }
 
     @Test
