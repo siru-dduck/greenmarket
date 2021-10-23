@@ -1,4 +1,4 @@
-package siru.fileservice.controller.response;
+package siru.fileservice.dto.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
