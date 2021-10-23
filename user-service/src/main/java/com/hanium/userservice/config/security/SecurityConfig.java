@@ -1,8 +1,8 @@
-package com.hanium.userservice.config;
+package com.hanium.userservice.config.security;
 
-import com.hanium.userservice.jwt.JwtAuthenticationEntryPoint;
-import com.hanium.userservice.jwt.JwtAuthenticationFilter;
-import com.hanium.userservice.jwt.JwtProvider;
+import com.hanium.userservice.config.security.jwt.JwtAuthenticationEntryPoint;
+import com.hanium.userservice.config.security.jwt.JwtAuthenticationFilter;
+import com.hanium.userservice.config.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

@@ -7,7 +7,7 @@ import com.hanium.userservice.dto.JoinDto;
 import com.hanium.userservice.dto.LoginDto;
 import com.hanium.userservice.dto.LoginResultDto;
 import com.hanium.userservice.exception.UserAuthenticationException;
-import com.hanium.userservice.jwt.JwtProvider;
+import com.hanium.userservice.config.security.jwt.JwtProvider;
 import com.hanium.userservice.repository.RefreshTokenRepository;
 import com.hanium.userservice.repository.UserRepository;
 import io.jsonwebtoken.Claims;

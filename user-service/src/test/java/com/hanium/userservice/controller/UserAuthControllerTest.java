@@ -4,7 +4,7 @@ import com.hanium.userservice.domain.User;
 import com.hanium.userservice.dto.JoinDto;
 import com.hanium.userservice.dto.LoginDto;
 import com.hanium.userservice.dto.LoginResultDto;
-import com.hanium.userservice.jwt.JwtProvider;
+import com.hanium.userservice.config.security.jwt.JwtProvider;
 import com.hanium.userservice.repository.UserRepository;
 import com.hanium.userservice.service.UserAuthService;
 import org.junit.jupiter.api.Test;
