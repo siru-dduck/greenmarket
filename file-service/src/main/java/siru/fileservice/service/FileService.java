@@ -15,6 +15,7 @@ import siru.fileservice.configuration.properties.FileResourceProp;
 import siru.fileservice.domain.file.FileStatus;
 import siru.fileservice.domain.file.FileType;
 import siru.fileservice.domain.file.ImageFile;
+import siru.fileservice.domain.user.AuthUserDetail;
 import siru.fileservice.dto.FindImageFileDto;
 import siru.fileservice.dto.UploadImageDto;
 import siru.fileservice.exception.FileNotFoundException;
@@ -72,7 +73,7 @@ public class FileService {
      * @return fileId;
      */
     @Transactional
-    public long uploadImageFile(UploadImageDto uploadImageInfo) throws IOException {
+    public long uploadImageFile(UploadImageDto uploadImageInfo, AuthUserDetail authUserDetail) throws IOException {
         final MultipartFile uploadFile = uploadImageInfo.getUploadFile();
         FileType fileType = uploadImageInfo.getFileType();
         long fileSize = uploadFile.getSize();
@@ -147,7 +148,7 @@ public class FileService {
         ImageFile imageFile = ImageFile.builder()
                 .fileUrl(fileUrl)
                 .fileCropUrl(fileCropUrl)
-                .userId(-999L) // TODO 시큐리티 적용후 수정
+                .userId(authUserDetail.getUserId())
                 .mimeType(contentType)
                 .extension(fileExtension)
                 .size(fileSize)

@@ -80,7 +80,7 @@ public class FileController {
                 .fileType(fileType)
                 .uploadFile(file)
                 .build();
-        long fileId = fileService.uploadImageFile(uploadImageInfo);
+        long fileId = fileService.uploadImageFile(uploadImageInfo, authUserDetail);
 
         // 응답
         UploadResponse response = UploadResponse.builder()
