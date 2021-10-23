@@ -1,4 +1,4 @@
-package com.hanium.userservice.jwt;
+package com.hanium.userservice.config.security.jwt;
 
 import com.hanium.userservice.config.properties.JwtProp;
 import com.hanium.userservice.domain.AuthUserDetail;

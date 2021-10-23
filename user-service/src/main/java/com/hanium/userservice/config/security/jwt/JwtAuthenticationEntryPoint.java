@@ -1,4 +1,4 @@
-package com.hanium.userservice.jwt;
+package com.hanium.userservice.config.security.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

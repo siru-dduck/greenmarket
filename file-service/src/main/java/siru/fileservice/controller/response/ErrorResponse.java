@@ -1,15 +1,13 @@
 package siru.fileservice.controller.response;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 public class ErrorResponse {
 

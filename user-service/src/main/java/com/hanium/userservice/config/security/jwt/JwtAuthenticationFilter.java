@@ -1,4 +1,4 @@
-package com.hanium.userservice.jwt;
+package com.hanium.userservice.config.security.jwt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

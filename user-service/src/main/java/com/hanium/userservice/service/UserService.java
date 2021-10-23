@@ -4,16 +4,12 @@ import com.hanium.userservice.domain.AuthUserDetail;
 import com.hanium.userservice.domain.User;
 import com.hanium.userservice.dto.*;
 import com.hanium.userservice.exception.UserAlreadyExistException;
-import com.hanium.userservice.exception.UserAuthenticationException;
 import com.hanium.userservice.exception.UserAuthorizationException;
 import com.hanium.userservice.exception.UserNotFoundException;
-import com.hanium.userservice.jwt.JwtProvider;
 import com.hanium.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
