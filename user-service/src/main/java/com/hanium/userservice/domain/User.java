@@ -48,7 +48,7 @@ public class User {
     @Enumerated
     private UserStatus status;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime creatDate;
 
     @Column(nullable = false)

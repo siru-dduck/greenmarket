@@ -23,24 +23,24 @@ public class ProductInterestServiceImpl implements ProductInterestService {
     @Override
     @Transactional
     public void addInterest(Integer articleId, Integer userId) {
-        ProductArticleDto.Info article = productArticleDao.findOneBy(articleId);
-        if(article.getUser().getId().equals(userId)) {
-            throw new AuthorizationException("상품 작성자는 해당 관심상품을 추가할 수 없습니다.");
-        }
-        if( productInterestDao.check(articleId, userId) != 0) {
-            throw new AlreadyExistResourceException("이미 등록한 관심상품이 있습니다.");
-        }
-        productInterestDao.create(articleId, userId);
-        productArticleDao.addInterestCount(articleId);
+//        ProductArticleDto.Info article = productArticleDao.findOneBy(articleId);
+//        if (article.getUser().getId().equals(userId)) {
+//            throw new AuthorizationException("상품 작성자는 해당 관심상품을 추가할 수 없습니다.");
+//        }
+//        if (productInterestDao.check(articleId, userId) != 0) {
+//            throw new AlreadyExistResourceException("이미 등록한 관심상품이 있습니다.");
+//        }
+//        productInterestDao.create(articleId, userId);
+//        productArticleDao.addInterestCount(articleId);
     }
 
     @Override
     @Transactional
     public void removeInterest(Integer articleId, Integer userId) {
-        if(productInterestDao.check(articleId, userId) == 0) {
-            throw new NotFoundResourceException("제거할 관심상품이 없습니다.");
-        }
-        productInterestDao.delete(articleId, userId);
-        productArticleDao.subtractInterestCount(articleId);
+//        if(productInterestDao.check(articleId, userId) == 0) {
+//            throw new NotFoundResourceException("제거할 관심상품이 없습니다.");
+//        }
+//        productInterestDao.delete(articleId, userId);
+//        productArticleDao.subtractInterestCount(articleId);
     }
 }

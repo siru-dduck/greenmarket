@@ -1,7 +1,7 @@
 package com.hanium.product.config.security;
 
-import com.hanium.userservice.config.properties.JwtProp;
-import com.hanium.userservice.domain.AuthUserDetail;
+import com.hanium.product.config.properties.JwtProp;
+import com.hanium.product.domain.user.AuthUserDetail;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

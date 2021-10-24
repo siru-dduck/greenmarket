@@ -28,7 +28,7 @@ public class RefreshToken {
     @Column(nullable = false)
     private LocalDateTime expireDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createDate;
 
     @Column(nullable = false)

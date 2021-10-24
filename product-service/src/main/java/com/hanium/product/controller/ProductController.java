@@ -19,6 +19,7 @@ import java.util.Map;
 @RestController
 @AllArgsConstructor
 public class ProductController {
+
     private final ProductService productService;
     private final ChatService chatService;
     private final ProductInterestService productInterestService;
