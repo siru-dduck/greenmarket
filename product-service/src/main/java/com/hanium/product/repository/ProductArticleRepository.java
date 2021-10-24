@@ -1,6 +1,6 @@
 package com.hanium.product.repository;
 
-import com.hanium.product.domain.ProductArticle;
+import com.hanium.product.domain.product.ProductArticle;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

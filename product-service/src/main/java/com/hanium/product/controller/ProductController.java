@@ -1,6 +1,5 @@
-package com.hanium.product.controller.api;
+package com.hanium.product.controller;
 
-import com.hanium.product.common.AuthRequired;
 import com.hanium.product.dto.ProductArticleDto;
 import com.hanium.product.dto.UserDto;
 import com.hanium.product.service.ChatService;
@@ -18,9 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(path = "/api/products")
 @AllArgsConstructor
-public class ProductApiController {
+public class ProductController {
     private final ProductService productService;
     private final ChatService chatService;
     private final ProductInterestService productInterestService;
@@ -28,8 +26,7 @@ public class ProductApiController {
     /**
      * 상품 리스트 검색은 elasticsearch 기반의 별도의 검색서비스로 분리예정
      */
-    @GetMapping
-    @Deprecated
+    @GetMapping("/products")
     public Map<String, Object> getProductList(
             @Valid ProductArticleDto.SearchInfo searchInfo) {
         Map<String, Object> result = new HashMap<>();
@@ -45,8 +42,7 @@ public class ProductApiController {
         return result;
     }
 
-    @PostMapping
-    @AuthRequired
+    @PostMapping("/products")
     public ResponseEntity<Map<String, Object>> postProduct(
             @Valid ProductArticleDto.RegisterInfo registerInfo,
             UserDto.Info user) {
@@ -60,7 +56,7 @@ public class ProductApiController {
         return ResponseEntity.created(location).body(result);
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping("/products/{id}")
     public Map<String, Object> getProduct(@PathVariable Integer id,
                                           UserDto.Info user) {
         Map<String, Object> result = new HashMap<>();
@@ -76,16 +72,14 @@ public class ProductApiController {
         return result;
     }
 
-    @DeleteMapping(path = "/{articleId}")
-    @AuthRequired
+    @DeleteMapping("/products/{articleId}")
     public ResponseEntity<ProductArticleDto.Info> deleteProduct(@PathVariable Integer articleId,
                                                              UserDto.Info user) {
         productService.deleteProductArticle(articleId, user.getId());
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = "/{articleId}")
-    @AuthRequired
+    @PutMapping("/products/{articleId}")
     public ResponseEntity<ProductArticleDto.Info> updateProduct(@PathVariable Integer articleId,
                                                              UserDto.Info user,
                                                              @Valid ProductArticleDto.ChangeInfo changeInfo) throws Exception {
@@ -93,8 +87,7 @@ public class ProductApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(path = "/{id}/interest")
-    @AuthRequired
+    @PostMapping( "/products/{id}/interest")
     public ResponseEntity addProductInterestCount(@PathVariable Integer id,
                                                                        UserDto.Info user) {
         productInterestService.addInterest(id, user.getId());
@@ -103,8 +96,7 @@ public class ProductApiController {
         return ResponseEntity.created(location).build();
     }
 
-    @DeleteMapping(path = "/{id}/interest")
-    @AuthRequired
+    @DeleteMapping( "/products/{id}/interest")
     public ResponseEntity subtractProductInterestCount(
             @PathVariable Integer id,
             UserDto.Info user) {

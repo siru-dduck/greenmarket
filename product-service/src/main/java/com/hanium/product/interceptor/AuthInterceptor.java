@@ -1,11 +1,7 @@
 package com.hanium.product.interceptor;
 
-import com.hanium.product.common.AuthRequired;
 import com.hanium.product.common.JwtUtils;
-import com.hanium.product.dto.UserDto;
-import com.hanium.product.exception.AuthenticationException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;

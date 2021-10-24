@@ -1,4 +1,4 @@
-package com.hanium.product.domain;
+package com.hanium.product.domain.product;
 
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * @author Shin Woo Choi on 2021.10.10
+ * @author siru on 2021.10.10
  */
 @Entity
 @Getter

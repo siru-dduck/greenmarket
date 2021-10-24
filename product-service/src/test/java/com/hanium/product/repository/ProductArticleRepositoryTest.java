@@ -1,6 +1,6 @@
 package com.hanium.product.repository;
 
-import com.hanium.product.domain.ProductArticle;
+import com.hanium.product.domain.product.ProductArticle;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
