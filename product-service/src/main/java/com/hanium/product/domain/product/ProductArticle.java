@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author siru on 2021.10.10
@@ -29,6 +31,12 @@ public class ProductArticle {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_ID", nullable = false)
     private Category category;
+
+    @OneToOne(mappedBy = "productArticle", fetch = FetchType.LAZY)
+    private ProductReview productReview;
+
+    @OneToMany(mappedBy = "productArticle", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> productImageList = new ArrayList<>();
 
     @Column(nullable = false)
     private int price;

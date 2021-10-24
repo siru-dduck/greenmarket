@@ -4,18 +4,11 @@ import com.hanium.product.domain.product.Category;
 import com.hanium.product.domain.product.ProductArticle;
 import com.hanium.product.domain.product.ProductArticleStatus;
 import com.hanium.product.dto.RegisterProductDto;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @DataJpaTest
 class ProductArticleRepositoryTest {
