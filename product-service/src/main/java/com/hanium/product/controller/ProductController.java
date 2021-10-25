@@ -1,11 +1,13 @@
 package com.hanium.product.controller;
 
-import com.hanium.product.dto.ProductArticleDto;
-import com.hanium.product.dto.UserDto;
+import com.hanium.product.dto.*;
+import com.hanium.product.dto.request.SearchRequest;
+import com.hanium.product.dto.response.SearchResponse;
 import com.hanium.product.service.ChatService;
 import com.hanium.product.service.ProductInterestService;
 import com.hanium.product.service.ProductService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -16,13 +18,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author siru
+ */
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
     private final ChatService chatService;
     private final ProductInterestService productInterestService;
+
+
+    @GetMapping("/search")
+    public ResponseEntity<SearchResponse> searchProducts(SearchRequest searchRequest) {
+        // SearchInfoDto searchDto = map(searchRequest, SearchRequest.class);
+        // SearchResultDto searchResult = productService.searchProduct();
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    }
 
     /**
      * 상품 리스트 검색은 elasticsearch 기반의 별도의 검색서비스로 분리예정

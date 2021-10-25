@@ -36,7 +36,7 @@ public class ProductArticle {
     private ProductReview productReview;
 
     @OneToMany(mappedBy = "productArticle", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> productImageList = new ArrayList<>();
+    private final List<ProductImage> productImageList = new ArrayList<>();
 
     @Column(nullable = false)
     private int price;
