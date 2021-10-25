@@ -95,6 +95,11 @@ public class UserAuthService {
         return loginResult;
     }
 
+    /**
+     * 토큰 생성 및 토큰 저장 인증 메소드
+     * @param user
+     * @return
+     */
     private LoginResultDto authToken(User user) {
         // jwt 토큰 생성
         Authentication authentication = user.createAuthentication();
