@@ -3,14 +3,13 @@ package com.hanium.userservice.domain;
 import lombok.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class UserDetail {
-
+public class AuthUserDetail {
     private long userId;
     private String email;
+    private String nickname;
     private Long profileImageId;
     private String tokenId;
-
 }

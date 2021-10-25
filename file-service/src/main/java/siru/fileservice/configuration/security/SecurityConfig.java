@@ -1,16 +1,17 @@
-package com.hanium.userservice.config;
+package siru.fileservice.configuration.security;
 
-import com.hanium.userservice.jwt.JwtAuthenticationEntryPoint;
-import com.hanium.userservice.jwt.JwtAuthenticationFilter;
-import com.hanium.userservice.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import siru.fileservice.configuration.security.jwt.JwtAuthenticationEntryPoint;
+import siru.fileservice.configuration.security.jwt.JwtAuthenticationFilter;
+import siru.fileservice.configuration.security.jwt.JwtProvider;
 
 /**
  * @author siru
@@ -39,29 +40,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
+                .csrf().disable()
 
-            .headers()
-            .frameOptions()
-            .sameOrigin()
+                .headers()
+                .frameOptions()
+                .sameOrigin()
 
-            // 세션을 사용하지 않기 때문에 STATELESS로 설정
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // 세션을 사용하지 않기 때문에 STATELESS로 설정
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-            .and()
-            .authorizeRequests()
-                .antMatchers("/auth/login").permitAll()
-                .antMatchers("/users/join").permitAll()
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/files/{\\d+}/image/**").permitAll()
                 .anyRequest().authenticated()
 
-            // jwt config
-            .and()
-            .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), BasicAuthenticationFilter.class)
+                // jwt config
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), BasicAuthenticationFilter.class)
 
-            .exceptionHandling()
-            .authenticationEntryPoint(jwtAuthenticationEntryPoint);
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
 
 }
