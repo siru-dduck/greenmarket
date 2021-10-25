@@ -1,5 +1,8 @@
 package com.hanium.userservice.mapper;
 
-public interface GenericMapper<D, E> {
+import org.mapstruct.Mapping;
 
+public interface GenericMapper<D, E> {
+    D toDto(E e);
+    E toEntity(D d);
 }

@@ -2,10 +2,13 @@ package com.hanium.userservice.service;
 
 import com.hanium.userservice.domain.AuthUserDetail;
 import com.hanium.userservice.domain.User;
-import com.hanium.userservice.dto.*;
+import com.hanium.userservice.dto.JoinDto;
+import com.hanium.userservice.dto.UpdateUserInfoDto;
+import com.hanium.userservice.dto.UserInfoDto;
 import com.hanium.userservice.exception.UserAlreadyExistException;
 import com.hanium.userservice.exception.UserAuthorizationException;
 import com.hanium.userservice.exception.UserNotFoundException;
+import com.hanium.userservice.mapper.UserInfoMapper;
 import com.hanium.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,6 +29,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final UserInfoMapper userMapper;
 
     /**
      * 회원가입
@@ -64,8 +68,7 @@ public class UserService {
     public UserInfoDto findUserById(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> { throw new UserNotFoundException("사용자를 찾을 수 없습니다."); });
 
-        UserInfoDto userInfo = modelMapper.map(user, UserInfoDto.class);
-        userInfo.setUserId(user.getId());
+        UserInfoDto userInfo = userMapper.toDto(user);
         return userInfo;
     }
 
