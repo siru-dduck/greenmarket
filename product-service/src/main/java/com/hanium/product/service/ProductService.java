@@ -2,15 +2,22 @@ package com.hanium.product.service;
 
 import com.hanium.product.dao.IProductArticleDao;
 import com.hanium.product.dao.IProductImageDao;
+import com.hanium.product.domain.product.ProductArticle;
+import com.hanium.product.domain.product.QProductArticle;
 import com.hanium.product.dto.ProductArticleDto;
 import com.hanium.product.dto.SearchInfoDto;
 import com.hanium.product.repository.ProductArticleRepository;
+import com.hanium.product.repository.querydsl.ProductArticlePredicatesBuilder;
+import com.hanium.product.repository.querydsl.SearchOperation;
 import com.hanium.product.service.UserService;
+import com.querydsl.jpa.impl.JPAQuery;
+import io.undertow.predicate.PathMatchPredicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +35,7 @@ public class ProductService {
      * @return
      */
     public List<ProductArticleDto> searchProductArticles(SearchInfoDto searchInfo) {
+        List<ProductArticle> productArticleList = productArticleRepository.findBySearchQuery(searchInfo);
         return null;
     }
 
@@ -66,6 +74,7 @@ public class ProductService {
     public Integer createProductArticle(ProductArticleDto.RegisterInfo registerInfo, Integer userId) {
 //        ProductArticleDto.Info productArticle = ProductArticleDto.Info.builder()
 //                .title(registerInfo.getTitle())
+
 //                .content(registerInfo.getContent())
 //                .price(registerInfo.getPrice())
 //                .address1(registerInfo.getAddress1())

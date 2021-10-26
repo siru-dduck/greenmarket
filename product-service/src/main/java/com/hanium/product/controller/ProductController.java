@@ -1,8 +1,11 @@
 package com.hanium.product.controller;
 
-import com.hanium.product.dto.*;
+import com.hanium.product.dto.ProductArticleDto;
+import com.hanium.product.dto.SearchInfoDto;
+import com.hanium.product.dto.UserDto;
+import com.hanium.product.dto.mapper.ProductArticleMapper;
 import com.hanium.product.dto.request.SearchRequest;
-import com.hanium.product.dto.response.SearchResponse;
+import com.hanium.product.dto.response.ProductListResponse;
 import com.hanium.product.service.ChatService;
 import com.hanium.product.service.ProductInterestService;
 import com.hanium.product.service.ProductService;
@@ -28,12 +31,12 @@ public class ProductController {
     private final ProductService productService;
     private final ChatService chatService;
     private final ProductInterestService productInterestService;
-
+    private final ProductArticleMapper productArticleMapper;
 
     @GetMapping("/search")
-    public ResponseEntity<SearchResponse> searchProducts(SearchRequest searchRequest) {
-        // SearchInfoDto searchDto = map(searchRequest, SearchRequest.class);
-        // SearchResultDto searchResult = productService.searchProduct();
+    public ResponseEntity<ProductListResponse> searchProducts(@Valid SearchRequest searchRequest) {
+        SearchInfoDto searchInfo = productArticleMapper.toDto(searchRequest);
+        productService.searchProductArticles(searchInfo);
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 

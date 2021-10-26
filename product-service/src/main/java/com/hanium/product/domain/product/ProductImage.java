@@ -1,5 +1,7 @@
 package com.hanium.product.domain.product;
 
+import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,6 +11,10 @@ import javax.persistence.*;
                 columnNames = {"product_article_id", "list_num"}
         )}
 )
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class ProductImage {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +29,5 @@ public class ProductImage {
 
     @Column(nullable = false)
     private Long fileId;
+
 }

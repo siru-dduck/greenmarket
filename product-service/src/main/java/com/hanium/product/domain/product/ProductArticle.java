@@ -73,4 +73,12 @@ public class ProductArticle {
                 .build();
     }
 
+    public void addProductImage(long fileId) {
+        productImageList.add(ProductImage.builder()
+                .productArticle(this)
+                .listNum(getProductImageList().size() + 1)
+                .fileId(fileId)
+                .build());
+    }
+
 }
