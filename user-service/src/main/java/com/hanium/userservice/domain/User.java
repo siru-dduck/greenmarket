@@ -21,14 +21,14 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@Builder(access = AccessLevel.PROTECTED)
 @Entity
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = false, unique = true)
     private String email;
 
     @Column(length = 120, nullable = false)
@@ -49,7 +49,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime creatDate;
 
     @Column(nullable = false)

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@Builder(access = AccessLevel.PROTECTED)
 @Entity
 public class RefreshToken {
 
@@ -28,7 +28,7 @@ public class RefreshToken {
     @Column(nullable = false)
     private LocalDateTime expireDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createDate;
 
     @Column(nullable = false)
