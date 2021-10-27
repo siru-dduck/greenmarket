@@ -85,31 +85,6 @@ class ProductArticleRepositoryTest {
                 .address2("강서구")
                 .price(135000)
                 .build(), category);
-        productArticle1.addProductImage(1);
-        productArticle1.addProductImage(2);
-        productArticle1.addProductImage(3);
-        productArticle1.addProductImage(4);
-        productArticle1.addProductImage(5);
-        productArticle1.addProductImage(6);
-        productArticle1.addProductImage(7);
-        productArticle1.addProductImage(8);
-        productArticle1.addProductImage(9);
-        productArticle1.addProductImage(10);
-        productArticle1.addProductImage(11);
-        productArticle1.addProductImage(12);
-        productArticle1.addProductImage(13);
-        productArticle1.addProductImage(14);
-        productArticle1.addProductImage(15);
-        productArticle1.addProductImage(16);
-        productArticle1.addProductImage(17);
-        productArticle1.addProductImage(18);
-        productArticle1.addProductImage(19);
-        productArticle1.addProductImage(20);
-        productArticle1.addProductImage(21);
-        productArticle1.addProductImage(22);
-        productArticle1.addProductImage(23);
-        productArticle1.addProductImage(24);
-        productArticle1.addProductImage(25);
 
         productArticleRepository.save(productArticle1);
         productArticleRepository.save(productArticle2);
@@ -162,29 +137,18 @@ class ProductArticleRepositoryTest {
         productArticleRepository.save(productArticle2);
         productArticleRepository.save(productArticle3);
 
+        SearchInfoDto searchInfo = SearchInfoDto.builder()
+                .filter("address.address1~서울특별시,address.address2~강서구")
+                .keyword("쿠쿠")
+                .size(20)
+                .offset(0)
+                .build();
+
         // when
-        ProductArticlePredicatesBuilder builder = new ProductArticlePredicatesBuilder()
-                .with("쿠쿠")
-                .with("address.address1", SearchOperation.LIKE, "서울특별시")
-                .with("address.address2", SearchOperation.LIKE, "송파구");
-//        Iterable<ProductArticle> productArticleList = productArticleRepository.findAll(builder.build());
+        List<ProductArticle> productArticleList = productArticleRepository.findBySearchQuery(searchInfo);
 
         // then
-//        assertThat(productArticleList).asList().size().isEqualTo(1);
-//        assertThat(productArticleList).asList().contains(productArticle1);
-    }
-
-    @Test
-    public void 패턴테스트() throws Exception {
-        // given
-        String filter = "address.address1~서울특별시,address.address2~강,price>z,title[]에어팟";
-
-        // when then
-        Pattern pattern = Pattern.compile("([\\w|.]+?)(=|~|<|>|\\[|]|\\[])([ㄱ-ㅎ|ㅏ-ㅣ가-힣\\w]+?),");
-        Matcher matcher = pattern.matcher(filter + ",");
-        while (matcher.find()) {
-            System.out.println(matcher.group(1)+ " " + SearchOperation.getSimpleOperation(matcher.group(2)) + " " + matcher.group(3));
-        }
-
+        assertThat(productArticleList).asList().size().isEqualTo(1);
+        assertThat(productArticleList).asList().contains(productArticle3);
     }
 }

@@ -40,7 +40,6 @@ public class ProductArticleCustomRepositoryImpl extends QuerydslRepositorySuppor
         final QProductArticle productArticle = QProductArticle.productArticle;
         final QProductImage productImage = QProductImage.productImage;
         return from(productArticle)
-                .leftJoin(productArticle.productImageList, productImage).fetchJoin()
                 .where(builder.build())
                 .orderBy(productArticle.createDate.desc())
                 .limit(searchInfo.getSize())
