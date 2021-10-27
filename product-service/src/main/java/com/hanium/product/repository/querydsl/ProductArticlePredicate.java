@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.StringPath;
+import org.apache.commons.lang3.StringUtils;
 
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
@@ -24,9 +25,9 @@ public class ProductArticlePredicate {
                 case EQUALITY:
                     return path.eq(value);
                 case GREATER_THAN:
-                    return path.goe(value);
+                    return path.gt(value);
                 case LESS_THAN:
-                    return path.loe(value);
+                    return path.lt(value);
             }
         } else {
             StringPath path = entityPath.getString(criteria.getKey());
@@ -45,9 +46,11 @@ public class ProductArticlePredicate {
     }
 
     public static BooleanExpression getPredicate(String keyword) {
-        if(keyword == null) {
+        if(StringUtils.isBlank(keyword)) {
             return null;
         }
+
+        // TODO 키워드 공백으로 구분
 
         PathBuilder<ProductArticle> entityPath = new PathBuilder<>(ProductArticle.class, "productArticle");
         StringPath titlePath = entityPath.getString("title");
