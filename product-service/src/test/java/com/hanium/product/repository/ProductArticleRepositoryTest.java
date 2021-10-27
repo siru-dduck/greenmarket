@@ -31,7 +31,7 @@ class ProductArticleRepositoryTest {
     @Test
     public void 상품등록_테스트() throws Exception {
         // given
-        Category category = categoryRepository.findById(1L)
+        Category category = categoryRepository.findById(1)
                 .orElseThrow();
         ProductArticle productArticle = ProductArticle.createProductArticle(RegisterProductDto.builder()
                 .title("에어팟 프로 팔아요")
@@ -39,7 +39,7 @@ class ProductArticleRepositoryTest {
                 .address1("서울특별시")
                 .address2("강서구")
                 .price(180000)
-                .build(), category);
+                .build(), category, 1);
 
 
         // when
@@ -60,7 +60,7 @@ class ProductArticleRepositoryTest {
     @Test
     public void 상품검색_테스트() throws Exception {
         // given
-        Category category = categoryRepository.findById(1L)
+        Category category = categoryRepository.findById(1)
                 .orElseThrow();
         ProductArticle productArticle1 = ProductArticle.createProductArticle(RegisterProductDto.builder()
                 .title("에어팟 프로 팔아요")
@@ -68,7 +68,7 @@ class ProductArticleRepositoryTest {
                 .address1("서울특별시")
                 .address2("강서구")
                 .price(180000)
-                .build(), category);
+                .build(), category, 1);
 
         ProductArticle productArticle2 = ProductArticle.createProductArticle(RegisterProductDto.builder()
                 .title("에어팟 프로 팔아요")
@@ -76,7 +76,7 @@ class ProductArticleRepositoryTest {
                 .address1("서울특별시")
                 .address2("강남구")
                 .price(200000)
-                .build(), category);
+                .build(), category, 1);
 
         ProductArticle productArticle3 = ProductArticle.createProductArticle(RegisterProductDto.builder()
                 .title("애플 에어팟 프로 팔아요")
@@ -84,7 +84,7 @@ class ProductArticleRepositoryTest {
                 .address1("서울특별시")
                 .address2("강서구")
                 .price(135000)
-                .build(), category);
+                .build(), category, 1);
 
         productArticleRepository.save(productArticle1);
         productArticleRepository.save(productArticle2);
@@ -107,7 +107,7 @@ class ProductArticleRepositoryTest {
     @Test
     public void 상품검색_테스트2() throws Exception {
         // given
-        Category category = categoryRepository.findById(1L)
+        Category category = categoryRepository.findById(1)
                 .orElseThrow();
         ProductArticle productArticle1 = ProductArticle.createProductArticle(RegisterProductDto.builder()
                 .title("쿠쿠압력밥솥3인용")
@@ -115,7 +115,7 @@ class ProductArticleRepositoryTest {
                 .address1("서울특별시")
                 .address2("송파구")
                 .price(180000)
-                .build(), category);
+                .build(), category, 1);
 
         ProductArticle productArticle2 = ProductArticle.createProductArticle(RegisterProductDto.builder()
                 .title("스팸 8K호")
@@ -123,7 +123,7 @@ class ProductArticleRepositoryTest {
                 .address1("서울특별시")
                 .address2("강서구")
                 .price(10000)
-                .build(), category);
+                .build(), category, 1);
 
         ProductArticle productArticle3 = ProductArticle.createProductArticle(RegisterProductDto.builder()
                 .title("쿠쿠압력밥솥1인용")
@@ -131,7 +131,7 @@ class ProductArticleRepositoryTest {
                 .address1("서울특별시")
                 .address2("강서구")
                 .price(90000)
-                .build(), category);
+                .build(), category, 1);
 
         productArticleRepository.save(productArticle1);
         productArticleRepository.save(productArticle2);
@@ -155,7 +155,7 @@ class ProductArticleRepositoryTest {
     @Test
     public void 상품메인이미지_조회_테스트() throws Exception {
         // given
-        Category category = categoryRepository.findById(1L)
+        Category category = categoryRepository.findById(1)
                 .orElseThrow();
         ProductArticle productArticle1 = ProductArticle.createProductArticle(RegisterProductDto.builder()
                 .title("쿠쿠압력밥솥3인용")
@@ -163,7 +163,7 @@ class ProductArticleRepositoryTest {
                 .address1("서울특별시")
                 .address2("송파구")
                 .price(180000)
-                .build(), category);
+                .build(), category, 1);
         productArticle1.addProductImage(1);
         productArticle1.addProductImage(2);
 
@@ -173,7 +173,7 @@ class ProductArticleRepositoryTest {
                 .address1("서울특별시")
                 .address2("송파구")
                 .price(180000)
-                .build(), category);
+                .build(), category, 1);
         productArticle2.addProductImage(1);
         productArticle2.addProductImage(2);
 

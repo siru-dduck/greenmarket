@@ -10,6 +10,7 @@ import com.hanium.product.dto.ProductArticleDto;
 import com.hanium.product.dto.RegisterProductDto;
 import com.hanium.product.dto.SearchInfoDto;
 import com.hanium.product.dto.mapper.ProductArticleMapper;
+import com.hanium.product.exception.InvalidCategoryId;
 import com.hanium.product.repository.CategoryRepository;
 import com.hanium.product.repository.ProductArticleImageRepository;
 import com.hanium.product.repository.ProductArticleRepository;
@@ -97,23 +98,13 @@ public class ProductService {
      * @return
      */
     @Transactional
-    public Integer createProductArticle(ProductArticleDto.RegisterInfo registerInfo, Integer userId) {
-//        ProductArticleDto.Info productArticle = ProductArticleDto.Info.builder()
-//                .title(registerInfo.getTitle())
-
-//                .content(registerInfo.getContent())
-//                .price(registerInfo.getPrice())
-//                .address1(registerInfo.getAddress1())
-//                .address2(registerInfo.getAddress2())
-//                .user(UserDto.Info.builder().id(userId).build())
-//                .category(CategoryDto.builder().id(registerInfo.getCategoryId()).build())
-//                .build();
-//        productArticleDao.createBy(productArticle);
-//
-//        List<ProductImageDto> productImages = fileUtils.parseImageInfo(productArticle.getId(), registerInfo.getFiles());
-//        productImageDao.createList(productImages);
-//        return productArticle.getId();
-        return null;
+    public long registerProductArticle(RegisterProductDto registerInfo, long userId) {
+        Category category = categoryRepository.findById(registerInfo.getCategoryId())
+                .orElseThrow(() -> new InvalidCategoryId(String.format("invalid category id %d", registerInfo.getCategoryId())));
+        ProductArticle product = ProductArticle.createProductArticle(registerInfo, category, userId);
+        product.addProductImages(registerInfo.getFileIdList());
+        productArticleRepository.save(product);
+        return product.getId();
     }
 
     /**

@@ -61,12 +61,12 @@ public class ProductArticle {
     @Column(nullable = false)
     private LocalDateTime updateDate;
 
-    public static ProductArticle createProductArticle(RegisterProductDto registerProductDto, Category category) {
+    public static ProductArticle createProductArticle(RegisterProductDto registerProductDto, Category category, long userId) {
         return ProductArticle.builder()
                 .title(registerProductDto.getTitle())
                 .content(registerProductDto.getContent())
                 .category(category)
-                .userId(registerProductDto.getUserId())
+                .userId(userId)
                 .address(Address.builder()
                         .address1(registerProductDto.getAddress1())
                         .address2(registerProductDto.getAddress2())
@@ -80,11 +80,21 @@ public class ProductArticle {
     }
 
     public void addProductImage(long fileId) {
-        productImageList.add(ProductImage.builder()
+        getProductImageList().add(ProductImage.builder()
                 .productArticle(this)
                 .listNum(getProductImageList().size() + 1)
                 .fileId(fileId)
                 .build());
+    }
+
+    public void addProductImages(List<Long> fileIdList) {
+        fileIdList.forEach(fileId -> {
+            getProductImageList().add(ProductImage.builder()
+                    .productArticle(this)
+                    .listNum(getProductImageList().size() + 1)
+                    .fileId(fileId)
+                    .build());
+        });
     }
 
     public ProductImage getMainProductImage() {

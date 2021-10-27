@@ -5,6 +5,7 @@ import com.hanium.product.domain.product.Category;
 import com.hanium.product.domain.product.ProductArticle;
 import com.hanium.product.domain.product.ProductImage;
 import com.hanium.product.dto.*;
+import com.hanium.product.dto.request.RegisterProductRequest;
 import com.hanium.product.dto.request.SearchRequest;
 import com.hanium.product.dto.response.ProductResponse;
 import org.mapstruct.Mapper;
@@ -28,4 +29,6 @@ public interface ProductArticleMapper {
     AddressDto map(Address address);
 
     ProductResponse map(ProductArticleDto productArticleDto);
+
+    RegisterProductDto map(RegisterProductRequest registerProductRequest);
 }
