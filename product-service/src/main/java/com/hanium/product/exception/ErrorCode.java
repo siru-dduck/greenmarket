@@ -16,7 +16,8 @@ public enum ErrorCode {
 
     // Product
     PRODUCT_NOT_FOUND(404, "P001", "Product not found"),
-    PRODUCT_ALREADY_EXIST(409, "P002", "Product already exist")
+    PRODUCT_ALREADY_EXIST(409, "P002", "Product already exist"),
+    INVALID_CATEGORY_ID(400, "P003", "Invalid category id")
     ;
 
     private final String code;

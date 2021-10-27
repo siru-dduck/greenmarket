@@ -1,15 +1,22 @@
 package com.hanium.product.controller;
 
+import com.hanium.product.domain.user.AuthUserDetail;
 import com.hanium.product.dto.ProductArticleDto;
+import com.hanium.product.dto.RegisterProductDto;
 import com.hanium.product.dto.SearchInfoDto;
 import com.hanium.product.dto.UserDto;
 import com.hanium.product.dto.mapper.ProductArticleMapper;
+import com.hanium.product.dto.request.RegisterProductRequest;
 import com.hanium.product.dto.request.SearchRequest;
 import com.hanium.product.dto.response.ProductListResponse;
 import com.hanium.product.dto.response.ProductResponse;
+import com.hanium.product.dto.response.RegisterProductResponse;
 import com.hanium.product.service.ChatService;
 import com.hanium.product.service.ProductInterestService;
 import com.hanium.product.service.ProductService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +40,13 @@ public class ProductController {
     private final ProductInterestService productInterestService;
     private final ProductArticleMapper productArticleMapper;
 
+    /**
+     * 상품 리스트 검색은 elasticsearch 기반의 별도의 검색서비스로 분리예정
+     */
+    @ApiOperation(value = "상품검색", notes = "상품검색 api")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "ok status with search result")
+    })
     @GetMapping("/search")
     public ResponseEntity<ProductListResponse> searchProducts(@Valid SearchRequest searchRequest) {
         SearchInfoDto searchInfo = productArticleMapper.map(searchRequest);
@@ -43,16 +57,13 @@ public class ProductController {
         });
 
         ProductListResponse response = ProductListResponse.builder()
-                .result(productList)
+                .data(productList)
                 .lastProductId(productList.size() > 0 ? Objects.requireNonNull(CollectionUtils.lastElement(productList)).getId() : null)
-                .length(productList.size())
+                .count(productList.size())
                 .build();
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 상품 리스트 검색은 elasticsearch 기반의 별도의 검색서비스로 분리예정
-     */
     @GetMapping("/products")
     public Map<String, Object> getProductList(
             @Valid ProductArticleDto.SearchInfo searchInfo) {
@@ -69,18 +80,26 @@ public class ProductController {
         return result;
     }
 
+    @ApiOperation(value = "상품등록", notes = "상품검색 api")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "created status with product id, url")
+    })
     @PostMapping("/products")
-    public ResponseEntity<Map<String, Object>> postProduct(
-            @Valid ProductArticleDto.RegisterInfo registerInfo,
-            UserDto.Info user) {
-        Map<String, Object> result = new HashMap<>();
-        Integer articleId = productService.createProductArticle(registerInfo, user.getId());
+    public ResponseEntity<RegisterProductResponse> postProduct(
+            @RequestBody @Valid RegisterProductRequest registerRequest,
+            AuthUserDetail userDetail) {
+        RegisterProductDto registerInfo = productArticleMapper.map(registerRequest);
+        long productId = productService.registerProductArticle(registerInfo, userDetail.getUserId());
+
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(articleId)
+                .buildAndExpand(productId)
                 .toUri();
-        result.put("articleId", articleId);
-        return ResponseEntity.created(location).body(result);
+        RegisterProductResponse response = RegisterProductResponse.builder()
+                .productId(productId)
+                .link(location.toString())
+                .build();
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping("/products/{id}")
