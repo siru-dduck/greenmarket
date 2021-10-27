@@ -121,7 +121,7 @@ class ProductArticleRepositoryTest {
                 .title("스팸 8K호")
                 .content("스팸 8k호 판매합니다 24년 ? 정도까지 인듯합니다 스팸 안먹어서 올립니다")
                 .address1("서울특별시")
-                .address2("송파구")
+                .address2("강서구")
                 .price(10000)
                 .build(), category);
 

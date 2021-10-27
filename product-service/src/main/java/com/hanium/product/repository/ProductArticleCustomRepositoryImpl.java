@@ -26,7 +26,9 @@ public class ProductArticleCustomRepositoryImpl extends QuerydslRepositorySuppor
     @Override
     public List<ProductArticle> findBySearchQuery(SearchInfoDto searchInfo) {
         ProductArticlePredicatesBuilder builder = new ProductArticlePredicatesBuilder();
-        builder.with(searchInfo.getOffset());
+        builder.with(searchInfo.getOffset())
+                .with(searchInfo.getKeyword());
+
 
         String filter = searchInfo.getFilter();
         if (StringUtils.isNotBlank(filter)) {
