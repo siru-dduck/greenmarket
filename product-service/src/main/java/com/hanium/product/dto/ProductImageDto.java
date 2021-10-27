@@ -3,11 +3,11 @@ package com.hanium.product.dto;
 import lombok.*;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class ProductImageDto {
-	private Integer articleId;
-	private Integer listNum;
-	private String fileUrl;
+	private long articleId;
+	private int listNum;
+	private long fileId;
 }

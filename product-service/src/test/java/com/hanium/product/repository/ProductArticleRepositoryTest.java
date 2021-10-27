@@ -1,9 +1,6 @@
 package com.hanium.product.repository;
 
-import com.hanium.product.domain.product.Category;
-import com.hanium.product.domain.product.ProductArticle;
-import com.hanium.product.domain.product.ProductArticleStatus;
-import com.hanium.product.domain.product.QProductArticle;
+import com.hanium.product.domain.product.*;
 import com.hanium.product.dto.RegisterProductDto;
 import com.hanium.product.dto.SearchInfoDto;
 import com.hanium.product.repository.querydsl.ProductArticlePredicatesBuilder;
@@ -16,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -24,6 +23,9 @@ class ProductArticleRepositoryTest {
 
     @Autowired
     private ProductArticleRepository productArticleRepository;
+
+    @Autowired
+    private ProductArticleImageRepository productArticleImageRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -150,5 +152,44 @@ class ProductArticleRepositoryTest {
         // then
         assertThat(productArticleList).asList().size().isEqualTo(1);
         assertThat(productArticleList).asList().contains(productArticle3);
+    }
+
+    @Test
+    public void 상품메인이미지_조회_테스트() throws Exception {
+        // given
+        Category category = categoryRepository.findById(1L)
+                .orElseThrow();
+        ProductArticle productArticle1 = ProductArticle.createProductArticle(RegisterProductDto.builder()
+                .title("쿠쿠압력밥솥3인용")
+                .content("직거래 갤러리아팰리스/잠실역/새내역 문의주세요~")
+                .address1("서울특별시")
+                .address2("송파구")
+                .price(180000)
+                .build(), category);
+        productArticle1.addProductImage(1);
+        productArticle1.addProductImage(2);
+
+        ProductArticle productArticle2 = ProductArticle.createProductArticle(RegisterProductDto.builder()
+                .title("쿠쿠압력밥솥3인용")
+                .content("직거래 갤러리아팰리스/잠실역/새내역 문의주세요~")
+                .address1("서울특별시")
+                .address2("송파구")
+                .price(180000)
+                .build(), category);
+        productArticle2.addProductImage(1);
+        productArticle2.addProductImage(2);
+
+        productArticleRepository.save(productArticle1);
+        productArticleRepository.save(productArticle2);
+
+        // when
+        List<ProductImage> productMainImageList = productArticleImageRepository.findMainImageByFileIdIn(Stream.of(productArticle1,productArticle2)
+                .map(ProductArticle::getId)
+                .collect(Collectors.toList()));
+
+        // then
+        assertThat(productMainImageList).asList().size().isEqualTo(2);
+        assertThat(productMainImageList).asList().contains(productArticle1.getMainProductImage(), productArticle2.getMainProductImage());
+
     }
 }

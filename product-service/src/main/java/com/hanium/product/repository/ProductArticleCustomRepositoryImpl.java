@@ -29,7 +29,6 @@ public class ProductArticleCustomRepositoryImpl extends QuerydslRepositorySuppor
         builder.with(searchInfo.getOffset())
                 .with(searchInfo.getKeyword());
 
-
         String filter = searchInfo.getFilter();
         if (StringUtils.isNotBlank(filter)) {
             Pattern pattern = Pattern.compile("([\\w|.]+?)(=|~|<|>|\\[|]|\\[])([ㄱ-ㅎ|ㅏ-ㅣ가-힣\\w]+?),");

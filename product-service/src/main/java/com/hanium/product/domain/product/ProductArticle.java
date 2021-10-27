@@ -2,6 +2,7 @@ package com.hanium.product.domain.product;
 
 import com.hanium.product.dto.RegisterProductDto;
 import lombok.*;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -79,6 +80,13 @@ public class ProductArticle {
                 .listNum(getProductImageList().size() + 1)
                 .fileId(fileId)
                 .build());
+    }
+
+    public ProductImage getMainProductImage() {
+        if(CollectionUtils.isEmpty(getProductImageList())) {
+            return null;
+        }
+        return getProductImageList().get(0);
     }
 
 }
