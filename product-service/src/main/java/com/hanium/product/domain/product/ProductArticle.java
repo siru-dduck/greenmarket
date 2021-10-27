@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor(access =  AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(access =  AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = "id")
 public class ProductArticle {
 
     @Id
@@ -29,7 +30,7 @@ public class ProductArticle {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_ID", nullable = false)
     private Category category;
 
@@ -38,6 +39,9 @@ public class ProductArticle {
 
     @OneToMany(mappedBy = "productArticle", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ProductImage> productImageList = new ArrayList<>();
+
+    @Column(nullable = false)
+    private long userId;
 
     @Column(nullable = false)
     private int price;
@@ -62,6 +66,7 @@ public class ProductArticle {
                 .title(registerProductDto.getTitle())
                 .content(registerProductDto.getContent())
                 .category(category)
+                .userId(registerProductDto.getUserId())
                 .address(Address.builder()
                         .address1(registerProductDto.getAddress1())
                         .address2(registerProductDto.getAddress2())

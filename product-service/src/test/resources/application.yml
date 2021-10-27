@@ -1,5 +1,10 @@
 server:
   port: 8110
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 # 스프링 설정
 spring:

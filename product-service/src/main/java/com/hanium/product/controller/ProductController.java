@@ -6,20 +6,20 @@ import com.hanium.product.dto.UserDto;
 import com.hanium.product.dto.mapper.ProductArticleMapper;
 import com.hanium.product.dto.request.SearchRequest;
 import com.hanium.product.dto.response.ProductListResponse;
+import com.hanium.product.dto.response.ProductResponse;
 import com.hanium.product.service.ChatService;
 import com.hanium.product.service.ProductInterestService;
 import com.hanium.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author siru
@@ -35,9 +35,19 @@ public class ProductController {
 
     @GetMapping("/search")
     public ResponseEntity<ProductListResponse> searchProducts(@Valid SearchRequest searchRequest) {
-        SearchInfoDto searchInfo = productArticleMapper.toDto(searchRequest);
-        productService.searchProductArticles(searchInfo);
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        SearchInfoDto searchInfo = productArticleMapper.map(searchRequest);
+        List<ProductArticleDto>  searchResult = productService.searchProductArticles(searchInfo);
+        List<ProductResponse> productList = new ArrayList<>();
+        searchResult.forEach(productInfo -> {
+            productList.add(productArticleMapper.map(productInfo));
+        });
+
+        ProductListResponse response = ProductListResponse.builder()
+                .result(productList)
+                .lastProductId(productList.size() > 0 ? Objects.requireNonNull(CollectionUtils.lastElement(productList)).getId() : null)
+                .length(productList.size())
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     /**

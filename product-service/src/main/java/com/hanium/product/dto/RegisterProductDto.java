@@ -9,6 +9,7 @@ import lombok.*;
 public class RegisterProductDto {
     private String title;
     private String content;
+    private long userId;
     private int categoryId;
     private int price;
     private String address1;

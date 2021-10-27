@@ -8,6 +8,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder(access = AccessLevel.PROTECTED)
 public class Category {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

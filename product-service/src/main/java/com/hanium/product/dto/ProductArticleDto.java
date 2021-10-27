@@ -19,16 +19,16 @@ public class ProductArticleDto {
     private Integer id;
     private String title;
     private String content;
-    private String address1;
-    private String address2;
+    private AddressDto address;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
-    private Integer price;
-    private Integer interestCount;
+    private int price;
+    private int interestCount;
     private ProductArticleStatus status;
     private CategoryDto category;
     private UserInfoDto user;
-    private List<ProductImageDto> productImages;
+    private long userId;
+    private List<ProductImageDto> productImageList;
 
     @Data
     @NoArgsConstructor

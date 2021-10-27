@@ -1,18 +1,16 @@
 package com.hanium.product.repository;
 
-import com.hanium.product.domain.product.*;
+import com.hanium.product.domain.product.Category;
+import com.hanium.product.domain.product.ProductArticle;
+import com.hanium.product.domain.product.ProductArticleStatus;
+import com.hanium.product.domain.product.ProductImage;
 import com.hanium.product.dto.RegisterProductDto;
 import com.hanium.product.dto.SearchInfoDto;
-import com.hanium.product.repository.querydsl.ProductArticlePredicatesBuilder;
-import com.hanium.product.repository.querydsl.SearchOperation;
-import com.querydsl.jpa.impl.JPAQuery;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

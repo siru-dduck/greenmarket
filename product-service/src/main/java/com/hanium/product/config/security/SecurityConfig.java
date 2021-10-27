@@ -48,8 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/products/**").permitAll()
-
-
+                .antMatchers(HttpMethod.GET, "/search").permitAll()
                 .anyRequest().authenticated()
 
                 // jwt config
