@@ -69,29 +69,6 @@ public class ProductArticleDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class RegisterInfo {
-        @NotEmpty
-        private String title;
-        @NotEmpty
-        private String content;
-        @NotNull
-        @Min(value = 0, message = "가격은 최소 0원이상 입력가능합니다.") @Max(value = 999999999, message = "가격은 1억원 미만까지 입력가능합니다.")
-        private Integer price;
-        @NotNull
-        private Integer categoryId;
-        @NotEmpty
-        private String address1;
-        @NotEmpty
-        private String address2;
-        @NotEmpty(message = "파일은 최소 1개이상 첨부해야합니다.")
-        @Size(max = 12,message = "파일은 최대 12개까지 첨부가능합니다.")
-        private List<MultipartFile> files;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
     public static class ChangeInfo {
         @NotEmpty
         private String title;

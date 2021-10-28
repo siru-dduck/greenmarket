@@ -1,9 +1,41 @@
 package com.hanium.product.service;
 
-public interface ProductInterestService {
-    boolean isCheckedInterest(Integer articleId, Integer userId);
 
-    void addInterest(Integer articleId, Integer userId);
+import com.hanium.product.repository.ProductInterestRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-    void removeInterest(Integer articleId, Integer userId);
+/**
+ * @author siru
+ */
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class ProductInterestService {
+
+    private final ProductInterestRepository productInterestRepository;
+
+
+    /*************************************************
+     * 관심상품 관련 비즈니스 로직
+     *************************************************/
+
+    /**
+     * 상품 관심 등록 여부 체크
+     * @param productId
+     * @param userId
+     * @return
+     */
+    public boolean isCheckInterest(long productId, long userId) {
+        return productInterestRepository.existsByProductArticleIdAndUserId(productId, userId);
+    }
+
+    void addInterest(long productId, long userId) {
+
+    }
+
+    void removeInterest(long productId, long userId) {
+
+    }
 }

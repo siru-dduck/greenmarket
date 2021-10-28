@@ -14,7 +14,7 @@ public class ProductReview {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_article_id", unique = true)
     private ProductArticle productArticle;
 
