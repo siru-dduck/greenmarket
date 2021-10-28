@@ -14,8 +14,7 @@ public class ProductReview {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_article_id", unique = true)
+    @OneToOne(mappedBy = "productReview", fetch = FetchType.LAZY)
     private ProductArticle productArticle;
 
     @Column(columnDefinition = "TEXT", nullable = false)

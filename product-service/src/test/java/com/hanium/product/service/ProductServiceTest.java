@@ -9,16 +9,14 @@ import com.hanium.product.exception.ProductNotFoundException;
 import com.hanium.product.repository.CategoryRepository;
 import com.hanium.product.repository.ProductArticleImageRepository;
 import com.hanium.product.repository.ProductArticleRepository;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Propagation;
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -96,7 +94,7 @@ public class ProductServiceTest {
         long productId = createProduct();
 
         // when
-        ProductArticleDto productResult = productService.getProductArticle(productId);
+        ProductArticleDto productResult = productService.getProduct(productId);
 
         // then
         assertThat(productResult.getId()).isEqualTo(productId);
@@ -109,7 +107,7 @@ public class ProductServiceTest {
 
         // when
         Throwable thrown = catchThrowable(() -> {
-            productService.getProductArticle(productId);
+            productService.getProduct(productId);
         });
 
         // then

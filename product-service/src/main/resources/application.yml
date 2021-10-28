@@ -40,11 +40,6 @@ service:
     host: localhost
     port: 8130
 
-# mybatis
-mybatis:
-  mapper-locations: classpath:mybatis/mapper/**/**.xml
-
-
 logging:
   level:
     org.hibernate.SQL: debug
