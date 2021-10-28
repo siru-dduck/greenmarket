@@ -1,8 +1,11 @@
 package com.hanium.userservice.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class LoginDto {
     private String email;
     private String password;

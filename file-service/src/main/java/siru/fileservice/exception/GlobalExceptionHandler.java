@@ -4,13 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import siru.fileservice.controller.response.ErrorResponse;
+
 
 /**
  * @author siru
@@ -21,51 +24,75 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     protected ResponseEntity<Object> handleMissingServletRequestPart(
             MissingServletRequestPartException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(generateErrorResponse(HttpStatus.BAD_REQUEST.value(), ex));
+        log.error("handleMissingServletRequestPart", ex);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        log.error("handleMethodArgumentNotValidException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleBindException(
+            BindException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        log.error("handleBindException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
+            HttpMediaTypeNotSupportedException e, HttpHeaders headers, HttpStatus status, WebRequest request)  {
+        log.error("handleHttpRequestMethodNotSupportedException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(MultipartException.class)
     public ResponseEntity<ErrorResponse> handleMultipartException(MultipartException ex) {
-        return ResponseEntity.badRequest().body(generateErrorResponse(HttpStatus.BAD_REQUEST.value(), ex));
+        log.error("handleMultipartException", ex);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(NotSupportedException.class)
-    public ResponseEntity<ErrorResponse> handleNotSupportedException(NotSupportedException ex) {
-        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                .body(generateErrorResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), ex));
+    /**
+     * Authentication 객체가 필요한 권한을 보유하지 않은 경우 발생합
+     */
+    @ExceptionHandler(UserAuthenticationException.class)
+    protected ResponseEntity<ErrorResponse> handleUnAuthenticationException(UserAuthenticationException e) {
+        log.error("handleAccessDeniedException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.UN_AUTHENTICATION);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.UN_AUTHENTICATION.getStatus()));
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(generateErrorResponse(HttpStatus.NOT_FOUND.value(), ex));
+    /**
+     * 인가 관련 예외 처리시 발생
+     */
+    @ExceptionHandler(UserAuthorizationException.class)
+    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(UserAuthorizationException e) {
+        log.error("handleAccessDeniedException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.HANDLE_ACCESS_DENIED);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.HANDLE_ACCESS_DENIED.getStatus()));
     }
 
-    @ExceptionHandler(IllegalRequestException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalRequestException(IllegalRequestException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(generateErrorResponse(HttpStatus.BAD_REQUEST.value(), ex));
-    }
-
-    @ExceptionHandler(FileSaveException.class)
-    public ResponseEntity<ErrorResponse> handleFileSaveException(FileSaveException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(generateErrorResponse(HttpStatus.BAD_REQUEST.value(), ex));
+    @ExceptionHandler(BusinessException.class)
+    protected ResponseEntity<ErrorResponse> handleBusinessException(final BusinessException e) {
+        log.error("handleEntityNotFoundException", e);
+        final ErrorCode errorCode = e.getErrorCode();
+        final ErrorResponse response = ErrorResponse.of(errorCode);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-        log.error("", ex);
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(generateErrorResponse(HttpStatus.SERVICE_UNAVAILABLE.value(), ex));
-    }
-
-    private ErrorResponse generateErrorResponse(int status, Exception ex) {
-        return ErrorResponse.builder()
-                .status(status)
-                .message(ex.getMessage())
-                .build();
+    protected ResponseEntity<ErrorResponse> handleException(Exception e) {
+        log.error("handleEntityNotFoundException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

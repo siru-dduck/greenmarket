@@ -11,8 +11,13 @@ import org.springframework.stereotype.Component;
 @Setter
 public class JwtProp {
 
+    // 해시 암호화 문자열
     private String secret;
 
-    private String tokenValidityInSeconds;
+    // jwt access token 유효기간(초 단위)
+    private long accessTokenValidityInSeconds;
+
+    // jwt refresh token 유효기간(초 단위)
+    private long refreshTokenValidityInSeconds;
 
 }
