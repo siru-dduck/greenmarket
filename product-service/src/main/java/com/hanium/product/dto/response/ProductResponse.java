@@ -54,6 +54,7 @@ public class ProductResponse {
     private long userId;
 
     @ApiModelProperty(name = "상품 이미지파일 아이디 리스트", notes = "상품 이미지파일 아이디 리스트")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Long> imageFileIdList;
 
     @ApiModelProperty(name = "좋아요 체크 여부", notes = "좋아요 체크 여부")

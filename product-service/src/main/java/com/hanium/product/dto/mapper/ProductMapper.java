@@ -2,6 +2,7 @@ package com.hanium.product.dto.mapper;
 
 import com.hanium.product.domain.product.*;
 import com.hanium.product.dto.*;
+import com.hanium.product.dto.request.ProductListRequest;
 import com.hanium.product.dto.request.RegisterProductRequest;
 import com.hanium.product.dto.request.SearchRequest;
 import com.hanium.product.dto.response.ProductResponse;
@@ -9,16 +10,19 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface ProductArticleMapper {
+public interface ProductMapper {
 
     @Mapping(target = "offset", source = "offset", defaultValue = "0L")
     @Mapping(target = "size", source = "size", defaultValue = "20")
     SearchInfoDto map(SearchRequest searchRequest);
 
+    FindProductListDto map(ProductListRequest productListRequest);
+
     Category map(CategoryDto categoryDto);
 
     @Mapping(target = "user", ignore = true)
-    ProductArticleDto map(ProductArticle productArticleDto);
+    @Mapping(target = "productImageList", ignore = true)
+    ProductArticleDto map(ProductArticle productArticle);
 
     @Mapping(target = "articleId", source = "productArticle.id")
     ProductImageDto map(ProductImage productImage);

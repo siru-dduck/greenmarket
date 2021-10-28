@@ -31,10 +31,11 @@ public class ProductArticle {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_ID", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToOne(mappedBy = "productArticle", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "review_id")
     private ProductReview productReview;
 
     @OneToMany(mappedBy = "productArticle", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -80,7 +81,7 @@ public class ProductArticle {
     }
 
     public void addProductImage(long fileId) {
-        getProductImageList().add(ProductImage.builder()
+        productImageList.add(ProductImage.builder()
                 .productArticle(this)
                 .listNum(getProductImageList().size() + 1)
                 .fileId(fileId)
@@ -89,7 +90,7 @@ public class ProductArticle {
 
     public void addProductImages(List<Long> fileIdList) {
         fileIdList.forEach(fileId -> {
-            getProductImageList().add(ProductImage.builder()
+            productImageList.add(ProductImage.builder()
                     .productArticle(this)
                     .listNum(getProductImageList().size() + 1)
                     .fileId(fileId)
@@ -98,10 +99,10 @@ public class ProductArticle {
     }
 
     public ProductImage getMainProductImage() {
-        if(CollectionUtils.isEmpty(getProductImageList())) {
+        if(CollectionUtils.isEmpty(productImageList)) {
             return null;
         }
-        return getProductImageList().get(0);
+        return productImageList.get(0);
     }
 
 }

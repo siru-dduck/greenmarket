@@ -1,6 +1,7 @@
 package com.hanium.product.dto;
 
 import com.hanium.product.domain.product.ProductArticleStatus;
+import com.hanium.product.domain.product.ProductReview;
 import com.hanium.product.dto.user.UserInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,21 +49,6 @@ public class ProductArticleDto {
         private CategoryDto category;
         private UserDto.Info user;
         private List<ProductImageDto> productImages;
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class SearchInfo {
-        @Length(min = 2, max = 30, message = "검색 키워드는 2자 이상, 30자 이하로 입력하세요.")
-        private String keyword;
-        private String address1;
-        private String address2;
-        private Integer userId;
-        private String order;
-        private Integer offset;
-        @Min(value = 1, message = "limit은 1이상의 정수로 입력해야합니다.")
-        private Integer limit;
-        private List<String> articleIds;
     }
 
     @Data
