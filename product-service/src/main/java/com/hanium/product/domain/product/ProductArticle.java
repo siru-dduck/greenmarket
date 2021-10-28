@@ -34,7 +34,7 @@ public class ProductArticle {
     @JoinColumn(name = "category_ID", nullable = false)
     private Category category;
 
-    @OneToOne(mappedBy = "productArticle", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "productArticle", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ProductReview productReview;
 
     @OneToMany(mappedBy = "productArticle", cascade = CascadeType.ALL, orphanRemoval = true)

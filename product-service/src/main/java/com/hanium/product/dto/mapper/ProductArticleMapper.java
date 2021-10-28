@@ -1,9 +1,6 @@
 package com.hanium.product.dto.mapper;
 
-import com.hanium.product.domain.product.Address;
-import com.hanium.product.domain.product.Category;
-import com.hanium.product.domain.product.ProductArticle;
-import com.hanium.product.domain.product.ProductImage;
+import com.hanium.product.domain.product.*;
 import com.hanium.product.dto.*;
 import com.hanium.product.dto.request.RegisterProductRequest;
 import com.hanium.product.dto.request.SearchRequest;
@@ -28,6 +25,8 @@ public interface ProductArticleMapper {
 
     AddressDto map(Address address);
 
+    @Mapping(target = "imageFileIdList", source = "productImageList", ignore = true)
+    @Mapping(target = "isCheckInterest", ignore = true)
     ProductResponse map(ProductArticleDto productArticleDto);
 
     RegisterProductDto map(RegisterProductRequest registerProductRequest);

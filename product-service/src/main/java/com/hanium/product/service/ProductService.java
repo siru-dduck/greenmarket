@@ -5,32 +5,30 @@ import com.hanium.product.dao.IProductImageDao;
 import com.hanium.product.domain.product.Category;
 import com.hanium.product.domain.product.ProductArticle;
 import com.hanium.product.domain.product.ProductImage;
-import com.hanium.product.domain.product.QProductArticle;
 import com.hanium.product.dto.ProductArticleDto;
 import com.hanium.product.dto.RegisterProductDto;
 import com.hanium.product.dto.SearchInfoDto;
 import com.hanium.product.dto.mapper.ProductArticleMapper;
-import com.hanium.product.exception.InvalidCategoryId;
+import com.hanium.product.exception.InvalidCategoryIdException;
+import com.hanium.product.exception.ProductNotFoundException;
 import com.hanium.product.repository.CategoryRepository;
 import com.hanium.product.repository.ProductArticleImageRepository;
 import com.hanium.product.repository.ProductArticleRepository;
-import com.hanium.product.repository.querydsl.ProductArticlePredicatesBuilder;
-import com.hanium.product.repository.querydsl.SearchOperation;
-import com.hanium.product.service.UserService;
-import com.querydsl.jpa.impl.JPAQuery;
-import io.undertow.predicate.PathMatchPredicate;
+import com.hanium.product.repository.ProductInterestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * @author siru
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -39,10 +37,12 @@ public class ProductService {
     private final ProductArticleRepository productArticleRepository;
     private final ProductArticleImageRepository productArticleImageRepository;
     private final ProductArticleMapper productArticleMapper;
-    private final IProductArticleDao productArticleDao;
-    private final IProductImageDao productImageDao;
-    private final UserService userService;
     private final CategoryRepository categoryRepository;
+    private final ProductInterestRepository productInterestRepository;
+
+    /*************************************************
+     * 상품 관련 비즈니스 로직
+     *************************************************/
 
     /**
      * 상품검색
@@ -57,6 +57,7 @@ public class ProductService {
                         .collect(Collectors.toList()))
                 .stream()
                 .collect(Collectors.toMap(ProductImage::getProductArticle, Function.identity()));
+
         List<ProductArticleDto> searchResult = new ArrayList<>();
         productArticleList.forEach(productArticle -> {
             ProductArticleDto productArticleInfo = productArticleMapper.map(productArticle);
@@ -71,24 +72,21 @@ public class ProductService {
      * @param searchInfo
      * @return
      */
-    public List<ProductArticleDto.Info> getProductArticles(ProductArticleDto.SearchInfo searchInfo) {
-        return productArticleDao.findListBy(searchInfo);
+    public List<ProductArticleDto> getProductArticles(ProductArticleDto.SearchInfo searchInfo) {
+        return null;
     }
 
     /**
      * 상품 게시글 조회
-     * @param articleId
+     * @param productId
      * @return
      */
-    public ProductArticleDto.Info getProductArticle(Integer articleId) {
-//        ProductArticleDto.Info article =  productArticleDao.findOneBy(articleId);
-//        if(article == null) {
-//            throw new NotFoundResourceException("요청한 상품을 찾을 수 없습니다.");
-//        }
-//        UserDto.Info user = userService.getUser(article.getUser().getId());
-//        article.setUser(user);
-//        return article;
-        return null;
+    public ProductArticleDto getProductArticle(long productId) {
+        ProductArticle product = Optional.ofNullable(productArticleRepository.findWithImageAndReviewById(productId))
+                .orElseThrow(() -> { throw new ProductNotFoundException("상품을 찾을 수 없습니다."); });
+
+        ProductArticleDto productResult = productArticleMapper.map(product);
+        return productResult;
     }
 
     /**
@@ -100,7 +98,7 @@ public class ProductService {
     @Transactional
     public long registerProductArticle(RegisterProductDto registerInfo, long userId) {
         Category category = categoryRepository.findById(registerInfo.getCategoryId())
-                .orElseThrow(() -> new InvalidCategoryId(String.format("invalid category id %d", registerInfo.getCategoryId())));
+                .orElseThrow(() -> new InvalidCategoryIdException(String.format("invalid category id %d", registerInfo.getCategoryId())));
         ProductArticle product = ProductArticle.createProductArticle(registerInfo, category, userId);
         product.addProductImages(registerInfo.getFileIdList());
         productArticleRepository.save(product);

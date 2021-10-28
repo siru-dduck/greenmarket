@@ -34,4 +34,13 @@ public class ProductInterest {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createDate;
 
+    public static ProductInterest createProductInterest(ProductArticle product, long userId) {
+        return ProductInterest.builder()
+                .productArticle(product)
+                .userId(userId)
+                .createDate(LocalDateTime.now())
+                .build();
+    }
+
+
 }
