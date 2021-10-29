@@ -55,6 +55,10 @@ public class ProductController {
         SearchInfoDto searchInfo = productMapper.map(searchRequest);
         List<ProductArticleDto>  searchResult = productService.searchProducts(searchInfo);
 
+        return getProductListResponseResponseEntity(searchResult);
+    }
+
+    private ResponseEntity<ProductListResponse> getProductListResponseResponseEntity(List<ProductArticleDto> searchResult) {
         List<ProductResponse> productResponseList = new ArrayList<>();
         searchResult.forEach(productInfo -> {
             ProductResponse productResponse = productMapper.map(productInfo);
@@ -82,16 +86,7 @@ public class ProductController {
         FindProductListDto findProductListInfo = productMapper.map(productListRequest);
         List<ProductArticleDto> findProductResult = productService.getProducts(findProductListInfo);
 
-        List<ProductResponse> productResponseList = new ArrayList<>();
-        findProductResult.forEach(product -> {
-            ProductResponse productResponse = productMapper.map(product);
-            productResponse.setImageFileIdList(product.getProductImageList().stream()
-                    .map(ProductImageDto::getFileId)
-                    .collect(Collectors.toList()));
-            productResponseList.add(productResponse);
-        });
-
-        return ResponseEntity.ok(ProductListResponse.createResponse(productResponseList));
+        return getProductListResponseResponseEntity(findProductResult);
     }
 
     @ApiOperation(value = "상품등록", notes = "상품검색 api")
