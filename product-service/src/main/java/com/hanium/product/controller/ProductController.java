@@ -7,6 +7,7 @@ import com.hanium.product.dto.mapper.ProductMapper;
 import com.hanium.product.dto.request.ProductListRequest;
 import com.hanium.product.dto.request.RegisterProductRequest;
 import com.hanium.product.dto.request.SearchRequest;
+import com.hanium.product.dto.request.UpdateProductRequest;
 import com.hanium.product.dto.response.ProductListResponse;
 import com.hanium.product.dto.response.ProductResponse;
 import com.hanium.product.dto.response.RegisterProductResponse;
@@ -55,6 +56,10 @@ public class ProductController {
         SearchInfoDto searchInfo = productMapper.map(searchRequest);
         List<ProductArticleDto>  searchResult = productService.searchProducts(searchInfo);
 
+        return getProductListResponseResponseEntity(searchResult);
+    }
+
+    private ResponseEntity<ProductListResponse> getProductListResponseResponseEntity(List<ProductArticleDto> searchResult) {
         List<ProductResponse> productResponseList = new ArrayList<>();
         searchResult.forEach(productInfo -> {
             ProductResponse productResponse = productMapper.map(productInfo);
@@ -82,16 +87,7 @@ public class ProductController {
         FindProductListDto findProductListInfo = productMapper.map(productListRequest);
         List<ProductArticleDto> findProductResult = productService.getProducts(findProductListInfo);
 
-        List<ProductResponse> productResponseList = new ArrayList<>();
-        findProductResult.forEach(product -> {
-            ProductResponse productResponse = productMapper.map(product);
-            productResponse.setImageFileIdList(product.getProductImageList().stream()
-                    .map(ProductImageDto::getFileId)
-                    .collect(Collectors.toList()));
-            productResponseList.add(productResponse);
-        });
-
-        return ResponseEntity.ok(ProductListResponse.createResponse(productResponseList));
+        return getProductListResponseResponseEntity(findProductResult);
     }
 
     @ApiOperation(value = "상품등록", notes = "상품검색 api")
@@ -132,18 +128,19 @@ public class ProductController {
         return ResponseEntity.ok(productResponse);
     }
 
-    @DeleteMapping("/products/{articleId}")
-    public ResponseEntity<ProductArticleDto.Info> deleteProduct(@PathVariable Integer articleId,
-                                                             UserDto.Info user) {
-        productService.deleteProductArticle(articleId, user.getId());
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable long productId,
+                                                                AuthUserDetail userDetail) {
+        productService.deleteProduct(productId, userDetail.getUserId());
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/products/{articleId}")
-    public ResponseEntity<ProductArticleDto.Info> updateProduct(@PathVariable Integer articleId,
-                                                             UserDto.Info user,
-                                                             @Valid ProductArticleDto.ChangeInfo changeInfo) throws Exception {
-        productService.updateProductArticle(changeInfo, articleId, user.getId());
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<Void> updateProduct(@PathVariable long productId,
+                                              AuthUserDetail userDetail,
+                                              @RequestBody UpdateProductRequest updateRequest) throws Exception {
+        UpdateProductDto updateInfo = productMapper.map(updateRequest);
+        productService.updateProduct(updateInfo, productId, userDetail.getUserId());
         return ResponseEntity.noContent().build();
     }
 

@@ -5,6 +5,7 @@ import com.hanium.product.dto.*;
 import com.hanium.product.dto.request.ProductListRequest;
 import com.hanium.product.dto.request.RegisterProductRequest;
 import com.hanium.product.dto.request.SearchRequest;
+import com.hanium.product.dto.request.UpdateProductRequest;
 import com.hanium.product.dto.response.ProductResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,6 +18,8 @@ public interface ProductMapper {
     SearchInfoDto map(SearchRequest searchRequest);
 
     FindProductListDto map(ProductListRequest productListRequest);
+
+    UpdateProductDto map(UpdateProductRequest updateProductRequest);
 
     Category map(CategoryDto categoryDto);
 
