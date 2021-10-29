@@ -116,11 +116,11 @@ public class ProductArticle {
     }
 
     public void setProductImages(List<Long> fileIdList) {
-        productImageList.clear();
+        getProductImageList().clear();
         fileIdList.forEach(fileId -> {
             productImageList.add(ProductImage.builder()
                     .productArticle(this)
-                    .listNum(getProductImageList().size() + 1)
+                    .listNum(productImageList.size() + 1)
                     .fileId(fileId)
                     .build());
         });

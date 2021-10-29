@@ -1,7 +1,9 @@
 package com.hanium.product.repository;
 
+import com.hanium.product.domain.product.ProductArticle;
 import com.hanium.product.domain.product.ProductImage;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,5 +15,9 @@ public interface ProductArticleImageRepository extends JpaRepository<ProductImag
 
     @Query("select i from ProductImage i where i.productArticle.id in :productIdList and i.listNum = 1 order by i.productArticle.id, i.listNum")
     List<ProductImage> findMainImageByFileIdIn(@Param("productIdList") List<Long> productIdList);
+
+    @Modifying
+    @Query("delete from ProductImage pi where pi.productArticle.id = :productId")
+    void deleteByProductId(@Param("productId") long productId);
 
 }

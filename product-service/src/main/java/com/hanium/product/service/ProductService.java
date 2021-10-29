@@ -145,6 +145,8 @@ public class ProductService {
         }
 
         product.updateProduct(updateInfo, category);
+
+        productArticleImageRepository.deleteByProductId(productId);
         product.setProductImages(updateInfo.getFileIdList());
     }
 

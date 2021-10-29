@@ -137,8 +137,8 @@ public class ProductController {
 
     @PutMapping("/products/{productId}")
     public ResponseEntity<Void> updateProduct(@PathVariable long productId,
-                                                                AuthUserDetail userDetail,
-                                                             @Valid UpdateProductRequest updateRequest) throws Exception {
+                                              AuthUserDetail userDetail,
+                                              @RequestBody UpdateProductRequest updateRequest) throws Exception {
         UpdateProductDto updateInfo = productMapper.map(updateRequest);
         productService.updateProduct(updateInfo, productId, userDetail.getUserId());
         return ResponseEntity.noContent().build();
