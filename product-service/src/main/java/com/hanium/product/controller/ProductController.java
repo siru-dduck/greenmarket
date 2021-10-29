@@ -132,10 +132,10 @@ public class ProductController {
         return ResponseEntity.ok(productResponse);
     }
 
-    @DeleteMapping("/products/{articleId}")
-    public ResponseEntity<ProductArticleDto.Info> deleteProduct(@PathVariable Integer articleId,
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<ProductArticleDto.Info> deleteProduct(@PathVariable long productId,
                                                              UserDto.Info user) {
-        productService.deleteProductArticle(articleId, user.getId());
+        productService.deleteProduct(productId, user.getId());
         return ResponseEntity.noContent().build();
     }
 

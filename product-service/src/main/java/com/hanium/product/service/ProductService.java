@@ -7,6 +7,7 @@ import com.hanium.product.dto.*;
 import com.hanium.product.dto.mapper.ProductMapper;
 import com.hanium.product.exception.InvalidCategoryIdException;
 import com.hanium.product.exception.ProductNotFoundException;
+import com.hanium.product.exception.UserAuthorizationException;
 import com.hanium.product.repository.CategoryRepository;
 import com.hanium.product.repository.ProductArticleImageRepository;
 import com.hanium.product.repository.ProductArticleRepository;
@@ -144,16 +145,22 @@ public class ProductService {
 
     /**
      * 상품 게시글 삭제
-     * @param articleId
+     * @param productId
      * @param userId
      */
     @Transactional
-    public void deleteProductArticle(Integer articleId, Integer userId) {
-//        ProductArticleDto.Info article = productArticleDao.findOneBy(articleId);
-//        if(!article.getUser().getId().equals(userId)){
-//            throw new AuthorizationException("게시글 작성자만 글을 삭제할 수 있습니다.");
-//        }
-//        productArticleDao.deleteBy(articleId);
+    public void deleteProduct(long productId, long userId) {
+        ProductArticle product = productArticleRepository.findById(productId)
+                .orElseThrow(() -> {
+                    throw new ProductNotFoundException("상품을 찾을 수 없습니다.");
+                });
+
+        // 권한 검사
+        if (product.getUserId() != userId) {
+            throw new UserAuthorizationException("권한이 없는 사용자 입니다.");
+        }
+
+        product.deleteProduct();
     }
 
 }

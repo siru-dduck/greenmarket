@@ -54,7 +54,7 @@ public class ProductArticle {
     private Address address;
 
     @Enumerated(EnumType.STRING)
-    private ProductArticleStatus status;
+    private ProductStatus status;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createDate;
@@ -74,7 +74,7 @@ public class ProductArticle {
                         .build())
                 .price(registerProductDto.getPrice())
                 .interestCount(0)
-                .status(ProductArticleStatus.SALE)
+                .status(ProductStatus.SALE)
                 .createDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .build();
@@ -103,6 +103,10 @@ public class ProductArticle {
             return null;
         }
         return productImageList.get(0);
+    }
+
+    public void deleteProduct() {
+        status = ProductStatus.DELETE;
     }
 
 }

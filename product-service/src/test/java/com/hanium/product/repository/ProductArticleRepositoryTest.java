@@ -2,7 +2,7 @@ package com.hanium.product.repository;
 
 import com.hanium.product.domain.product.Category;
 import com.hanium.product.domain.product.ProductArticle;
-import com.hanium.product.domain.product.ProductArticleStatus;
+import com.hanium.product.domain.product.ProductStatus;
 import com.hanium.product.domain.product.ProductImage;
 import com.hanium.product.dto.RegisterProductDto;
 import com.hanium.product.dto.SearchInfoDto;
@@ -54,7 +54,7 @@ class ProductArticleRepositoryTest {
         assertThat(findProductArticle.getContent()).isEqualTo(productArticle.getContent());
         assertThat(findProductArticle.getCreateDate()).isEqualTo(productArticle.getCreateDate());
         assertThat(findProductArticle.getPrice()).isEqualTo(productArticle.getPrice());
-        assertThat(findProductArticle.getStatus()).isEqualTo(ProductArticleStatus.SALE);
+        assertThat(findProductArticle.getStatus()).isEqualTo(ProductStatus.SALE);
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.hanium.product.service;
 
 import com.hanium.product.domain.product.Category;
 import com.hanium.product.domain.product.ProductArticle;
+import com.hanium.product.domain.product.ProductStatus;
 import com.hanium.product.dto.ProductArticleDto;
 import com.hanium.product.dto.RegisterProductDto;
 import com.hanium.product.exception.BusinessException;
@@ -90,7 +91,7 @@ public class ProductServiceTest {
 
     @Test
     public void 상품단건조회_성공테스트() throws Exception {
-        // givenR
+        // given
         long productId = createProduct();
 
         // when
@@ -113,5 +114,20 @@ public class ProductServiceTest {
         // then
         assertThat(thrown).isInstanceOf(ProductNotFoundException.class)
                 .isInstanceOf(BusinessException.class);
+    }
+    
+    @Test
+    public void 상품삭제_테스트() throws Exception {
+        // given
+        long productId = createProduct();
+
+        // when
+        productService.deleteProduct(productId, 1);
+
+        // then
+        ProductArticle findProduct = productArticleRepository.findById(productId)
+                .orElseThrow();
+
+        assertThat(findProduct.getStatus()).isEqualTo(ProductStatus.DELETE);
     }
 }
