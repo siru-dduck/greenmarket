@@ -7,6 +7,7 @@ import com.hanium.product.dto.mapper.ProductMapper;
 import com.hanium.product.dto.request.ProductListRequest;
 import com.hanium.product.dto.request.RegisterProductRequest;
 import com.hanium.product.dto.request.SearchRequest;
+import com.hanium.product.dto.request.UpdateProductRequest;
 import com.hanium.product.dto.response.ProductListResponse;
 import com.hanium.product.dto.response.ProductResponse;
 import com.hanium.product.dto.response.RegisterProductResponse;
@@ -128,17 +129,18 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{productId}")
-    public ResponseEntity<ProductArticleDto.Info> deleteProduct(@PathVariable long productId,
-                                                             UserDto.Info user) {
-        productService.deleteProduct(productId, user.getId());
+    public ResponseEntity<Void> deleteProduct(@PathVariable long productId,
+                                                                AuthUserDetail userDetail) {
+        productService.deleteProduct(productId, userDetail.getUserId());
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/products/{articleId}")
-    public ResponseEntity<ProductArticleDto.Info> updateProduct(@PathVariable Integer articleId,
-                                                             UserDto.Info user,
-                                                             @Valid ProductArticleDto.ChangeInfo changeInfo) throws Exception {
-        productService.updateProductArticle(changeInfo, articleId, user.getId());
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<Void> updateProduct(@PathVariable long productId,
+                                                                AuthUserDetail userDetail,
+                                                             @Valid UpdateProductRequest updateRequest) throws Exception {
+        UpdateProductDto updateInfo = productMapper.map(updateRequest);
+        productService.updateProduct(updateInfo, productId, userDetail.getUserId());
         return ResponseEntity.noContent().build();
     }
 

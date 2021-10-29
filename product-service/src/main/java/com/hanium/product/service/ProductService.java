@@ -119,28 +119,33 @@ public class ProductService {
         Category category = categoryRepository.findById(registerInfo.getCategoryId())
                 .orElseThrow(() -> new InvalidCategoryIdException(String.format("invalid category id %d", registerInfo.getCategoryId())));
         ProductArticle product = ProductArticle.createProductArticle(registerInfo, category, userId);
-        product.addProductImages(registerInfo.getFileIdList());
+        product.setProductImages(registerInfo.getFileIdList());
         productArticleRepository.save(product);
         return product.getId();
     }
 
     /**
      * 상품 게시글 수정
-     * @param changeInfo
-     * @param articleId
+     * @param updateInfo
+     * @param productId
      * @param userId
      */
     @Transactional
-    public void updateProductArticle(ProductArticleDto.ChangeInfo changeInfo, Integer articleId, Integer userId) {
-//        ProductArticleDto.Info article = productArticleDao.findOneBy(articleId);
-//        if(!article.getUser().getId().equals(userId)){
-//            throw new AuthorizationException("게시글 작성자만 글을 수정할 수 있습니다.");
-//        }
-//
-//        productArticleDao.updateBy(changeInfo, articleId);
-//        productImageDao.deleteBy(articleId);
-//        List<ProductImageDto> productImages = fileUtils.parseImageInfo(articleId, changeInfo.getFiles());
-//        productImageDao.createList(productImages);
+    public void updateProduct(UpdateProductDto updateInfo, long productId, long userId) {
+        ProductArticle product = productArticleRepository.findById(productId)
+                .orElseThrow(() -> {
+                    throw new ProductNotFoundException("상품을 찾을 수 없습니다.");
+                });
+        Category category = categoryRepository.findById(updateInfo.getCategoryId())
+                .orElseThrow(() -> new InvalidCategoryIdException(String.format("invalid category id %d", updateInfo.getCategoryId())));
+
+        // 권한 검사
+        if (product.getUserId() != userId) {
+            throw new UserAuthorizationException("권한이 없는 사용자 입니다.");
+        }
+
+        product.updateProduct(updateInfo, category);
+        product.setProductImages(updateInfo.getFileIdList());
     }
 
     /**
