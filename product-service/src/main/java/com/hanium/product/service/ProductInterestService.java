@@ -31,11 +31,11 @@ public class ProductInterestService {
         return productInterestRepository.existsByProductArticleIdAndUserId(productId, userId);
     }
 
-    void addInterest(long productId, long userId) {
+    public void addInterest(long productId, long userId) {
 
     }
 
-    void removeInterest(long productId, long userId) {
+    public void removeInterest(long productId, long userId) {
 
     }
 }

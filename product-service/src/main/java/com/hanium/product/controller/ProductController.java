@@ -144,20 +144,20 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-//    @PostMapping( "/products/{id}/interest")
-//    public  ResponseEntity addProductInterestCount(@PathVariable Integer id,
-//                                                                       UserDto.Info user) {
-//        productInterestService.addInterest(id, user.getId());
-//        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-//                .build().toUri();
-//        return ResponseEntity.created(location).build();
-//    }
+    @PostMapping( "/products/{productId}/interests")
+    public  ResponseEntity addProductInterestCount(@PathVariable long productId,
+                                                                       AuthUserDetail userDetail) {
+        productInterestService.addInterest(productId, userDetail.getUserId());
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .build().toUri();
+        return ResponseEntity.created(location).build();
+    }
 
-//    @DeleteMapping( "/products/{id}/interest")
-//    public ResponseEntity subtractProductInterestCount(
-//            @PathVariable Integer id,
-//            UserDto.Info user) {
-//        productInterestService.removeInterest(id, user.getId());
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping( "/products/{productId}/interests")
+    public ResponseEntity subtractProductInterestCount(
+            @PathVariable long productId,
+            AuthUserDetail userDetail) {
+        productInterestService.removeInterest(productId, userDetail.getUserId());
+        return ResponseEntity.noContent().build();
+    }
 }
