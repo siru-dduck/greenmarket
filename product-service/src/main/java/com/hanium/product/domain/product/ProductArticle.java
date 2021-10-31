@@ -155,4 +155,12 @@ public class ProductArticle {
 
 
     }
+
+    public void addInterestCount() {
+        this.interestCount++;
+    }
+
+    public void removeInterestCount() {
+        this.interestCount--;
+    }
 }

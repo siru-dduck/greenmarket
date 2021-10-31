@@ -145,7 +145,7 @@ public class ProductController {
     }
 
     @PostMapping( "/products/{productId}/interests")
-    public  ResponseEntity addProductInterestCount(@PathVariable long productId,
+    public ResponseEntity<Void> addProductInterest(@PathVariable long productId,
                                                                        AuthUserDetail userDetail) {
         productInterestService.addInterest(productId, userDetail.getUserId());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -154,7 +154,7 @@ public class ProductController {
     }
 
     @DeleteMapping( "/products/{productId}/interests")
-    public ResponseEntity subtractProductInterestCount(
+    public ResponseEntity<Void> deleteProductInterest(
             @PathVariable long productId,
             AuthUserDetail userDetail) {
         productInterestService.removeInterest(productId, userDetail.getUserId());
