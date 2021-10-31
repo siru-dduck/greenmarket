@@ -139,30 +139,37 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 ### 2021년 10월15일
 * file 업로드기능을 별도의 서비스로 분리한 file-service 1차개발 완료
 
+### 2021년 10월24일
+* user service spring 리뉴얼 완료
+* refresh token 기능추가
+
+### 2021년 10월31일
+* product service jpa 리뉴얼 완료
+
 ---
 
 # ✅ TODO
 
-* [x] ~~chatservice에 redis adapter 적용시 socket.emit애서 발생하는 에러해결~~
-* [x] ~~회원정보수정 기능~~
-* [x] ~~product service Request Param DTO 생성 및 Validation 적용~~
-* [x] ~~product service Interceptor 적용~~
-* [x] ~~product service 상품등록시에 트랜잭션 롤백상황시 모든 파일이 일괄삭제되지않는 버그 수정 => 파일은 Spring Batch로 처리할 예정~~
-* [x] ~~product 수정, 삭제 기능 추가~~
-* [x] ~~개발환경 docker-compose기반으로 구성~~
+* [x] chatservice에 redis adapter 적용시 socket.emit애서 발생하는 에러해결
+* [x] 회원정보수정 기능
+* [x] product service Request Param DTO 생성 및 Validation 적용
+* [x] product service Interceptor 적용
+* [x] product service 상품등록시에 트랜잭션 롤백상황시 모든 파일이 일괄삭제되지않는 버그 수정 => 파일은 Spring Batch로 처리할 예정
+* [x] product 수정, 삭제 기능 추가
+* [x] 개발환경 docker-compose기반으로 구성
 * [ ] Chat Service DB MongoDB로 변경
-* [ ] 카테고리별 검색기능
+* [x] 카테고리별 검색기능
 * [ ] 구매후기 기능 
 * [ ] 구매내역 조회
 * [ ] 상품등록내역 조회
 * [ ] gRPC, 메세지 큐(Kafka)도입
 * [ ] 이벤트 소싱 도입
-* [ ] Product 서비스 JPA 리뉴얼
-* [x] ~~Swagger 도입~~
+* [x] Product 서비스 JPA 리뉴얼
+* [x] Swagger 도입
 * [ ] React App Notification 기능추가
 * [ ] DB를 Product, User, Chat Service별로 분리 (느슨한 결합도)
-* [x] ~~Image File Service 개발 (Image Crop 기능포함)~~
-* [ ] CI/CD 도입
+* [x] Image File Service 개발 (Image Crop 기능포함)
+* [ ] Jenkins CI/CD 도입
 * [ ] 카카오톡, 네이버 로그인기능
-* [x] ~~Refresh Token 도입~~
+* [x] Refresh Token 도입
 * [ ] Circuit Breaker 도입

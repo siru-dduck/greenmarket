@@ -2,8 +2,10 @@ package com.hanium.product.dto.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,4 +21,12 @@ public class ProductListResponse {
 
     @ApiModelProperty(name = "마지막 검색결과 아이디", notes = "마지막 검색결과 아이디")
     private Long lastProductId;
+
+    public static ProductListResponse createResponse(List<ProductResponse> productResponseList) {
+        return ProductListResponse.builder()
+                .data(productResponseList)
+                .lastProductId(productResponseList.size() > 0 ? Objects.requireNonNull(CollectionUtils.lastElement(productResponseList)).getId() : null)
+                .count(productResponseList.size())
+                .build();
+    }
 }

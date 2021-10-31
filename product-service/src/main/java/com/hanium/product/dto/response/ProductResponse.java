@@ -2,11 +2,9 @@ package com.hanium.product.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.hanium.product.domain.product.ProductArticleStatus;
+import com.hanium.product.domain.product.ProductStatus;
 import com.hanium.product.dto.AddressDto;
 import com.hanium.product.dto.CategoryDto;
-import com.hanium.product.dto.ProductImageDto;
-import com.hanium.product.dto.user.UserInfoDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -45,7 +43,7 @@ public class ProductResponse {
     @ApiModelProperty(name = "상품상태", notes = "상품상태[SALE(판매중)" +
             ", RESERVE(예약중), COMPLETE(거래완료)" +
             ", HIDE(숨김), DELETE(삭제)]")
-    private ProductArticleStatus status;
+    private ProductStatus status;
 
     @ApiModelProperty(name = "상품 카테고리", notes = "상품 카테고리")
     private CategoryDto category;
@@ -54,6 +52,7 @@ public class ProductResponse {
     private long userId;
 
     @ApiModelProperty(name = "상품 이미지파일 아이디 리스트", notes = "상품 이미지파일 아이디 리스트")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Long> imageFileIdList;
 
     @ApiModelProperty(name = "좋아요 체크 여부", notes = "좋아요 체크 여부")

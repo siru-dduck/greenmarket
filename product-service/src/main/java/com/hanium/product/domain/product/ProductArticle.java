@@ -1,13 +1,17 @@
 package com.hanium.product.domain.product;
 
 import com.hanium.product.dto.RegisterProductDto;
+import com.hanium.product.dto.UpdateProductDto;
+import com.hanium.product.exception.ProductAlreadyDeleteException;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author siru on 2021.10.10
@@ -17,7 +21,6 @@ import java.util.List;
 @NoArgsConstructor(access =  AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(access =  AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = "id")
 public class ProductArticle {
 
     @Id
@@ -31,10 +34,11 @@ public class ProductArticle {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_ID", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToOne(mappedBy = "productArticle", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "review_id")
     private ProductReview productReview;
 
     @OneToMany(mappedBy = "productArticle", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -53,7 +57,7 @@ public class ProductArticle {
     private Address address;
 
     @Enumerated(EnumType.STRING)
-    private ProductArticleStatus status;
+    private ProductStatus status;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createDate;
@@ -61,6 +65,26 @@ public class ProductArticle {
     @Column(nullable = false)
     private LocalDateTime updateDate;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ProductArticle that = (ProductArticle) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+    /**
+     * 엔티티 생성 메소드
+     * @param registerProductDto
+     * @param category
+     * @param userId
+     * @return
+     */
     public static ProductArticle createProductArticle(RegisterProductDto registerProductDto, Category category, long userId) {
         return ProductArticle.builder()
                 .title(registerProductDto.getTitle())
@@ -73,35 +97,70 @@ public class ProductArticle {
                         .build())
                 .price(registerProductDto.getPrice())
                 .interestCount(0)
-                .status(ProductArticleStatus.SALE)
+                .status(ProductStatus.SALE)
                 .createDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .build();
     }
 
+    /*************************************************
+     * 비즈니스 로직
+     *************************************************/
+
     public void addProductImage(long fileId) {
-        getProductImageList().add(ProductImage.builder()
+        productImageList.add(ProductImage.builder()
                 .productArticle(this)
                 .listNum(getProductImageList().size() + 1)
                 .fileId(fileId)
                 .build());
     }
 
-    public void addProductImages(List<Long> fileIdList) {
+    public void setProductImages(List<Long> fileIdList) {
+        getProductImageList().clear();
         fileIdList.forEach(fileId -> {
-            getProductImageList().add(ProductImage.builder()
+            productImageList.add(ProductImage.builder()
                     .productArticle(this)
-                    .listNum(getProductImageList().size() + 1)
+                    .listNum(productImageList.size() + 1)
                     .fileId(fileId)
                     .build());
         });
     }
 
     public ProductImage getMainProductImage() {
-        if(CollectionUtils.isEmpty(getProductImageList())) {
+        if(CollectionUtils.isEmpty(productImageList)) {
             return null;
         }
-        return getProductImageList().get(0);
+        return productImageList.get(0);
     }
 
+    public void deleteProduct() {
+        if(status == ProductStatus.DELETE) {
+            throw new ProductAlreadyDeleteException("이미 삭제된 상품입니다.");
+        }
+        status = ProductStatus.DELETE;
+    }
+
+    public void updateProduct(UpdateProductDto updateInfo, Category category) {
+        if(status == ProductStatus.DELETE) {
+            throw new ProductAlreadyDeleteException("이미 삭제된 상품입니다.");
+        }
+        title = updateInfo.getTitle();
+        content = updateInfo.getContent();
+        price = updateInfo.getPrice();
+        address = Address.builder()
+                .address1(updateInfo.getAddress1())
+                .address2(updateInfo.getAddress2())
+                .build();
+        this.category = category;
+
+
+    }
+
+    public void addInterestCount() {
+        this.interestCount++;
+    }
+
+    public void removeInterestCount() {
+        this.interestCount--;
+    }
 }

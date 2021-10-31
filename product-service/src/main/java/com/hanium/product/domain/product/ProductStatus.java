@@ -1,5 +1,5 @@
 package com.hanium.product.domain.product;
 
-public enum ProductArticleStatus {
+public enum ProductStatus {
     SALE, RESERVE, COMPLETE, HIDE, DELETE
 }
