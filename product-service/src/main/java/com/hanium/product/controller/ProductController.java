@@ -144,20 +144,18 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping( "/products/{productId}/interests")
+    @PostMapping( "/products/{productId}/addInterest")
     public ResponseEntity<Void> addProductInterest(@PathVariable long productId,
                                                                        AuthUserDetail userDetail) {
         productInterestService.addInterest(productId, userDetail.getUserId());
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .build().toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping( "/products/{productId}/interests")
-    public ResponseEntity<Void> deleteProductInterest(
+    @PostMapping( "/products/{productId}/removeInterest")
+    public ResponseEntity<Void> removeProductInterest(
             @PathVariable long productId,
             AuthUserDetail userDetail) {
         productInterestService.removeInterest(productId, userDetail.getUserId());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }
