@@ -2,12 +2,10 @@ package com.hanium.product.service;
 
 import com.hanium.product.domain.product.Category;
 import com.hanium.product.domain.product.ProductArticle;
-import com.hanium.product.domain.product.ProductInterest;
 import com.hanium.product.dto.RegisterProductDto;
 import com.hanium.product.repository.CategoryRepository;
 import com.hanium.product.repository.ProductArticleRepository;
 import com.hanium.product.repository.ProductInterestRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,9 +72,6 @@ public class ProductInterestServiceTest {
 
         long userId = 1;
         this.setUpUserId = 1;
-
-        ProductInterest productInterest = ProductInterest.createProductInterest(product, userId);
-        productInterestRepository.save(productInterest);
     }
 
     @Test
@@ -89,6 +84,43 @@ public class ProductInterestServiceTest {
         boolean result = productInterestService.isCheckInterest(productId, userId);
 
         // then
-        assertThat(result).isEqualTo(true);
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    public void 관심상품_추가_테스트() throws Exception {
+        // given
+        long userId = this.setUpUserId;
+        long productId = this.setUpProductId;
+
+        // when
+        productInterestService.addInterest(productId, userId);
+
+        // then
+        boolean isExistsInterest = productInterestRepository.existsByProductArticleIdAndUserId(productId, userId);
+        ProductArticle product = productArticleRepository.findById(productId).orElseThrow();
+
+        assertThat(isExistsInterest).isTrue();
+        assertThat(product.getInterestCount()).isEqualTo(1);
+    }
+
+    @Test
+    public void 관심상품_삭제_테스트() throws Exception {
+        // given
+        long userId = this.setUpUserId;
+        long productId = this.setUpProductId;
+        productInterestService.addInterest(productId, userId);
+        
+        // when
+        productInterestService.removeInterest(productId, userId);
+
+        // then
+        boolean isExistsInterest = productInterestRepository.existsByProductArticleIdAndUserId(productId, userId);
+        ProductArticle product = productArticleRepository.findById(productId).orElseThrow();
+
+        assertThat(isExistsInterest).isFalse();
+        assertThat(product.getInterestCount()).isEqualTo(0);
+
+
     }
 }
