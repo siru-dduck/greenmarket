@@ -1,0 +1,29 @@
+stages:         
+  - build
+  - deploy
+variables:
+  REGISTRY_URL: registry.greenmarket.com
+  PROJECT_DIR: product-service
+  NAMESPACE: production
+
+build-job:       
+  stage: build
+  image: 
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  before_script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$REGISTRY_URL\":{\"username\":\"$REGISTRY_USERNAME\",\"password\":\"$REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+  script:
+    - echo "build docker image"
+    - /kaniko/executor --insecure --context $PROJECT_DIR --dockerfile $PROJECT_DIR/Dockerfile --destination $REGISTRY_URL/root/greenmarket/$PROJECT_DIR:$CI_COMMIT_SHORT_SHA
+
+deploy-job:      
+  stage: deploy 
+  image: bitnami/kubectl:latest
+  script:
+    - pwd
+    - ls -al
+    - kubectl get ns $NAMESPACE || kubectl create ns $NAMESPACE
+    - kubectl apply -f deployments/greenmarket-product-deployment.yaml
+    - echo "Application successfully deployed."
