@@ -10,5 +10,5 @@ RUN ./gradlew bootJar
 FROM adoptopenjdk:11-jdk-hotspot
 COPY --from=builder build/libs/*.jar app.jar
 
-EXPOSE 8110
+EXPOSE 8150
 ENTRYPOINT [ "java", "-jar", "/app.jar" ]

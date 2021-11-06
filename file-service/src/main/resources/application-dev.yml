@@ -1,10 +1,5 @@
 server:
-  port: 8110
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force:  true
+  port: 8150
 
 # 스프링 설정
 spring:
@@ -14,27 +9,30 @@ spring:
 
   # 데이터베이스 세팅
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://greenmarket-mysql:3306/file_service
+    username: greenmarket
+    password: greenmarket1!
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: false
-    open-in-view: false
-
-  sql:
-    init:
-      data-locations: classpath*:h2/data.sql
-      mode: embedded
 
 # jwt 설정
 jwt:
   secret: sd0dfjnl!@123:23090ejasd1!@123Ko)9sdkf{}s*56&*27fnvpPxz0tamxzz.sf!@93a6nzlk9e2ro4&sa78df7jxnmgl
   access-token-validity-in-seconds: 3600
   refresh-token-validity-in-seconds: 604800
+
+# 업로드 파일 설정
+file-resource:
+  product-image-url: /resources/images/product/
+  profile-image-url: /resources/images/profile/
+  product-image-save-path: /resources/images/product/
+  profile-image-save-path: /resources/images/profile/
 
 logging:
   level:

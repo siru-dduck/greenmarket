@@ -3,37 +3,46 @@ version: '3.8'
 services:
   redis:
     image: sameersbn/redis:latest
-    container_name: greenmarket_redis
+    container_name: greenmarket-redis
     ports:
       - "6379:6379"
-    restart: always
 
   mysql:
     image: mysql:5.7
-    container_name: greenmarket_mysql
+    container_name: greenmarket-mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     ports:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=siru@dev1
     platform: linux/x86_64
-
-
+    
   product-service:
-    image: greenmarket-product-app:0.0.1
-    container_name: greenmarket_product_service
+    image: product-service:0.0.1
+    container_name: greenmarket-product-service
     ports:
       - "8110:8110"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
   
   user-service:
-    image: greenmarket-user-app:0.0.1
-    container_name: greenmarket_user_service
+    image: user-service:0.0.1
+    container_name: user-service
     ports:
       - "8130:8130"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+  file-service:
+    image: file-service:0.0.1
+    container_name: file-service
+    ports:
+      - "8150:8150"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
 
   chat-service:
     image: greenmarket-chat-app:0.0.1
-    container_name: greenmarket_chat_service
+    container_name: greenmarket-chat-service
     ports:
       - "8140:8140"
-      
