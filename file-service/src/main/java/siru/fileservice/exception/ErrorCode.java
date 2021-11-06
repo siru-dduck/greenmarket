@@ -14,6 +14,7 @@ public enum ErrorCode {
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
     INTERNAL_SERVER_ERROR(500, "C007", "Server error"),
     ILLEGAL_REQUEST(403, "C008", "Illegal request"),
+    MEDIA_TYPE_NOT_SUPPORTED(415, "C009", "Media not supported"),
 
     // File
     MULTIPART_EXCEPTION(400, "F001", "invalid multipart form"),

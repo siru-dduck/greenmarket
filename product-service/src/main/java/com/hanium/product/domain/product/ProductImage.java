@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(
         name = "product_image",
         uniqueConstraints = {@UniqueConstraint(
-                columnNames = {"product_article_id", "list_num"}
+                columnNames = {"product_id", "list_num"}
         )}
 )
 @Getter
@@ -21,7 +21,7 @@ public class ProductImage {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_article_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private ProductArticle productArticle;
 
     @Column(name = "list_num", nullable = false)
