@@ -18,7 +18,6 @@ spring:
     url: jdbc:h2:mem:test
 
   jpa:
-    defer-datasource-initialization: true
     hibernate:
       ddl-auto: create
     properties:
@@ -26,20 +25,16 @@ spring:
         format_sql: false
     open-in-view: false
 
+  sql:
+    init:
+      data-locations: classpath*:h2/data.sql
+      mode: embedded
+
 # jwt 설정
 jwt:
   secret: sd0dfjnl!@123:23090ejasd1!@123Ko)9sdkf{}s*56&*27fnvpPxz0tamxzz.sf!@93a6nzlk9e2ro4&sa78df7jxnmgl
   access-token-validity-in-seconds: 3600
   refresh-token-validity-in-seconds: 604800
-
-# Another Micro Service Config
-service:
-  chat:
-    host: localhost
-    port: 8140
-  user:
-    host: localhost
-    port: 8130
 
 logging:
   level:
