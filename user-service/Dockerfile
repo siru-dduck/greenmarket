@@ -1,14 +1,13 @@
-FROM adoptopenjdk:11-jdk-hotspot AS builder
-COPY gradlew .
-COPY gradle gradle
+FROM gradle:6.9-jdk11 AS builder
+
+WORKDIR /app
 COPY build.gradle .
 COPY settings.gradle .
 COPY src src
-RUN chmod +x ./gradlew
-RUN ./gradlew bootJar
+RUN gradle bootJar
 
-FROM adoptopenjdk:11-jdk-hotspot
-COPY --from=builder build/libs/*.jar app.jar
+FROM azul/zulu-openjdk:11
+COPY --from=builder /app/build/libs/*.jar app.jar
 
-EXPOSE 8130
+EXPOSE 8150
 ENTRYPOINT [ "java", "-jar", "/app.jar" ]
