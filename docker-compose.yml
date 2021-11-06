@@ -19,10 +19,12 @@ services:
 
 
   product-service:
-    image: greenmarket-product-app:0.0.1
+    image: product-service:0.0.1
     container_name: greenmarket-product-service
     ports:
       - "8110:8110"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
   
   user-service:
     image: greenmarket-user-app:0.0.1
