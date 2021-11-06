@@ -23,7 +23,8 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
+    open-in-view: false
 
 # jwt 설정
 jwt:
