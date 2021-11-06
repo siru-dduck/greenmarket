@@ -16,8 +16,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=siru@dev1
     platform: linux/x86_64
-
-
+    
   product-service:
     image: product-service:0.0.1
     container_name: greenmarket-product-service
@@ -31,6 +30,14 @@ services:
     container_name: user-service
     ports:
       - "8130:8130"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+  file-service:
+    image: file-service:0.0.1
+    container_name: file-service
+    ports:
+      - "8150:8150"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
 

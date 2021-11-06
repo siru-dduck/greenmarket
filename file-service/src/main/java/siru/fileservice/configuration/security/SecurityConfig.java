@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/files/{\\d+}/image/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/resources/images/**").permitAll()
                 .anyRequest().authenticated()
 
                 // jwt config
