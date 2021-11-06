@@ -27,10 +27,12 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
   
   user-service:
-    image: greenmarket-user-app:0.0.1
-    container_name: greenmarket-user-service
+    image: user-service:0.0.1
+    container_name: user-service
     ports:
       - "8130:8130"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
 
   chat-service:
     image: greenmarket-chat-app:0.0.1

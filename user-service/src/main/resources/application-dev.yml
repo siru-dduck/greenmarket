@@ -1,0 +1,24 @@
+server:
+  port: 8130
+
+# 스프링 설정
+spring:
+
+  # 데이터베이스 세팅
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://greenmarket-mysql:3306/user_service
+    username: greenmarket
+    password: greenmarket1!
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
