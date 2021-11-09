@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+// import { Op } from "sequelize";
 import { ChatRoom, ChatMessage } from "../models";
 import { getUsersBy } from "../service/userService";
 import { getProductBy, getProductsBy } from "../service/productService";

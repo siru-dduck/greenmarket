@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import { Op } from "sequelize";
+// import { Op } from "sequelize";
 import { ChatRoom } from "../models";
 
 const SERVICE_PRODUCT_HOST =
