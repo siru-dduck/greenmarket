@@ -40,9 +40,12 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리�
 ## 설계
 ### 시스템 구성도
 ![시스템 구성도](/images/screenshot/system_design_diagram.png)
+### 리뉴얼 시스템 구성도(리뉴얼 진행중)
+![리뉴얼 시스템 구성도](/images/screenshot/system_renewal_design_diagram.png)
 ### [ER 다이어그램](https://www.erdcloud.com/d/BqDdP5eA6TcskXWvn)
 ![ER 다이어그램](/images/screenshot/erd.PNG)
-
+### CICD 구성도
+![CICD 구성도](/images/screenshot/gitlab-cicd.png)
 ---
 ## 실행화면
 ![실행화면 - 상품조회](/images/screenshot/screenshot1.PNG)
@@ -53,7 +56,7 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리�
 ## 어려웠던 점 & 극복과정
 
 ### 마이크로 서비스간의 통신
-마이크로 서비스 설계시 서비스간의 주고받는 데이터와 데이터베이스의 논리적인 분리가 처음 설계하는 부분이어서 어려웠지만 서비스간의 의존성을 분석하고 정리하여 chat, user, product서비스로 분리하여 설계하고 개발할 수 있었다. 현재는 트랜잭션이 없지만 앞으로 Image File Service, Commuity Service(게시판 기반의 커뮤니티)로 확장할때 논리적으로 분리된 서비스간에 어떻게 트랜잭션을 할지에 대한 고민이 있었다. 현재 생각하고 있는 방법은 Message Queue기반의 Saga패턴을 이용해 서비스간의 트랜잭션을 구현할 예정이다.
+마이크로 서비스 설계시 서비스간의 주고받는 데이터와 데이터베이스의 논리적인 분리가 처음 설계하는 부분이어서 어려웠지만 서비스간의 의존성을 분석하고 정리하여 chat, user, product서비스로 분리하여 설계하고 개발할 수 있었다. 현재는 트랜잭션이 없지만 앞으로 Image File Service, Commuity Service(게시판 기반의 커뮤니티)로 확장할때 논리적으로 분리된 서비스간에 어떻게 트랜잭션을 할지에 대한 고민이 있었다. 메세지 큐를 통해 데이터의 싱크를 맞추고 여러 마이크로 서비스에 대해 호출할 필요가 있는 쿠분은 Query Side의 역할을 하는 프론트 서버토 분리할 예정이다.
 
 ### socket-io.redis 적용시 ```await```이후 ```socket.emit``` 호출시 발생하는 에러
 ```javascript
