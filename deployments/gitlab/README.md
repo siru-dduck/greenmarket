@@ -1,15 +1,15 @@
-# Gitlab Helm Install
+# Gitlab Install Guide
 
 ---
 ## pre required
 
 local k8s에서 실행시 `hosts` 정보 수정 *domain이 있다면 생략
-```Shell
-vi /etc/hosts
+```shell
+$ vi /etc/hosts
 ```
 
 `/etc/hosts` 수정
-```Shell
+```shell
 127.0.0.1 gitlab.greenmarket.com
 127.0.0.1 registry.greenmarket.com
 127.0.0.1 minio.greenmarket.com 
@@ -18,8 +18,8 @@ vi /etc/hosts
 
 ---
 ## gitlab helm install
-```Shell
-helm repo add gitlab https://charts.gitlab.io
-kubectl create ns cicd
-helm install -n cicd -f override-gitlab-values.yaml gitlab gitlab/gitlab
+```shell
+$ helm repo add gitlab https://charts.gitlab.io
+$ kubectl create ns cicd
+$ helm install -n cicd -f override-gitlab-values.yaml gitlab gitlab/gitlab
 ```

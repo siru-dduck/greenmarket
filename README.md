@@ -1,5 +1,7 @@
 # 초록장터
 
+[![pipeline status](https://gitlab.com/sinwoo1225/Greenmarket/badges/master/pipeline.svg)](https://gitlab.com/sinwoo1225/Greenmarket/-/commits/master)
+
 2020년 한이음 ICT 멘토링 프로젝트 '쿠버네티스기반 MSA 어플리케이션'에서 진행한 프로젝트로 중고거래사이트를 각각 독립적으로 배포가 가능한 Micro Service로 개발후 쿠버네티스에 배포하는것을 목표로 진행된 프로젝트입니다. 해당 프로젝트는 중고거래사이트 프로젝트이며 인증과 사용자 정보를 담당하는 user 서비스, 상품을 담당하는 product 서비스, 채팅을 담당하는 chat service로 나누어져 있어 각각 독립적으로 배포 및 개발이 가능 합니다. 각각의 서비스는 도커이미지로 만든 후에 쿠버네티스상에 배포됩니다. 각각의 서비스는 느슨한 결합도를 위해 서비스간에 http통신을 통해 느슨한 결합을 지향했습니다. 
 http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리고 데이터의 동기화와 일관성을 위해 메세지큐(Kafka)를 도입할 예정입니다.<br><br>
 **프로젝트기간** : 2020년 5월 ~ 2020년 11월 
@@ -38,9 +40,12 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리�
 ## 설계
 ### 시스템 구성도
 ![시스템 구성도](/images/screenshot/system_design_diagram.png)
+### 리뉴얼 시스템 구성도(리뉴얼 진행중)
+![리뉴얼 시스템 구성도](/images/screenshot/system_renewal_design_diagram.png)
 ### [ER 다이어그램](https://www.erdcloud.com/d/BqDdP5eA6TcskXWvn)
 ![ER 다이어그램](/images/screenshot/erd.PNG)
-
+### CICD 구성도
+![CICD 구성도](/images/screenshot/gitlab-cicd.png)
 ---
 ## 실행화면
 ![실행화면 - 상품조회](/images/screenshot/screenshot1.PNG)
@@ -51,7 +56,7 @@ http로 인해 발생하는 오버헤드를 줄이기 위해 추후 gRPC그리�
 ## 어려웠던 점 & 극복과정
 
 ### 마이크로 서비스간의 통신
-마이크로 서비스 설계시 서비스간의 주고받는 데이터와 데이터베이스의 논리적인 분리가 처음 설계하는 부분이어서 어려웠지만 서비스간의 의존성을 분석하고 정리하여 chat, user, product서비스로 분리하여 설계하고 개발할 수 있었다. 현재는 트랜잭션이 없지만 앞으로 Image File Service, Commuity Service(게시판 기반의 커뮤니티)로 확장할때 논리적으로 분리된 서비스간에 어떻게 트랜잭션을 할지에 대한 고민이 있었다. 현재 생각하고 있는 방법은 Message Queue기반의 Saga패턴을 이용해 서비스간의 트랜잭션을 구현할 예정이다.
+마이크로 서비스 설계시 서비스간의 주고받는 데이터와 데이터베이스의 논리적인 분리가 처음 설계하는 부분이어서 어려웠지만 서비스간의 의존성을 분석하고 정리하여 chat, user, product서비스로 분리하여 설계하고 개발할 수 있었다. 현재는 트랜잭션이 없지만 앞으로 Image File Service, Commuity Service(게시판 기반의 커뮤니티)로 확장할때 논리적으로 분리된 서비스간에 어떻게 트랜잭션을 할지에 대한 고민이 있었다. 메세지 큐를 통해 데이터의 싱크를 맞추고 여러 마이크로 서비스에 대해 호출할 필요가 있는 쿠분은 Query Side의 역할을 하는 프론트 서버토 분리할 예정이다.
 
 ### socket-io.redis 적용시 ```await```이후 ```socket.emit``` 호출시 발생하는 에러
 ```javascript
@@ -167,9 +172,9 @@ socket.io-redis를 적용했을때 `await` 이후에 socket.io의 `emit`함수�
 * [x] Product 서비스 JPA 리뉴얼
 * [x] Swagger 도입
 * [ ] React App Notification 기능추가
-* [ ] DB를 Product, User, Chat Service별로 분리 (느슨한 결합도)
+* [x] DB를 Product, User, Chat Service별로 분리 (느슨한 결합도)
 * [x] Image File Service 개발 (Image Crop 기능포함)
-* [ ] Jenkins CI/CD 도입
+* [x] Gilab CI/CD 도입
 * [ ] 카카오톡, 네이버 로그인기능
 * [x] Refresh Token 도입
 * [ ] Circuit Breaker 도입
