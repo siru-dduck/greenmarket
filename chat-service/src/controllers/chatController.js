@@ -38,9 +38,10 @@ export const getChatRoom = async (req, res) => {
 
 export const createChatRoom = async (req, res) => {
 	const token = req.cookies.x_auth;
-	const { article_id } = req.body;
-
-	if (!article_id || !Number(article_id)) {
+	const { authUser } = req;
+	const { productId } = req.body;
+	
+	if (!productId || !Number(productId)) {
 		return res
 			.status(400)
 			.json({ isSuccess: false, message: "잘못된 요청입니다." });

@@ -27,7 +27,7 @@ services:
     
   product-service:
     image: product-service:0.0.1
-    container_name: greenmarket-product-service
+    container_name: product-service
     ports:
       - "8110:8110"
     environment:

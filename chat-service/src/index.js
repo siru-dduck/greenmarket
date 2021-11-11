@@ -7,7 +7,7 @@ import helmet from "helmet";
 import { connect } from "./inMemoryDB";
 import cookieParser from "cookie-parser";
 import socketIoCookieParser from "socket.io-cookie-parser";
-import chatRouter from "./roters/chatRouter";
+import chatApiRouter from "./roters/chatRouter";
 import redis from "socket.io-redis";
 import socketController from "./controllers/socketController";
 import { authJwt, initializeSocket } from "./middlewares/socketMiddlewares";
@@ -38,7 +38,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use("/api/chat", chatRouter);
+app.use("/api", chatApiRouter);
 
 const server = app.listen(process.env.PORT, () => {
 	console.log(`✅ server listen http://localhost:${process.env.PORT}`);
