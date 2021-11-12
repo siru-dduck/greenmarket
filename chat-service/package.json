@@ -28,6 +28,7 @@
 		"socket.io-redis": "^5.2.0"
 	},
 	"devDependencies": {
+		"kill-port": "^1.6.1",
 		"mongodb-memory-server": "^8.0.2",
 		"nodemon": "^2.0.4"
 	}
