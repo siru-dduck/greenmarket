@@ -37,7 +37,6 @@ export const getChatRoom = async (req, res) => {
 };
 
 export const createChatRoom = async (req, res) => {
-	const token = req.cookies.x_auth;
 	const { authUser } = req;
 	const { productId } = req.body;
 	
@@ -48,9 +47,8 @@ export const createChatRoom = async (req, res) => {
 	}
 
 	try {
-		const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
-		const { id: buyerId } = decoded;
-		const chatRoomId = await ChatService.createChatRoom(buyerId, article_id);
+		const { userId: buyerId } = authUser;
+		const chatRoomId = await ChatService.createChatRoom(buyerId, productId);
 		return res.status(201).json({
 			isSuccess: true,
 			code: 201,
