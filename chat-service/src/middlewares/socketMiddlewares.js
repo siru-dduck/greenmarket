@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import axios from "axios";
 // import { Op } from "sequelize";
 import { ChatRoom } from "../models";
+import { emit } from "../service/socketService";
 
 const SERVICE_PRODUCT_HOST =
 	process.env.GREENMARKET_PRODUCT_APP_SERVICE_HOST;
@@ -43,7 +44,7 @@ export const initializeSocket = async (socket, next) => {
 		// 	},
 		// 	order: [["article_id"]],
 		// });
-		// socket.join(`user_${socket.userId}`);
+		socket.join(`user_${socket.authUser.userId}`);
 		// chatRoom.forEach((room) => {
 		// 	socket.join(`room_${room.id}`);
 		// });

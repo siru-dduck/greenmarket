@@ -56,19 +56,7 @@ export const createChatRoom = async (req, res) => {
 		});
 	} catch (error) {
 		console.dir(error);
-		if (error.name === "TokenExpiredError") {
-			return res.status(401).json({
-				isSuccess: false,
-				code: 401,
-				message: "토큰이 만료되었습니다.",
-			});
-		} else if (error.name === "JsonWebTokenError") {
-			return res.status(401).json({
-				isSuccess: false,
-				code: 401,
-				message: "전송된 토큰이 없습니다.",
-			});
-		} else if (error.name === "SequelizeUniqueConstraintError") {
+		if (error.name === "SequelizeUniqueConstraintError") {
 			return res.status(409).json({
 				isSuccess: false,
 				code: 409,

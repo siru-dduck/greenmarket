@@ -15,6 +15,7 @@ const socketController = async (socket) => {
 				.emit("sendMessage", { ...response.dataValues });
 		} catch (error) {
 			console.log("❌", error);
+			socket.emit("error", { from: "sendMessage", error: error });
 		}
 	});
 
