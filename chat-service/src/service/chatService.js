@@ -3,7 +3,6 @@ import ChatRoom from "../models/ChatRoom";
 import ChatMessage from "../models/ChatMessage";
 import User from "../models/User";
 import { getUsersBy } from "../service/userService";
-import { getProductBy, getProductsBy } from "../service/productService";
 import { startSession } from "mongoose";
 
 const ChatService = {
@@ -78,27 +77,16 @@ const ChatService = {
 		// });
 		// return chatRoom;
 	},
-	createChatRoom: async (buyerUserId, productId) => {
+	createChatRoom: async (buyerUserId, sellerUserId, productId) => {
 		const session = await startSession();
 		session.startTransaction();
 		try {
-			const {
-				userId: sellerUserId,
-			} = await getProductBy(productId);
-			if (buyerUserId === sellerUserId) {
-				const error = new Error(
-					"게시글작성자는 자신의 게시글에 대한 채팅이 불가능합니다."
-				);
-				error.name = "ForbiddenCreateChatRoom";
-				throw error;
-			}
-
 			const [chatRoom] = await ChatRoom.create([{
 				productId,
 				sellerUserId,
 				buyerUserId
 			}], { session });
-			console.log(chatRoom);
+			
 			await User.findOneAndUpdate(
 				{ userId: sellerUserId },
 				{ $push: { chatRooms: chatRoom.id, $position: 0 } },

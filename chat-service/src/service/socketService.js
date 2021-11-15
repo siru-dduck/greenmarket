@@ -8,5 +8,5 @@ const redisClient = createClient(
 const io = new Emitter(redisClient);
 
 export const emit = (room, event, message) => {
-    io.emit(event, message);
+    io.to(room).emit(event, message);
 };
