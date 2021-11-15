@@ -130,6 +130,7 @@ const ChatService = {
 				User.findOne({ userId: chatRoom.sellerUserId}).session(session)
 			]);
 
+			// 채팅메세지에 해당하는 채팅방을 상단에 노출
 			buyer.chatRooms = buyer.chatRooms
 								.filter(r => r.toString() !== roomId);
 			seller.chatRooms = seller.chatRooms
