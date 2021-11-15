@@ -10,7 +10,7 @@ export const authJwt = (req, res, next) => {
 	} catch (error) {
 		console.error(error);
 		const err = new Error("NotAuthorized");
-		err.data = { type: "NotAuthorized" };
+		err.name =  "NotAuthorized";
 		next(err);
 	}
 };

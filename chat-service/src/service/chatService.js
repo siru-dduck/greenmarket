@@ -1,9 +1,8 @@
 
 import ChatRoom from "../models/ChatRoom";
-import ChatMessage from "../models/ChatMessage";
 import User from "../models/User";
 import { getUsersBy } from "../service/userService";
-import { startSession } from "mongoose";
+import { startSession, Types } from "mongoose";
 
 const ChatService = {
 	retrieveChatMessage: async (roomId) => {
@@ -107,6 +106,49 @@ const ChatService = {
 			session.endSession();
 		}
 	},
+	createChatMessage: async (roomId, userId, message) => {
+		const session = await startSession();
+		session.startTransaction();
+		try {
+			// 채팅방 조회
+			const chatRoom = await ChatRoom.findById(roomId).session(session);
+			if(chatRoom === null) {
+				const error = new Error(
+					"Not found chat room"
+				);
+				error.name = "NotFoundChatRoom";
+				throw error;
+			}
+
+			// 채팅 메세지 삽입
+			chatRoom.messages.push({message, userId, type: "SIMPLE_CHAT" });
+			await chatRoom.save();
+	
+			// 사용자 채팅방 리스트 갱신
+			const [buyer, seller] = await Promise.all([
+				User.findOne({ userId: chatRoom.buyerUserId}).session(session),
+				User.findOne({ userId: chatRoom.sellerUserId}).session(session)
+			]);
+
+			buyer.chatRooms = buyer.chatRooms
+								.filter(r => r.toString() !== roomId);
+			seller.chatRooms = seller.chatRooms
+								.filter(r => r.toString() !== roomId);
+			buyer.chatRooms.unshift(Types.ObjectId(roomId));
+			seller.chatRooms.unshift(Types.ObjectId(roomId));	
+			await Promise.all([
+				buyer.save(),
+				seller.save()
+			]);
+			await session.commitTransaction();
+			return chatRoom.messages[chatRoom.messages.length-1]._id.toString();
+		} catch(error) {
+			await session.abortTransaction();
+			throw error;
+		} finally {
+			session.endSession();
+		}
+	}
 };
 
 export default ChatService;

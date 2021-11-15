@@ -13,8 +13,13 @@ router.post("/rooms", authJwt, createChatRoom);
 router.get("/rooms/:roomId/messages", getChatMessage);
 
 router.use(function(err, req, res, next) {
+	if(err.name === "NotAuthorized") {
+		return res.status(401)
+			.json({ code: 401, message: "not authorized"});
+	}
 	console.error(err.stack);
-	res.status(500).send({status:500, message: 'internal error', type:'internal'});
+	return res.status(500)
+		.json({status:500, message: 'internal error', type:'internal'});
 });
 
 export default router;

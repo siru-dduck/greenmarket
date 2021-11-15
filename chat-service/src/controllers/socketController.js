@@ -1,18 +1,18 @@
 import { ChatMessage } from "../models";
+import ChatService from "../service/chatService";
+import { emit } from "../service/socketService";
 
 const socketController = async (socket) => {
 	console.log("✅ An user connected");
 
-	socket.on("sendMessage", async ({ message, userId, roomId }) => {
+	socket.on("sendMessage", async ({ roomId, message }) => {
+		const { authUser } = socket; 
 		try {
-			const response = await ChatMessage.create({
-				room_id: roomId,
-				user_id: userId,
-				message,
-			});
-			socket
-				.to(`room_${roomId}`)
-				.emit("sendMessage", { ...response.dataValues });
+			// 채팅메세지 생성
+			const messageId = await ChatService.createChatMessage(roomId, authUser.userId, message);
+			
+			// 채팅방 사용자에게 이벤트 전송 
+			emit(`room_${roomId}`,"sendMessage", { messageId, roomId } );
 		} catch (error) {
 			console.log("❌", error);
 			socket.emit("error", { from: "sendMessage", error: error });

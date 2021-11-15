@@ -81,9 +81,8 @@ export const createChatRoom = async (req, res) => {
 			chatRoomId,
 		});
 	} catch (error) {
-		console.dir(error);
-		// TODO mongoDB unique constraint error로 변경
-		if (error.name === "SequelizeUniqueConstraintError") {
+		// 이미 채팅방이 생성된 예외
+		if (error.name === "MongoServerError" && error.code === 11000) {
 			return res.status(409).json({
 				isSuccess: false,
 				code: 409,
@@ -96,7 +95,8 @@ export const createChatRoom = async (req, res) => {
 				message: error.message,
 			});
 		}
-		return res.json({
+		console.dir(error);
+		return res.status(500).json({
 			isSuccess: false,
 			code: 500,
 			message: "채팅방 생성에 실패하였습니다.",
