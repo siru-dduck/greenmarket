@@ -1,13 +1,13 @@
 import "@babel/polyfill";
-import ChatService from "../service/chatService";
+import { getChatMessagesByRoomId, createChatRoom } from "../service/chatService";
 import { getProductBy, getProductsBy } from "../service/productService";
 import { emit } from "../service/socketService";
 
 export const getChatMessage = async (req, res) => {
 	const { roomId } = req.params;
 	try {
-		const messages = await ChatService.retrieveChatMessage(roomId);
-		res.json({ messages });
+		const chatMessageInfo = await getChatMessagesByRoomId(roomId);
+		res.json(chatMessageInfo);
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({
@@ -26,8 +26,8 @@ export const getChatRoom = async (req, res) => {
 		});
 	}
 	try {
-		const chatRoom = await ChatService.retrieveChatRoom(article_id, user_id);
-		res.json({ isSuccess: true, chatRoom });
+		
+		res.json({ isSuccess: true });
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({
@@ -37,7 +37,7 @@ export const getChatRoom = async (req, res) => {
 	}
 };
 
-export const createChatRoom = async (req, res) => {
+export const postChatRoom = async (req, res) => {
 	const { authUser } = req;
 	const { productId } = req.body;
 	const { userId: buyerId } = authUser;
@@ -70,7 +70,7 @@ export const createChatRoom = async (req, res) => {
 		}
 
 		// 채팅방 생성
-		const chatRoomId = await ChatService.createChatRoom(buyerId, sellerId, productId);
+		const chatRoomId = await createChatRoom(buyerId, sellerId, productId);
 
 		// 판매자에게 채팅방 생성 이벤트 발송
 		emit(`user_${sellerId}`, "createChatRoom", { chatRoomId });

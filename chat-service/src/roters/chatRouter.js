@@ -1,6 +1,6 @@
 import express from "express";
 import {
-	createChatRoom,
+	postChatRoom,
 	getChatMessage,
 	getChatRoom,
 } from "../controllers/chatController";
@@ -9,7 +9,7 @@ import { authJwt } from "../middlewares/authMiddleware";
 const router = express.Router();
 
 router.get("/rooms", getChatRoom);
-router.post("/rooms", authJwt, createChatRoom);
+router.post("/rooms", authJwt, postChatRoom);
 router.get("/rooms/:roomId/messages", getChatMessage);
 
 router.use(function(err, req, res, next) {

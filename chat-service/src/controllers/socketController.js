@@ -1,5 +1,4 @@
-import { ChatMessage } from "../models";
-import ChatService from "../service/chatService";
+import { createChatMessage } from "../service/chatService";
 import { emit } from "../service/socketService";
 
 const socketController = async (socket) => {
@@ -9,7 +8,7 @@ const socketController = async (socket) => {
 		const { authUser } = socket; 
 		try {
 			// 채팅메세지 생성
-			const messageId = await ChatService.createChatMessage(roomId, authUser.userId, message);
+			const messageId = await createChatMessage(roomId, authUser.userId, message);
 			
 			// 채팅방 사용자에게 이벤트 전송 
 			emit(`room_${roomId}`,"sendMessage", { messageId, roomId } );
