@@ -1,8 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components';
 import saveBearImg from "../../assets/images/save_bear.png";
+import io from "socket.io-client";
 
 function NotFoundPage({isSetTopMargin}) {
+    useEffect(()=>{
+        console.log("굿");
+        io.connect("localhost:8140/", {
+            path: "/ws/chat",
+            transports: ["websocket"],
+        })
+    })
     return (
         <PageContainer isSetTopMargin={isSetTopMargin}>
             <h2>페이지를 찾을 수 없습니다.</h2>

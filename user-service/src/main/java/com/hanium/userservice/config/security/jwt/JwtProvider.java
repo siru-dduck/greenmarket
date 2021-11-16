@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -35,7 +36,7 @@ public class JwtProvider {
     public Jws<Claims> parseJwt(String token) {
         return Jwts
                 .parser()
-                .setSigningKey(jwtProp.getSecret())
+                .setSigningKey(jwtProp.getSecret().getBytes(StandardCharsets.UTF_8))
                 .parseClaimsJws(token);
     }
 
@@ -43,7 +44,7 @@ public class JwtProvider {
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
                 .parser()
-                .setSigningKey(jwtProp.getSecret())
+                .setSigningKey(jwtProp.getSecret().getBytes(StandardCharsets.UTF_8))
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -78,7 +79,7 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS256, jwtProp.getSecret())
+                .signWith(SignatureAlgorithm.HS256, jwtProp.getSecret().getBytes(StandardCharsets.UTF_8))
                 .compact();
     }
 
@@ -98,7 +99,7 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS256, jwtProp.getSecret())
+                .signWith(SignatureAlgorithm.HS256, jwtProp.getSecret().getBytes(StandardCharsets.UTF_8))
                 .compact();
     }
 
@@ -108,7 +109,7 @@ public class JwtProvider {
         String subject = null;
 
         try {
-            subject = Jwts.parser().setSigningKey(jwtProp.getSecret())
+            subject = Jwts.parser().setSigningKey(jwtProp.getSecret().getBytes(StandardCharsets.UTF_8))
                     .parseClaimsJws(token).getBody()
                     .getSubject();
         } catch (Exception ex) {
