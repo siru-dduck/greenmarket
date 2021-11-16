@@ -1,9 +1,9 @@
 import "@babel/polyfill";
-import { getChatMessagesByRoomId, createChatRoom } from "../service/chatService";
+import { getChatRoomsByUserId, getChatMessagesByRoomId, createChatRoom } from "../service/chatService";
 import { getProductBy, getProductsBy } from "../service/productService";
 import { emit } from "../service/socketService";
 
-export const getChatMessage = async (req, res) => {
+export const getChatMessages = async (req, res) => {
 	const { roomId } = req.params;
 	try {
 		const chatMessageInfo = await getChatMessagesByRoomId(roomId);
@@ -17,17 +17,12 @@ export const getChatMessage = async (req, res) => {
 	}
 };
 
-export const getChatRoom = async (req, res) => {
-	const { article_id, user_id } = req.query;
-	if (!user_id && !article_id) {
-		return res.status(400).json({
-			isSuccess: false,
-			message: "옳바른 요청값이 아닙니다.",
-		});
-	}
+export const getChatRooms = async (req, res) => {
+	const { userId } = req.query;
 	try {
-		
-		res.json({ isSuccess: true });
+		const chatRooms = await getChatRoomsByUserId(userId);
+		console.log(chatRooms);
+		return res.send(chatRooms);
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({
@@ -41,7 +36,7 @@ export const postChatRoom = async (req, res) => {
 	const { authUser } = req;
 	const { productId } = req.body;
 	const { userId: buyerId } = authUser;
-	
+
 	/**
 	 * 유효성 검증 TODO validation으로 분리
 	 */

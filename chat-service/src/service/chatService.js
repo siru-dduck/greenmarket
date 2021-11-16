@@ -1,7 +1,7 @@
 
 import ChatRoom from "../models/ChatRoom";
 import User from "../models/User";
-import { getUsersBy } from "../service/userService";
+import objectMapper from "object-mapper";
 import { startSession, Types } from "mongoose";
 
 /**
@@ -19,8 +19,33 @@ export const getChatMessagesByRoomId = async (roomId) => {
 };
 
 /**
- * 채팅방 조회
+ * 사용자 채팅방 조회
+ * @param {Number} userId
+ * @returns 
  */
+export const getChatRoomsByUserId = async (userId) => {
+	const user = await User.findOne()
+		.select("-_id userId chatRooms")
+		.where("userId").equals(userId)
+		.populate("chatRooms", "productId sellerUserId buyerUserId createDate");
+	if (user === null) {
+		return { userId, chatRooms: [] };
+	}
+
+	return objectMapper(user.toJSON(), userChatRoomMap);
+}
+
+const userChatRoomMap = {
+	"chatRooms[]": {
+		key: "chatRooms[]",
+		transform: function (room) {
+			room.id = room._id;
+			delete room._id;
+			return room;
+		}
+	}
+};
+
 // => front 서버로 이전
 // export const retrieveChatRoom = async (articleId, userId) => {
 // const whereCondition = {};
