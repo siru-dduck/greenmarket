@@ -4,7 +4,6 @@ import socketIo from "socket.io";
 import logger from "morgan";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
-import socketIoCookieParser from "socket.io-cookie-parser";
 import chatApiRouter from "./roters/chatRouter";
 import redis from "socket.io-redis";
 import socketController from "./controllers/socketController";
@@ -31,7 +30,6 @@ io.adapter(redis({
 	port: Number(process.env.REDIS_MASTER_SERVICE_PORT) 
 }));
 
-io.use(socketIoCookieParser());
 io.use(authJwt);
 io.use(initializeSocket);
 

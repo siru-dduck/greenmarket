@@ -3,11 +3,8 @@ import mongoose from "mongoose";
 const UserSchema = new mongoose.Schema({
     userId: {
         type: Number,
-        required: "user id is required"
-    },
-    nickName: {
-        type: String,
-        required: "user nickname is required"
+        required: "user id is required",
+        unique: true
     },
     chatRooms: [
         {

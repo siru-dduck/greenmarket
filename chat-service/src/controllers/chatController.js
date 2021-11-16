@@ -1,12 +1,13 @@
 import "@babel/polyfill";
-import jwt from "jsonwebtoken";
-import ChatService from "../service/chatService";
+import { getChatRoomsByUserId, getChatMessagesByRoomId, createChatRoom } from "../service/chatService";
+import { getProductBy, getProductsBy } from "../service/productService";
+import { emit } from "../service/socketService";
 
-export const getChatMessage = async (req, res) => {
+export const getChatMessages = async (req, res) => {
 	const { roomId } = req.params;
 	try {
-		const messages = await ChatService.retrieveChatMessage(roomId);
-		res.json({ messages });
+		const chatMessageInfo = await getChatMessagesByRoomId(roomId);
+		res.json(chatMessageInfo);
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({
@@ -16,17 +17,12 @@ export const getChatMessage = async (req, res) => {
 	}
 };
 
-export const getChatRoom = async (req, res) => {
-	const { article_id, user_id } = req.query;
-	if (!user_id && !article_id) {
-		return res.status(400).json({
-			isSuccess: false,
-			message: "옳바른 요청값이 아닙니다.",
-		});
-	}
+export const getChatRooms = async (req, res) => {
+	const { userId } = req.query;
 	try {
-		const chatRoom = await ChatService.retrieveChatRoom(article_id, user_id);
-		res.json({ isSuccess: true, chatRoom });
+		const chatRooms = await getChatRoomsByUserId(userId);
+		console.log(chatRooms);
+		return res.send(chatRooms);
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({
@@ -36,39 +32,52 @@ export const getChatRoom = async (req, res) => {
 	}
 };
 
-export const createChatRoom = async (req, res) => {
+export const postChatRoom = async (req, res) => {
 	const { authUser } = req;
 	const { productId } = req.body;
-	
+	const { userId: buyerId } = authUser;
+
+	/**
+	 * 유효성 검증 TODO validation으로 분리
+	 */
 	if (!productId || !Number(productId)) {
 		return res
 			.status(400)
 			.json({ isSuccess: false, message: "잘못된 요청입니다." });
 	}
 
+	/**
+	 * TODO 예외처리 별도의 미들웨어에서 처리
+	 */
 	try {
-		const { userId: buyerId } = authUser;
-		const chatRoomId = await ChatService.createChatRoom(buyerId, productId);
+		/**
+		 * 상품 데이터 조회 및 데이터 검증
+		 */
+		const {
+			userId: sellerId,
+		} = await getProductBy(productId);
+		if (buyerId === sellerId) {
+			const error = new Error(
+				"게시글작성자는 자신의 게시글에 대한 채팅이 불가능합니다."
+			);
+			error.name = "ForbiddenCreateChatRoom";
+			throw error;
+		}
+
+		// 채팅방 생성
+		const chatRoomId = await createChatRoom(buyerId, sellerId, productId);
+
+		// 판매자에게 채팅방 생성 이벤트 발송
+		emit(`user_${sellerId}`, "createChatRoom", { chatRoomId });
+
 		return res.status(201).json({
 			isSuccess: true,
 			code: 201,
 			chatRoomId,
 		});
 	} catch (error) {
-		console.dir(error);
-		if (error.name === "TokenExpiredError") {
-			return res.status(401).json({
-				isSuccess: false,
-				code: 401,
-				message: "토큰이 만료되었습니다.",
-			});
-		} else if (error.name === "JsonWebTokenError") {
-			return res.status(401).json({
-				isSuccess: false,
-				code: 401,
-				message: "전송된 토큰이 없습니다.",
-			});
-		} else if (error.name === "SequelizeUniqueConstraintError") {
+		// 이미 채팅방이 생성된 예외
+		if (error.name === "MongoServerError" && error.code === 11000) {
 			return res.status(409).json({
 				isSuccess: false,
 				code: 409,
@@ -81,9 +90,10 @@ export const createChatRoom = async (req, res) => {
 				message: error.message,
 			});
 		}
-		return res.json({
+		console.dir(error);
+		return res.status(500).json({
 			isSuccess: false,
-			code: 200,
+			code: 500,
 			message: "채팅방 생성에 실패하였습니다.",
 		});
 	}
