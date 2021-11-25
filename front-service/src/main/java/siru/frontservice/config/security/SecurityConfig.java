@@ -3,6 +3,7 @@ package siru.frontservice.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -54,6 +55,7 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeExchange()
+                    .pathMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                     .anyExchange().authenticated()
                 .and()
 
